@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!-- 	<bean id="applicationValidator" class="com.tea.validation.ApplicationValidator" /> -->
+<!-- 	<bean id="capabilityValidator" class="com.tea.validation.CapabilityValidator" /> -->
+<!-- 	<bean id="clientValidator" class="com.tea.validation.ClientValidator" /> -->
+<!-- 	<bean id="packageValidator" class="com.tea.validation.PackageValidator" /> -->
+<!-- 	<bean id="PartnerValidator" class="com.tea.validation.PartnerValidator" /> -->
+<!-- 	<bean id="preferenceValidator" class="com.tea.validation.PreferenceValidator" /> -->
+<!-- 	<bean id="propertyValidator" class="com.tea.validation.PropertyValidator" /> -->
+<!-- 	<bean id="roleValidator" class="com.tea.validation.RoleValidator" /> -->
+<!-- 	<bean id="userValidator" class="com.tea.validation.UserValidator" /> -->
+<!-- 	<bean id="tenantVerificationValidator" class="com.tea.validation.TenantVerificationValidator" /> -->
+<!-- 	<bean id="employmentVerificationValidator" class="com.tea.validation.EmploymentVerificationValidator" /> -->
+<!-- 	<bean id="bankReferenceVerificationValidator" class="com.tea.validation.BankReferenceVerificationValidator" /> -->
+<!-- 	<bean id="personalReferenceVerificationValidator" class="com.tea.validation.PersonalReferenceVerificationValidator" /> -->
+<!-- 	<bean id="recommendationValidator" class="com.tea.validation.RecommendationValidator" /> -->
+<!-- 	<bean id="auApplicationValidator" class="com.tea.validation.AuApplicationValidator" /> -->
+	<bean id="anonymousUserValidator" class="com.tea.landlordapp.validation.AnonymousUserValidator" />
+<!-- 	<bean id="archiveApplicationValidator" class="com.tea.validation.ArchiveApplicationValidator" /> -->
+<!-- 	<bean id="securityValidator" class="com.tea.validation.SecurityValidator" /> -->
+<!-- 	<bean id="statewiseValidator" class="com.tea.validation.StatewiseValidator" /> -->
+<!-- 	<bean id="creditCardPaymentValidator" class="com.tea.validation.CreditCardPaymentValidator" /> -->
+<!-- 	<bean id="TaskValidator" class="com.tea.validation.TaskValidator" /> -->
+<!-- 	<bean id="StandardTaskValidator" class="com.tea.validation.StandardTaskValidator" /> -->
+<!-- 	<bean id="TaskListDtoValidator" class="com.tea.validation.TaskListDtoValidator" /> -->
+<!-- 	<bean id="ApplicationTaskValidator" class="com.tea.validation.ApplicationTaskValidator" />  -->
+<!-- 	<bean id="passwordChangeValidator" class="com.tea.validation.PasswordChangeValidator" />  -->
+<!-- 	<bean id="propertyCollectionItemValidator" class="com.tea.validation.PropertyCollectionItemValidator" />  -->
+<!-- 	<bean id="managementCompanyChangeValidator" class="com.tea.validation.ManagementCompanyChangeValidator" />  -->
+</beans>

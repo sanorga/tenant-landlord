@@ -1,0 +1,119 @@
+/* tables */
+table.tablesorter {
+	font-family:arial;
+	background-color: #CDCDCD;
+/**	margin:10px 0pt 15px; **/
+	font-size: 8pt;
+	width: 100%;
+	text-align: left;
+}
+
+.tablesorter td a:link {color:#b76361; text-decoration:underline;}
+.tablesorter td a:visited {color:#b76361; text-decoration:underline;}
+.tablesorter td a:hover {color:#b76361; text-decoration:underline;}
+.tablesorter td a:active {color:#b76361; text-decoration:underline;}
+
+
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+	background-color: #053942;
+	border: 1px solid #ccc;
+	font-size: 8pt;
+	padding: 4px;
+	padding-right: 20px;
+	color:#FFFFFF;
+}
+table.tablesorter thead tr .header {
+	background-image: url(../images/commonimgs/normal.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+	color:#FFFFFF;
+}
+table.tablesorter tbody td {
+	color: #3D3D3D;
+	padding: 2px;
+	background-color: #ddd;
+	vertical-align: top;
+}
+
+table.tablesorter tbody tr.odd td {
+	background-color:#fcf6f6;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(../images/commonimgs/desc.png);	
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(../images/commonimgs/asc.png);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+	background-color: #011f24;
+}
+
+
+
+/***From display tag*******/
+
+table.tablesorter th.sorted a, table.tablesorter th.sortable a {
+	background-position: right;
+	display: block;
+	width: 100%;
+}
+
+table.tablesorter th.sorted {	
+	background-color: #011f24;
+}
+
+
+table.tablesorter th.sortable a {	
+	padding: 8px;
+	background-image: url(../images/tablesorter/bg.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+	cursor: pointer;
+	color:#FFFFFF;
+}
+
+table.tablesorter th.order1 a {
+	background-image: url(../images/tablesorter/desc.gif);
+}
+
+table.tablesorter th.order2 a {
+	background-image: url(../images/tablesorter/desc.gif);
+}
+
+
+
+/*.tablesorter  a:link, a:visited, a:hover, a:active {
+	color:#000000; 
+	text-decoration:underline;
+	}*/
+
+span.pagebanner {
+	text-align: right;
+	/*background-color: #eee;*/
+	/*border: 1px dotted #999;*/
+	padding: 2px 4px 2px 4px;
+	width: 90%;
+	margin-top: 5px;
+	display: block;
+	border-bottom: none;
+}
+
+span.pagelinks {
+	text-align: right;	
+	/*background-color: #eee;*/
+	/*border: 1px dotted #999;*/
+	padding: 2px 4px 2px 4px;
+	width: 90%;
+	display: block;
+	border-top: none;
+	margin-bottom: 5px;
+}
+
+
+span.pagelinks a:link {color:#b76361; text-decoration:underline;}
+span.pagelinks a:visited {color:#b76361; text-decoration:underline;}
+span.pagelinks a:hover {color:#b76361; text-decoration:underline;}
+span.pagelinks a:active {color:#b76361; text-decoration:underline;}
+
+/**********/

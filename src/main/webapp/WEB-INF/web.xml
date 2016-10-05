@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+<!--   <context-param> -->
+<!--     <param-name>contextConfigLocation</param-name> -->
+<!--     <param-value>/WEB-INF/spring/root-context.xml</param-value> -->
+<!--   </context-param> -->
+<!--   <listener> -->
+<!--     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class> -->
+<!--   </listener> -->
+ 
+ <!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			/WEB-INF/spring/*-context.xml
+		</param-value>
+	</context-param>
+	
+	<!-- Creates the Spring Container shared by all Servlets and Filters -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	 
+  	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>restricted methods</web-resource-name>
+			<url-pattern>/*</url-pattern>
+			<http-method>PUT</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>OPTIONS</http-method>
+			<http-method>TRACE</http-method>
+		</web-resource-collection>
+		<auth-constraint/>
+	</security-constraint>
+
+	
+	<listener>
+		<listener-class>
+			org.springframework.security.web.session.HttpSessionEventPublisher
+		</listener-class>
+	</listener>
+  <filter>
+    <filter-name>Spring OpenEntityManagerInViewFilter</filter-name>
+    <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>Spring OpenEntityManagerInViewFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <filter>
+  	<display-name>springMultipartFilter</display-name>
+  	<filter-name>springMultipartFilter</filter-name>
+  	<filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>springMultipartFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+	
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+  
+  
+  <servlet>
+    <servlet-name>appServlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+<!--       <param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value> -->
+			<param-value></param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>appServlet</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+ 
+<!--  	<session-config> -->
+<!-- 		<session-timeout>30</session-timeout> -->
+<!-- 		<cookie-config> -->
+<!-- 			<http-only>true</http-only> -->
+<!-- 		</cookie-config> -->
+<!-- 		<tracking-mode>COOKIE</tracking-mode>		 -->
+<!-- 	</session-config> -->
+	
+	<error-page>
+  		<error-code>405</error-code>
+  		<location>/login?e405</location>
+	</error-page>
+  <error-page>
+    <error-code>400</error-code>
+    <location>/error/400</location>
+  </error-page>
+  <error-page>
+    <error-code>401</error-code>
+    <location>/error/401</location>
+  </error-page>
+  <error-page>
+    <error-code>402</error-code>
+    <location>/error/402</location>
+  </error-page>
+  <error-page>
+    <error-code>403</error-code>
+    <location>/error/403</location>
+  </error-page>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/error/404</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/error/500</location>
+  </error-page>
+  <error-page>
+    <error-code>501</error-code>
+    <location>/error/501</location>
+  </error-page>
+  <error-page>
+    <error-code>502</error-code>
+    <location>/error/502</location>
+  </error-page>
+  <error-page>
+    <error-code>503</error-code>
+    <location>/error/503</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Exception</exception-type>
+    <location>/error/unknown</location>
+  </error-page>
+  
+  <context-param>
+  	<param-name>defaultHtmlEscape</param-name>
+  	<param-value>true</param-value>
+  </context-param> 
+  
+</web-app>

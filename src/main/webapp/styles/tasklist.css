@@ -1,0 +1,89 @@
+.task-select-box {
+	/* 	width: 100%; */
+ 	background-color: #47555a; 
+	color: white;
+	font-size: 11px;
+/* 	border-color: white; */
+	padding: 10px;
+}
+
+div.task-list-checkboxes {
+	border: 1px solid white;
+	/* 	width: 200px; */
+	color: white;
+	overflow-y: auto;
+	/* prevent horizontal scrollbar */
+	overflow-x: hidden;
+	max-height: 165px;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+.task-list-checkboxes span {
+	display: block;
+}
+
+.ui-autocomplete {
+	max-height: 100px;
+	overflow-y: auto;
+	/* prevent horizontal scrollbar */
+	overflow-x: hidden;
+}
+/* IE 6 doesn't support max-height
+   * we use height instead, but this forces the menu to always be this tall
+   */
+* html .ui-autocomplete {
+	height: 100px;
+}
+
+.pickListContainer {
+	/*    	height: 130px; */
+	width: 50%;
+}
+
+.ui-widget {
+	
+}
+
+.chosen-select {
+	width: 200px;
+}
+
+fieldset {
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+div#body {
+	text-align: left;
+}
+
+table.tablesorter {
+	width: 98%;
+}
+
+th.task-id {
+	width: 1px
+}
+
+td.task-id {
+	width: 23px;
+}
+
+th.task-type {
+	width: 98px
+}
+
+td.task-type {
+	width: 120px;
+}
+
+table.bottom-table {
+	margin-top: -1px;
+}
+textarea.add-notes{
+	width:341px;
+	max-width:341px;
+	min-height:130px;
+	max-height:130px;
+}

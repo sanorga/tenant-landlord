@@ -1,0 +1,373 @@
+@charset "utf-8";
+body {
+background-image:url(../images/body_bg1.jpg);
+background-repeat:no-repeat;
+		background-position:top center;
+		background-attachment:fixed;
+		-webkit-background-size:cover;
+		-moz-background-size:cover;
+		-o-background-size:cover;
+		background-size:cover;
+		min-height:100%;
+		height:782px;
+font-family:Arial, Helvetica, sans-serif;
+font-size:13px;
+color:#fff;
+padding:0;
+margin:0;
+
+}
+
+html,
+body {
+   margin:0;
+   padding:0;
+   height:100%;
+}
+
+.main_container {
+   min-height:100%;
+   position:relative;
+   background:url(../images/top_header_bg.png) repeat-x 0 0;
+}
+
+.main_container1 {
+   min-height:100%;
+   width:110%;
+   position:relative;
+   background:url(../images/top_header_bg.png) repeat-x 0 0;
+}
+
+.main_container2 {
+   min-height:100%;
+   width:155%;
+   position:relative;
+   background:url(../images/top_header_bg.png) repeat-x 0 0;
+}
+
+
+div, form, select, ul, li, input, h1, h2, h3, h4, h5, h6, p{
+	padding:0px; 
+	margin:0px;
+	font-weight:normal;
+}
+
+.clear{
+clear:both;
+padding:0;
+margin:0;
+}
+.right{
+float:right;
+}
+.left{
+float:left;
+}
+img{
+border:0;
+}
+a{
+color:#fff;
+text-decoration:none;
+}
+a:hover{
+text-decoration:underline;
+}
+
+.m_top05 { margin-top:5px;}
+.m_top10 { margin-top:10px;}
+.m_top15 { margin-top:15px;}
+.m_top20 { margin-top:20px;}
+.m_top25 { margin-top:25px;}
+.m_top30 { margin-top:30px;}
+
+.m_right03 { margin-right:3px;}
+.m_right05 { margin-right:5px;}
+.m_right10 { margin-right:10px;}
+.m_right15 { margin-right:15px;}
+.m_right20 { margin-right:20px;}
+.m_right25 { margin-right:25px;}
+.m_right30 { margin-right:30px;}
+
+
+.m_left05 { margin-left:5px;}
+.m_left10 { margin-left:10px;}
+.m_left15 { margin-left:15px;}
+.m_left20 { margin-left:20px;}
+.m_left25 { margin-left:25px;}
+.m_left30 { margin-left:30px;}
+
+
+.m_bot05 { margin-bottom:5px;}
+.m_bot10 { margin-bottom:10px;}
+.m_bot15 { margin-bottom:15px;}
+.m_bot20 { margin-bottom:20px;}
+.m_bot25 { margin-bottom:25px;}
+.m_bot30 { margin-bottom:30px;}
+
+.p_top02 { padding-top:2px;}
+.p_top05 { padding-top:5px;}
+.p_top10 { padding-top:10px;}
+.p_top15 { padding-top:15px;}
+.p_top20 { padding-top:20px;}
+.p_top25 { padding-top:25px;}
+.p_top30 { padding-top:30px;}
+
+
+.p_left05 { padding-left:5px;}
+.p_left10 { padding-left:10px;}
+.p_left15 { padding-left:15px;}
+.p_left20 { padding-left:20px;}
+.p_left25 { padding-left:25px;}
+.p_left30 { padding-left:30px;}
+
+
+.p_bot03 { padding-bottom:3px;}
+.p_bot05 { padding-bottom:5px;}
+.p_bot10 { padding-bottom:10px;}
+.p_bot15 { padding-bottom:15px;}
+.p_bot20 { padding-bottom:20px;}
+.p_bot25 { padding-bottom:25px;}
+.p_bot30 { padding-bottom:30px;}
+
+
+.p_rig05 { padding-right:5px;}
+.p_rig10 { padding-right:10px;}
+.p_rig15 { padding-right:15px;}
+.p_rig20 { padding-right:20px;}
+.p_rig30 { padding-right:30px;}
+
+
+.main_div{
+width:1075px;
+margin:0 auto;
+position:relative;
+}
+
+.header_part{
+height:90px;
+position:relative;
+}
+.logo{
+position:absolute;
+left:0;
+top:5px;
+}
+
+.header_inner{
+padding-top:20px;
+float:right;
+font-family: 'geosanslightregular';
+font-size:24px;
+color:#fff;
+text-transform:uppercase;
+font-weight:bold;
+text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+.body_part{
+padding:60px 0;
+}
+.body_part_left{
+width:600px;
+float:left;
+padding-top:60px;
+font-family: 'geosanslightregular';
+}
+
+.body_part_right{
+width:358px;
+float:right;
+margin-right:10px;
+position:relative;
+background:url(../images/right_cont_bg.png) repeat 0 0;
+border:9px solid #000;
+padding:115px 15px 45px 15px;
+}
+
+h1{
+font-family: 'geosanslightregular';
+font-size:72px;
+color:#fff;
+text-shadow: black 0.1em 0.1em 0.2em;
+line-height:77px;
+}
+
+h2{
+font-family: 'geosanslightregular';
+font-size:55px;
+color:#fff;
+text-shadow: black 0.1em 0.1em 0.2em;
+background-color:#99190d;
+padding:4px 10px;
+}
+
+.red_bar{
+position:absolute;
+left:-8px;
+top:35px;
+background:url(../images/red_bar.png) no-repeat 0 0;
+width:386px;
+height:56px;
+line-height:56px;
+padding:0 15px;
+font-family: 'geosanslightregular';
+color:#fff;
+text-shadow: black 0.1em 0.1em 0.2em;
+font-size:36px;
+}
+
+
+.right_listing ul{
+list-style-type:none;
+padding:0;
+margin:0;
+}
+
+.right_listing li{
+background:url(../images/bullet.png) no-repeat 0 6px;
+padding:3px 0 3px 22px;
+}
+
+.red_box{
+background-color:#9a190d;
+padding:4px 8px;
+color:#fff;
+font-size:13px;
+margin-bottom:15px;
+}
+
+h3{
+font-family: 'geosanslightregular';
+font-size:22px;
+color:#fff;
+text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+
+.right_textfield{
+background:url(../images/textfield_bg.png) no-repeat 0 0;
+width:231px;
+height:43px;
+padding:0 10px;
+border:none;
+font-size:14px;
+margin-right:15px;
+}
+.submit_bg{
+background:url(../images/submit_bg.png) no-repeat 0 0;
+width:85px;
+height:43px;
+text-align:center;
+color:#fff;
+font-family: 'geosanslightregular';
+font-size:19px;
+color:#fff;
+text-shadow: black 0.1em 0.1em 0.2em;
+border:none;
+cursor:pointer;
+}
+
+
+.footer_part{
+background:url(../images/footer_bg.png) repeat-x 0 0 #94180c;
+height:83px;
+position:absolute; bottom:0;
+width:100%;
+}
+
+.footer_inner{
+width:1075px;
+margin:0 auto;
+text-align:center;
+padding-top:17px;
+}
+
+.font20{font-size:20px;}
+.copyright{
+font-size:11px;
+padding-top:27px;
+position:relative;
+top:-6px;
+}
+
+
+
+.pop_part{
+width:502px;
+height:377px;
+background:url(../images/pop_outer_bg.png) repeat 0 0;
+}
+
+.pop_part_inner{
+width:435px;
+background-color:#1c1c1c;
+border:6px solid #e3e4e4;
+padding:30px 20px 20px 20px;
+position:relative;
+
+}
+
+.pop_part_inner_bar{
+position:absolute;
+left:0;
+top:108px;
+background:url(../images/red_bar1.png) no-repeat 0 0;
+width:470px;
+height:36px;
+line-height:36px;
+padding:0 0 0 23px;
+text-transform:uppercase;
+font-size:19px;
+font-weight:bold;
+text-shadow: black 0.1em 0.1em 0.2em;
+font-family: 'geosanslightregular';
+}
+
+
+.pop_part_inner ul{
+list-style-type:none;
+padding-bottom:10px;
+margin:0;
+}
+
+.pop_part_inner li{
+background:url(../images/bullet1.png) no-repeat 0 8px;
+font-size:13px;
+color:#fff;
+padding:3px 0 3px 15px;
+
+}
+
+
+.pop_butt a{
+background:url(../images/pop_butt.png) no-repeat 0 0;
+width:54px;
+height:27px;
+line-height:27px;
+text-align:center;
+text-shadow: black 0.1em 0.1em 0.2em;
+text-decoration:none;
+color:#fff;
+font-size:14px;
+font-weight:bold;
+display:block;
+border:none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

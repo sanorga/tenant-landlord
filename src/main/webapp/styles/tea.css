@@ -1,0 +1,72 @@
+body {background-color: #ebebeb; font-family: Arial, Helvetica, sans-serif;}
+a {color: #0078ae; text-decoration: none;}
+a:hover {color: #707070;}
+p {line-height: 16px;}
+
+h8 {font-family: verdana, sans-serif; font-size: 14px; font-weight: bold; color: #000000; background-color: #ebebeb;  border-bottom: solid #cccccc 1px;}
+
+#header {}
+#footer {text-align: center; font-size: 10px; padding: 10px 0;}
+#wrapper {width: 950px;	margin: 0 auto;}
+/*#logoblock #headertext p#signup a span,#role h2 span,#products h2 span,#start h2 span {display: block; width: 1px; height: 1px; overflow: hidden;}
+
+#topnav {text-align: right;	padding: 5px; list-style: none;	font-size: 12px;}
+#topnav li {padding: 0 31px 0 0; display: inline; background: url(../images/topnav_divider.gif) top right no-repeat;}
+#topnav li.last {background: none; padding-right: 0;}
+
+#logoblock {background: url(../images/header_bkgnd.gif) center left repeat-x; border-top: 1px solid #bcbec0; position: relative;}
+#logoblock h1 {margin: 10px 0 3px 20px;	}
+#logoblock #headertext {position: absolute;	top: 30px; right: 20px;	text-align: right; text-transform:uppercase; color: #808284;}
+#logoblock #headertext p {font-size: 12px;	padding: 0 0 5px 0;	font-weight: bold;}
+#logoblock #headertext p#signup {position: relative;}
+#logoblock #headertext p#signup a {display: block; width: 60px; height: 17px; background:url(../images/signup_btn.gif) 0 0 no-repeat; position: absolute; top: 0; right: 0;}
+#logoblock #headertext p#signup a:hover {background-position: 0 -17px;}
+
+#mainnav {list-style: none; text-transform: uppercase; font-size: 12px;	font-weight: bold; padding: 0 0 3px 252px; background: url(../images/dashline.gif) bottom repeat-x;}
+#mainnav a {color: #808284;}
+#mainnav a:hover {color: #0078ae;}
+#mainnav li {display: inline; padding: 0 10px;}*/
+
+#content2 {width:200px; text-align: center;}
+#content2 table, th, td {}
+
+#content {width: 910px;margin: 0 auto 20px auto;text-align: center;}
+#content h1 {font-size: 18px;font-weight: bold;margin: 20px 0 50px 0;}
+#content h2 {font-size: 16px;font-weight: bold;margin: 20px 0 50px 0;}
+#content h3 {font-size: 14px;font-weight: bold;margin: 20px 0 50px 0;}
+#content p {padding: 0 0 4px 0;	font-size: 12px; line-height: 14px;	margin: 0 auto 20px auto;}
+#content div.threecol {width: 260px; float: left; padding: 0 20px; text-align: left;}
+#content div.threecol h2 {font-size: 14px;}
+#content div.threecol table {width: 440px; border: 1px solid #D4E0EE; border-collapse: collapse; font-family: "Trebuchet MS", Arial, sans-serif; color: #555; text-align: left;}
+#content div.threecol ul {margin: 2px 0 2px 15px; font-size: 12px; list-style: disc;}
+#content div.threecol li {padding: 2px 0;}
+#content p.smaller {font-size: 14px;line-height: 16px;text-align: center;}
+#content p.tiny {font-size: 10px;text-align: left;}
+#content p.forced {text-align:justify;}
+
+/*#footernav {border-bottom: 3px solid #f68a33; text-align: center; width: 800px;	margin: 0 auto;	padding: 30px 0 8px 0; clear: both;}
+#footernav li {font-size: 11px;	padding: 0 31px 0 0; display: inline; background: url(../images/topnav_divider.gif) top right no-repeat;}
+#footernav li.last {background: none; padding-right: 0;}
+#footernav li a {color: #808284; text-decoration: none;}
+#footernav a:hover {color: #0078ae;}*/
+
+table, th {width: 910px; border: 1px solid #D4E0EE; border-collapse: collapse; font-family: "Trebuchet MS", Arial, sans-serif; color: #555; text-align: center;}
+caption {font-size: 150%; font-weight: bold; margin: 5px;}
+td, th {padding: 4px;}
+thead th {text-align: center; background: #E6EDF5; color: #4F76A3; font-size: 100% !important;}
+tbody th {font-weight: bold;}
+tbody tr { background: #FCFDFE; }
+tbody tr.odd { background: #F7F9FC; }
+table a:link {color: #718ABE; text-decoration: none;}
+table a:visited {color: #718ABE; text-decoration: none;}
+table a:hover {color: #718ABE; text-decoration: underline !important;}
+tfoot th, tfoot td {font-size: 85%;}
+
+/*#table-head {background-image:url("../images/crosshatchTile.gif"); background-position:center left; background-repeat:repeat-x; font-family: verdana, sans-serif; font-size: 11px; color: rgb(0, 0, 0);}
+
+.txt12 {font-family: verdana, sans-serif; font-size: 12px; color: #454545;}*/
+
+/* Hides from IE-mac \*/
+* html .clearfix {height: 1%;}
+.clearfix {	display: block;}
+/* End hide from IE-mac */

@@ -1,0 +1,66 @@
+/*======= index.html =======*/
+
+#page1 .row-1 .col-1 {width: 610px; background: #0f0f10 url(../../images/loginimages/tail-1.gif) repeat-x 50% 0%;}
+#page1 .row-1 .col-2 {width: 294px; background: #18181a url(../../images/loginimages/tail-2.gif) repeat-x 50% 0%;}
+
+#page1 .row-1 .col-1 .block-1 {width: 195px; padding: 0 10px 0 0;}
+#page1 .row-1 .col-1 .block-2 {width: 181px; padding: 0 10px 0 0;}
+#page1 .row-1 .col-1 .block-3 {width: 164px;}
+
+/*======= index-1.html =======*/
+
+#page2 .row-1 .col-1 {width: 294px; background: #18181a url(../../images/loginimages/tail-2.gif) repeat-x 50% 0%;}
+#page2 .row-1 .col-2 {width: 610px; background: #0f0f10 url(../../images/loginimages/tail-1.gif) repeat-x 50% 0%;}
+
+#page2 .row-2 .col-1 {width: 405px; padding: 0 40px 0 0;}
+#page2 .row-2 .col-2 {width: 426px; padding: 0 0 0 0;}
+
+/*======= index-2.html =======*/
+
+#page3 .row-1 .col-1 {width: 610px; background: #0f0f10 url(../../images/loginimages/tail-1.gif) repeat-x 50% 0%;}
+#page3 .row-1 .col-2 {width: 294px; background: #18181a url(../../images/loginimages/tail-2.gif) repeat-x 50% 0%;}
+
+#page3 .row-1 .col-1 .block-1 {width: 267px; padding: 0 20px 0 0;}
+#page3 .row-1 .col-1 .block-2 {width: 273px;}
+
+/*======= index-3.html =======*/
+
+#page4 .row-1 .col-1 {width: 294px; background: #18181a url(../../images/loginimages/tail-2.gif) repeat-x 50% 0%;}
+#page4 .row-1 .col-2 {width: 610px; background: #0f0f10 url(../../images/loginimages/tail-1.gif) repeat-x 50% 0%;}
+
+#page4 .row-1 .col-2 .block-1 {width: 195px; padding: 0 10px 0 0;}
+#page4 .row-1 .col-2 .block-2 {width: 181px; padding: 0 10px 0 0;}
+#page4 .row-1 .col-2 .block-3 {width: 158px;}
+
+#page4 .row-2 .col-1 {width: 294px; background: #18181a url(../../images/loginimages/tail-2.gif) repeat-x 50% 0%;}
+#page4 .row-2 .col-2 {width: 610px; background: #010101 url(../../images/loginimages/box-tail.gif) repeat-x 50% 0%;}
+
+/*======= index-4.html =======*/
+
+#page5 .row-1 .col-1 {width: 610px; background: #0f0f10 url(../../images/loginimages/tail-1.gif) repeat-x 50% 0%;}
+#page5 .row-1 .col-2 {width: 294px; background: #18181a url(../../images/loginimages/tail-2.gif) repeat-x 50% 0%;}
+
+#page5 .row-1 .col-1 .block-1 {width: 267px; padding: 3px 20px 0 0;}
+#page5 .row-1 .col-1 .block-2 {width: 273px; padding: 3px 0 0 0;}
+
+/*======= index-5.html =======*/
+
+#page6 .row-1 .col-1 {width: 294px; background: #18181a url(../../images/loginimages/tail-2.gif) repeat-x 50% 0%;}
+#page6 .row-1 .col-2 {width: 610px; background: #0f0f10 url(../../images/loginimages/tail-1.gif) repeat-x 50% 0%;}
+
+#page6 .row-2 .col-1 {width: 405px; padding: 0 40px 0 0;}
+#page6 .row-2 .col-2 {width: 426px; padding: 0 0 0 0;}
+
+/*======= index-6.html =======*/
+
+#page7 .row-1 .col-1 {width: 610px; background: #0f0f10 url(../../images/loginimages/tail-1.gif) repeat-x 50% 0%;}
+#page7 .row-1 .col-2 {width: 294px; background: #18181a url(../../images/loginimages/tail-2.gif) repeat-x 50% 0%;}
+
+#page7 .row-2 .col-1 {width: 204px; padding: 0 19px 5px 0;}
+#page7 .row-2 .col-2 {width: 204px; padding: 0 18px 2px 0;}
+#page7 .row-2 .col-3 {width: 204px; padding: 0 18px 2px 0;}
+#page7 .row-2 .col-4 {width: 204px; padding: 0 0 2px 0;}
+
+/*======= index-7.html =======*/
+
+#page8 .row-2 {background: #0f0f10 url(../../images/loginimages/tail-1.gif) repeat-x 50% 43px;}

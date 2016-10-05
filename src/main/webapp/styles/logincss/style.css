@@ -1,0 +1,872 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.wrapper {
+	width: 100%;
+	overflow: hidden;
+}
+
+.wrapper-1 {
+	width: 100%;
+}
+
+.clear {
+	clear: both;
+	font-size: 0%;
+	line-height: 0%;
+	height: 0;
+}
+
+input, select {
+	vertical-align: middle;
+	font-weight: normal;
+}
+
+img {
+	border: 0;
+	vertical-align: top;
+	text-align: left;
+}
+
+ul, ol {
+	list-style: none;
+}
+
+object {
+	vertical-align: top;
+	outline: none;
+}
+
+a {
+	outline: none;
+	color: #b80d10;
+}
+
+	a:hover {
+		text-decoration: none;
+	}
+
+html {
+	min-width: 980px;
+}
+
+body {
+	background: #131416;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 100%;
+	line-height: 1em;
+	color: #393939;
+}
+
+h2 {
+	background: url(../../images/loginimages/title-tail.gif) repeat-x 50% 0%;
+	width: 100%;
+	height: 43px;
+	overflow: hidden;
+	word-spacing: -1px;
+	line-height: 38px;
+	text-transform: uppercase;
+	font-size: 1.917em;
+	color: #ccc;
+}
+
+	h2 span {
+		background: url(../../images/loginimages/title-left.gif) no-repeat 0% 0%;
+		display: block;
+	}
+	
+	h2 span span {
+		background: url(../../images/loginimages/title-right.gif) no-repeat 100% 0%;
+		display: block;
+		height: 43px;
+		padding: 0 0 0 19px;
+	}
+	
+	h2 b {
+		background: url(../../images/loginimages/title-left.gif) no-repeat 0% 0%;
+		display: block;
+		font-weight: normal;
+	}
+	
+	h2 b b {
+		background: url(../../images/loginimages/title-right.gif) no-repeat 100% 0%;
+		display: block;
+		height: 42px;
+		padding: 1px 0 0 25px;
+		font-weight: normal;
+	}
+
+h3 {
+	background: url(../../images/loginimages/title-tail.gif) repeat-x 50% 0%;
+	width: 100%;
+	height: 43px;
+	overflow: hidden;
+	word-spacing: -1px;
+	line-height: 38px;
+	text-transform: uppercase;
+	font-size: 1.917em;
+	color: #e1e3e7;
+}
+
+	h3 span {
+		background: url(../../images/loginimages/title-left.gif) no-repeat 0% 0%;
+		display: block;
+	}
+	
+	h3 span span {
+		background: url(../../images/loginimages/title-right.gif) no-repeat 100% 0%;
+		display: block;
+		height: 43px;
+		padding: 0 9px 0 19px;
+	}
+	
+	h3 b {
+		background: url(../../images/loginimages/title-left.gif) no-repeat 0% 0%;
+		display: block;
+	}
+	
+	h3 b b {
+		background: url(../../images/loginimages/title-right.gif) no-repeat 100% 0%;
+		display: block;
+		height: 43px;
+		padding: 0 9px 0 25px;
+	}
+
+	h3 a {
+	background: url(../../images/loginimages/link-arrow.gif) no-repeat 0% 15px;
+	padding: 0 0 0 16px;
+	float: right;
+	line-height: 40px;
+	text-transform: uppercase;
+	text-decoration: none;
+	font-size: 0.435em;
+	color: #b80d10;
+}
+
+	h3 a:hover {
+		text-decoration: underline;
+	}
+
+h4 {
+	padding: 0 0 6px 0;
+	line-height: 1.385em;
+	font-size: 1.083em;
+	font-weight: normal;
+	color: #d9dde4;
+}
+
+	h4 a {
+		color: #d9dde4;
+	}
+
+	h4 span {
+		display: block;
+		padding: 2px 0 0 0;
+	}
+
+h5 {
+	padding: 0 0 12px 0;
+	line-height: 1.385em;
+	font-size: 1.083em;
+	color: #b7b9bd;
+}
+
+	h5 span {
+		display: block;
+		padding: 4px 0 0 0;
+	}
+	
+	h5 a {
+		font-size: 0.923em;
+		color: #b7b9bd;
+	}
+	
+	h5 strong {
+		display: block;
+		padding: 0 0 6px 0;
+		font-size: 0.923em;
+		color: #c8cace;
+	}
+	
+	h5.extra {
+		padding: 0 0 8px 0;
+	}
+
+h6 {
+	padding: 0 0 20px 0;
+	line-height: 1.333em;
+	font-size: 1.25em;
+	font-weight: normal;
+	color: #b80d10;
+}
+
+	h6 span {
+		display: block;
+		padding: 0 0 10px 0;
+	}
+
+.fleft {
+	float: left;
+}
+
+	img.fleft {
+		margin: 0 19px 41px 0;
+	}
+	
+	img.fleft1 {
+		float: left;
+		margin: 0 19px 34px 0;
+	}
+	
+	img.fleft2 {
+		float: left;
+		margin: 0 19px 5px 0;
+	}
+	
+	img.fleft3 {
+		float: left;
+		margin: -3px 19px 43px 0;
+	}
+	
+	img.fleft4 {
+		float: left;
+		margin: -3px 19px 55px 0;
+	}
+
+.fright {
+	float: right;
+}
+
+	ul.fright {
+		padding: 0 16px 0 0 !important;
+	}
+
+.col-1, .col-2, .col-3, .col-4 {
+	float: left;
+	overflow: hidden;
+}
+
+.block-1, .block-2, .block-3, .block-4 {
+	float: left;
+	overflow: hidden;
+}
+
+#main-tail-hor {
+	background: #131416 url(../../images/loginimages/main-tail-hor.gif) repeat-x 50% 0%;
+}
+
+#main-bg {
+	background: url(../../images/loginimages/main-bg.jpg) no-repeat 50% 0%;
+}
+
+#main-tail-ver {
+	background: url(../../images/loginimages/main-tail-ver.gif) repeat-y 50% 0%;
+}
+
+#main-bg-top {
+	background: url(../../images/loginimages/main-bg-top.jpg) no-repeat 50% 0%;
+}
+
+#main-bg-bot {
+	background: url(../../images/loginimages/main-bg-bot.jpg) no-repeat 50% 100%;
+}
+
+#main {
+	width: 926px;
+	margin: 0 auto;
+	font-size: 0.75em;
+}
+
+#header {
+	background: url(../../images/loginimages/header.jpg) no-repeat 11px 167px;
+	position: relative;
+	height: 469px;
+}
+
+#logo {
+	position: absolute;
+	top: 23px;
+	left: 30px;
+}
+
+#rss {
+	background: url(../../images/loginimages/rss.gif) no-repeat 100% 0%;
+	display: block;
+	height: 29px;
+	line-height: 34px;
+	padding: 0 41px 0 0;
+	word-spacing: -1px;
+	font-size: 1.083em;
+	color: #c6c6c7;
+	position: absolute;
+	top: 46px;
+	right: 20px;
+}
+
+#menu {
+	background: url(../../images/loginimages/menu.jpg) no-repeat 0% 0%;
+	width: 926px;
+	height: 54px;
+	overflow: hidden;
+	position: absolute;
+	top: 103px;
+	left: 0;
+}
+
+	#menu ul {
+	position: absolute;
+	top: 4px;
+	left: 18px;
+	width: 905px;
+	}
+
+	#menu ul li {
+		float: left;
+		padding: 0 29px 0 0;
+		font-size: 1.167em;
+		color: #fff;
+	}
+	
+	#menu ul li a {
+		display: inline-block;
+		height: 34px;
+		margin: 0 7px;
+		padding: 0 14px 0 15px;
+		line-height: 34px;
+		text-decoration: none;
+		color: #fff;
+	}
+	
+	#menu ul li a:hover {
+		cursor: pointer;
+		color: #010101;
+	}
+	
+	#menu ul li.act a {
+		background: url(../../images/loginimages/menu-left.gif) no-repeat 0% 0%;
+		display: inline-block;
+		height: 34px;
+		margin: 0;
+		padding: 0;
+		text-decoration: none;
+		color: #010101;
+	}
+	
+	#menu ul li.act a span {
+		background: url(../../images/loginimages/menu-right.gif) no-repeat 100% 0%;
+		display: inline-block;
+	}
+	
+	#menu ul li.act a span span {
+		background: url(../../images/loginimages/menu-tail.gif) repeat-x 0% 0%;
+		display: inline-block;
+		height: 34px;
+		margin: 0 7px;
+		padding: 0 14px 0 15px;
+	}
+
+#slogan {
+	position: absolute;
+	top: 248px;
+	left: 652px;
+}
+
+#content {
+	padding: 11px 11px 37px 11px;
+}
+
+	#page4 #content {
+		padding: 11px 11px 1px 11px;
+	}
+	
+	#page8 #content {
+		padding: 11px 11px 11px 11px;
+	}
+
+	#content p {
+		padding: 0 0 24px 0;
+		line-height: 1.385em;
+		font-size: 1.083em;
+		color: #7d7f81;
+	}
+	
+	#content p small {
+		float: right;
+		padding: 0 9% 0 0;
+		font-size: 1em;
+	}
+	
+	#content p span a {
+		margin: 0 0 0 16px;
+		text-transform: uppercase;
+		font-size: 0.769em;
+	}
+	
+	#content p strong {
+		color: #b7b9bd;
+	}
+	
+	#content p b {
+		font-size: 0.923em;
+		color: #c8cace;
+	}
+	
+	#content p i a {
+		font-style: normal;
+		color: #d9dde4;
+	}
+	
+	#content p.extra {
+		padding: 0 0 30px 0;
+	}
+	
+	#content p.extra-1 {
+		padding: 0 0 17px 0;
+	}
+	
+	#content p.extra-2 {
+		padding: 0 0 10px 0;
+	}
+	
+	#content p.no-indent {
+		padding: 0;
+	}
+
+.row-2 {
+	width: 100%;
+}
+
+.indent {
+	padding: 35px 30px 30px 20px;
+}
+
+.indent-1 {
+	padding: 35px 30px 26px 26px;
+}
+
+.indent-2 {
+	padding: 41px 30px 26px 28px;
+}
+
+.indent-3 {
+	padding: 19px 30px 26px 26px;
+}
+
+.indent-4 {
+	padding: 19px 30px 5px 26px;
+}
+
+.indent-left {
+	padding: 0 0 0 27px;
+}
+
+.indent-bot {
+	margin: 0 0 30px 0;
+}
+
+.list {
+	overflow: hidden;
+}
+
+	.list li {
+		background: url(../../images/loginimages/marker.gif) no-repeat 1px 4px;
+		padding: 0 0 0 22px;
+		line-height: 1.692em;
+		font-size: 1.083em;
+		color: #b7b9bd;
+	}
+	
+	.list li a {
+		text-decoration: none;
+		color: #b7b9bd;
+	}
+	
+	.list li a:hover {
+		text-decoration: underline;
+	}
+	
+	.list li.extra {
+		background: none;
+		padding: 4px 0 0 22px;
+		word-spacing: 1px;
+		line-height: 2.2em;
+		text-transform: uppercase;
+		font-size: 0.769em;
+	}
+	
+	.list li.extra a {
+		color: #b80d10;
+	}
+
+.list-1 {
+	overflow: hidden;
+	padding: 37px 0 0 0;
+}
+
+	.list-1 li.extra {
+		margin: 0 0 10px 0;
+	}
+
+	.list-1 li {
+		background: url(../../images/loginimages/line-hor.gif) repeat-x 0% 100%;
+		margin: 0 0 15px 0;
+		padding: 0 10px 0 27px;
+		line-height: 1.385em;
+		font-size: 1.083em;
+	}
+	
+	.list-1 li i {
+		display: block;
+		width: 100%;
+		padding: 0 0 20px 0;
+		overflow: hidden;
+		font-style: normal
+	}
+	
+	.list-1 li span {
+		background: url(../../images/loginimages/date-bg.gif) no-repeat 0% 0%;
+		width: 46px;
+		height: 48px;
+		overflow: hidden;
+		float: left;
+		margin: 0 22px 0 0;
+	}
+	
+	.list-1 li span b {
+		display: block;
+		width: 100%;
+		height: 20px;
+		overflow: hidden;
+		font-size: 0.846em;
+		line-height: 22px;
+		text-align: center;
+		color: #000;
+	}
+	
+	.list-1 li span strong {
+		display: block;
+		width: 100%;
+		height: 28px;
+		overflow: hidden;
+		line-height: 26px;
+		text-align: center;
+		font-size: 1.385em;
+		font-weight: normal;
+		color: #d9dde4;
+	}
+	
+	.list-1 li big {
+		display: block;
+		overflow: hidden;
+		font-size: 1em !important;
+		color: #9a9c9e;
+	}
+	
+	.list-1 li big em {
+		display: block;
+		padding: 0 0 6px 0;
+		font-style: normal;
+		color: #d9dde4;
+	}
+	
+	.list-1 li big em a {
+		color: #d9dde4 !important;
+	}
+	
+	.list-1 li big a {
+		color: #b80d10 !important;
+	}
+	
+.list-2 {
+	width: 100%;
+	overflow: hidden;
+}
+
+	.list-2 li {
+		float: left;
+		width: 202px;
+		padding: 0 21px 0 0;
+		line-height: 1.385em;
+		font-size: 1.083em;
+		color: #7d7f81;
+	}
+	
+	.list-2 li.extra {
+		padding: 0;
+	}
+	
+	.list-2 li img {
+		margin: 0 0 11px 0;
+	}
+	
+	.list-2 li strong {
+		display: block;
+		padding: 0 0 9px 0;
+		font-size: 0.923em;
+		color: #c8cace;
+	}
+	
+	.list-2 li strong a {
+		color: #c8cace;
+	}
+	
+	.list-2 li span a {
+		margin: 0 0 0 16px;
+		text-transform: uppercase;
+		font-size: 0.769em;
+		color: #b80d10;
+	}
+
+.list-3 {
+	width: 100%;
+	padding: 5px 0 0 0;
+	overflow: hidden;
+}
+
+	.list-3 li {
+		float: left;
+		width: 164px;
+		padding: 0 31px 31px 0;
+	}
+	
+	.list-3 li.extra {
+		padding: 0;
+	}
+	
+	.list-3 li strong {
+		display: block;
+		padding: 15px 0 0 0;
+	}
+	
+	.list-3 li a {
+		color: #c8cace;
+	}
+
+.list-4 {
+	overflow: hidden;
+	padding: 2px 0 0 0;
+	line-height: 1.385em;
+	font-size: 1.083em;
+	color: #9a9c9e;
+}
+
+	.list-4 dt {
+		padding: 0 0 6px 0;
+		color: #d9dde4;
+	}
+	
+	.list-4 dt a {
+		text-decoration: none;
+		color: #d9dde4;
+	}
+	
+	.list-4 dt a:hover {
+		text-decoration: underline;
+	}
+	
+	.list-4 dd {
+		padding: 0 0 18px 0;
+	}
+	
+	.list-4 dd.extra {
+		padding: 0 0 4px 0;
+	}
+
+.list-indent {
+	padding: 0 0 28px 0 !important;
+}
+
+.list-indent-1 {
+	padding: 0 0 24px 0 !important;
+}
+
+.list-indent-2 {
+	padding: 0 0 22px 0 !important;
+}
+
+.link {
+	background: url(../../images/loginimages/link-arrow.gif) no-repeat 0% 3px;
+	padding: 0 0 0 16px;
+	float: left;
+	text-transform: uppercase;
+	text-decoration: none;
+	font-size: 0.833em;
+	color: #b80d10;
+}
+
+	.link:hover {
+		text-decoration: underline;
+	}
+
+.link-1 {
+	text-transform: uppercase;
+	font-size: 0.769em;
+}
+
+#subscribe-form {
+	background: url(../../images/loginimages/subscribe-form.jpg) no-repeat 0% 0%;
+	width: 276px;
+	height: 94px;
+	overflow: hidden;
+	margin: 26px 0 10px 9px;
+}
+
+	#subscribe-form div.inner {
+		padding: 12px 16px 15px 65px;
+	}
+
+	#subscribe-form strong {
+		display: block;
+		padding: 0 0 10px 0;
+		text-transform: uppercase;
+		line-height: 1.2em;
+		font-size: 1.917em;
+		color: #ccc;
+	}
+	
+	#subscribe-form span {
+		background: url(../../images/loginimages/subscribe-input.gif) no-repeat 0% 2px;
+		display: block;
+		width: 100%;
+		height: 25px;
+		overflow: hidden;
+	}
+	
+	#subscribe-form input {
+		background: none;
+		width: 140px;
+		height: 15px;
+		margin: 2px 0 0 0;
+		padding: 3px 3px 3px 3px;
+		border: none;
+		float: left;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 1em;
+		color: #000;
+	}
+	
+	#subscribe-form input#subscribe-submit {
+		background: url(../../images/loginimages/subscribe-submit.gif) no-repeat 0% 0%;
+		width: 44px;
+		height: 25px;
+		margin: 0 0 0 5px;
+		padding: 0;
+		border: none;
+		float: left;
+		cursor: pointer;
+		text-transform: uppercase;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 1em;
+		font-weight: bold;
+		color: #000;
+	}
+	
+.box {
+	background: #010101 url(../../images/loginimages/box-tail.gif) repeat-x 50% 0%;
+	width: 100%;
+	overflow: hidden;
+}
+
+	.box .inner {
+		padding: 24px 13px 0 20px;
+	}
+	
+	.box .inner-1 {
+		padding: 19px 13px 0 20px;
+	}
+	
+	.box .inner-2 {
+		padding: 35px 13px 0 20px;
+	}
+
+#contact-form {
+	width: 554px;
+	padding: 2px 0 0 0;
+}
+
+	#contact-form strong {
+		background: url(../../images/loginimages/contact-textarea.gif) no-repeat 0% 100%;
+		display: block;
+		width: 264px;
+		float: right;
+		font-weight: normal;
+	}
+	
+	#contact-form b {
+		display: block;
+		padding: 0 0 4px 0;
+		font-weight: normal;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 1.083em;
+		color: #7d7f81;
+	}
+	
+	#contact-form textarea {
+		background: none;
+		width: 258px;
+		height: 134px;
+		padding: 3px;
+		border: none;
+		float: left;
+		overflow: auto;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 1em;
+		color: #ccc;
+	}
+	
+	#contact-form label {
+		background: url(../../images/loginimages/contact-input.gif) no-repeat 0% 20px;
+		display: block;
+		height: 57px;
+		overflow: hidden;
+	}
+	
+	#contact-form input {
+		background: none;
+		width: 258px;
+		height: 18px;
+		padding: 5px 3px 3px 3px;
+		border: none;
+		float: left;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 1em;
+		color: #ccc;
+	}
+
+	#contact-form a {
+		background: url(../../images/loginimages/link-arrow.gif) no-repeat 0% 3px;
+		margin: 9px 0 0 19px;
+		padding: 0 0 0 16px;
+		float: right;
+		text-transform: uppercase;
+		text-decoration: none;
+		font-size: 0.833em;
+		color: #b80d10;
+	}
+
+	#contact-form a:hover {
+		text-decoration: underline;
+	}
+
+#footer {
+	height: 63px;
+	line-height: 50px;
+	overflow: hidden;
+}
+
+	#footer p {
+		padding: 0 2px 0 0;
+		text-align: center;
+		color: #8b8c8e;
+	}
+	
+	#footer p span {
+		padding: 0 6px 0 0;
+	}
+	
+	#footer p a {
+		margin: 0 0 0 6px;
+		color: #8b8c8e;
+	}

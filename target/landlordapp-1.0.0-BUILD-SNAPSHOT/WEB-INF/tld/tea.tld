@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+
+<taglib>
+
+  <tlib-version>2.5</tlib-version>
+  <jsp-version>1.2</jsp-version>
+  <short-name>tea</short-name>
+  <uri>http://www.tenant.org/tags/tea</uri>
+  <description>Tenant Custom Tag Library</description>
+
+  <!-- <form:form/> tag -->
+  <tag>
+    <name>ifAuthorized</name>
+    <tag-class>com.tea.landlordapp.tag.AuthorizationTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>Authorizes the user for the given capability.</description>
+      <attribute>
+        <name>capability</name>
+        <required>true</required>
+      </attribute>
+  </tag>
+  <tag>
+    <name>ifNotAuthorized</name>
+    <tag-class>com.tea.landlordapp.tag.NotAuthorizedTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>Authorizes when user does not have the given capability.</description>
+      <attribute>
+        <name>capability</name>
+        <required>true</required>
+      </attribute>
+  </tag>
+  <tag>
+    <name>hasAllAuthorities</name>
+    <tag-class>com.tea.landlordapp.tag.AllAuthorityTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>Authorizes when user has all listed authorities.</description>
+      <attribute>
+        <name>capability</name>
+        <required>true</required>
+      </attribute>
+  </tag>
+  <tag>
+    <name>hasAnyAuthority</name>
+    <tag-class>com.tea.landlordapp.tag.AnyAuthorityTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>Authorizes when user has any of listed authorities.</description>
+      <attribute>
+        <name>capability</name>
+        <required>true</required>
+      </attribute>
+  </tag>
+</taglib>

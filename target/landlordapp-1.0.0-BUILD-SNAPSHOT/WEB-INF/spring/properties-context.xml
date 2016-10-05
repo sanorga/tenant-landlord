@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!-- 	Property configuration start here -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:wsurl.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- url of our application send with mail starts here -->
+	<bean id="emailProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="tea.url">${TEA_ADMIN_URL}</prop>
+				<prop key="tea-tenant.url">${TEA_TENANT_URL}</prop>
+				<prop key="email.from">no-reply@tenantevaluation.com</prop>
+				<prop key="retry.interval.hours">24</prop>
+				<prop key="max.retries">2</prop>
+				<prop key="image.source">http://www.tenantevaluation.com/sites/default/files</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- url of our application send with mail ends here -->
+
+	<!-- url of our application send with mail starts here -->
+	<bean id="aboutProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="version.major">1</prop>
+				<prop key="version.minor">2</prop>
+				<prop key="version.patch">0</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- url of our application send with mail ends here -->
+
+<!-- 	<bean id="asynProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean"> -->
+<!-- 		<property name="properties"> -->
+<!-- 			<props> -->
+<!-- 				<prop key="workqueue.refresh_time">30</prop> -->
+<!-- 				<prop key="asyn.retun.url">${TEA_ADMIN_URL}/viewapplications.htm</prop> -->
+<!-- 			</props> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+	<!-- Property configuration end here -->
+
+
+</beans>

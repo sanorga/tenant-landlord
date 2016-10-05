@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:context="http://www.springframework.org/schema/context"
+         xmlns:aop="http://www.springframework.org/schema/aop"
+         xmlns:tx="http://www.springframework.org/schema/tx"
+         xmlns:mvc="http://www.springframework.org/schema/mvc"
+         xmlns:task="http://www.springframework.org/schema/task"         
+         xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop 
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/mvc 
+           http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+           http://www.springframework.org/schema/task 
+           http://www.springframework.org/schema/task/spring-task-3.0.xsd 
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd"
+		   default-autowire="byName">
+		   
+	<context:annotation-config/>
+	<mvc:annotation-driven/>
+	<context:component-scan base-package="com.tea.landlordapp" />
+	<mvc:default-servlet-handler/>
+	
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+	<bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+	
+	
+<!-- 	<bean name="/applicationwizard.htm" class="com.tea.web.ApplicationWizardForm"/> -->
+<!-- 	<bean name="/submitApplication.htm" class="com.tea.web.SubmitApplicationForm"/> -->
+	
+	<mvc:interceptors>
+		<bean class="com.tea.landlordapp.beans.SSLInterceptor"/>
+	</mvc:interceptors>
+
+	<mvc:view-controller  path="/" view-name="redirect:home.htm"/>
+
+<!-- 	<bean class="org.springframework.web.servlet.view.XmlViewResolver"> -->
+<!-- 		<property name="location" value="classpath:jasper-views.xml"/> -->
+<!-- 		<property name="order" value="0"/> -->
+<!-- 	</bean> -->
+
+	<bean id="messageFactory" class="org.springframework.ws.pox.dom.DomPoxMessageFactory" />
+
+<!-- 	<bean id="messageFactory2" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"> -->
+<!-- 		<property name="messageFactory"> -->
+<!-- 			<bean class="com.sun.xml.messaging.saaj.soap.ver1_1.SOAPMessageFactory1_1Impl" /> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+	
+<!-- 	 Email configuration start here --> 
+<!-- 	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean"> -->
+<!-- 		<property name="resourceLoaderPath" value="classpath:/velocity" /> -->
+<!-- 		<property name="preferFileSystemAccess" value="false" /> -->
+<!-- 	</bean> -->
+	
+<!-- 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> -->
+<!-- 		<property name="host" value="${TEA_MAIL_HOST}" /> -->
+<!-- 		<property name="port" value="${TEA_MAIL_PORT}" /> -->
+<!-- 		<property name="username" value="${TEA_MAIL_USER}" /> -->
+<!-- 		<property name="password" value="${TEA_MAIL_PASSWORD}" /> -->
+<!-- 		<property name="javaMailProperties"> -->
+<!-- 			<props> -->
+<!-- 				<prop key="mail.smtp.auth">${TEA_MAIL_AUTH}</prop> -->
+<!-- 				<prop key="mail.smtp.starttls.enable">${TEA_MAIL_TLS}</prop> -->
+<!-- 			</props> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+	<!-- Email configuration end here -->
+  	
+  	
+  	<!-- Task scheduler starts here -->
+  	<task:annotation-driven scheduler="taskScheduler"/>
+    <task:scheduler id="taskScheduler" pool-size="5"/>
+    <!-- Task scheduler ends here -->
+    
+    
+<!--     <bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller"> -->
+<!--         <property name="classesToBeBound"> -->
+<!--             <list> -->
+<!--                 <value>com.tea.dto.ApplicationNoticeDto</value> -->
+<!--                 <value>com.tea.dto.appnotice.TenantEvaluation</value>                -->
+<!--             </list> -->
+<!--         </property> -->
+<!--     </bean> -->
+
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+	  <property name="messageConverters">
+	    <list>
+	      <bean id="messageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+	      </bean>
+	    </list>
+	  </property>
+	</bean>
+         
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<mvc:resources mapping="/images/**" location="/images/" />
+	<mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/styles/**" location="/styles/" />
+	<mvc:resources mapping="/lib/**" location="/lib/" />
+	<mvc:resources mapping="/favicon.ico" location="/favicon.ico" />
+
+  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basename" value="messages"/>
+  </bean>
+
+  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"></property>
+    <property name="prefix" value="/WEB-INF/jsp/"></property>
+    <property name="suffix" value=".jsp"></property>        
+  </bean>
+
+  <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+    <property name="exceptionMappings">
+      <props>
+        <prop key="org.springframework.dao.DataAccessException">dataAccessFailure</prop>
+        <prop key="org.springframework.transaction.TransactionException">dataAccessFailure</prop>
+      </props>
+    </property>
+  </bean>
+  
+  <bean id="filterMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+    
+<!--   <bean id="conversationalSessionAttributeStore" class="com.duckranger.conversationsupport.ConversationalSessionAttributeStore"> -->
+<!-- 	  <property name="keepAliveConversations" value="10"/> -->
+<!-- 	</bean> -->
+<!--   <bean name="requestDataValueProcessor" class="com.duckranger.conversationsupport.ConversationIdRequestProcessor"/> -->
+  
+</beans>

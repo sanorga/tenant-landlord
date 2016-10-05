@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- TransactionManager Beans start here -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="flyway">
+		<property name="dataSource" ref="dataSource" />
+        <property name="packagesToScan">
+        	<list>
+        		<value>com.tea.landlordapp.domain</value>
+        		<value>com.tea.landlordapp.dto</value>
+        		<value>com.tea.landlordapp</value>
+        	</list>
+        </property>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="database" value="MYSQL" />
+				<property name="showSql" value="false" />
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- DataSource configuration start here -->
+	<!-- BoneCP configuration -->
+	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+	   <property name="driverClass" value="com.mysql.jdbc.Driver" />
+	   <property name="jdbcUrl" value="jdbc:mysql://${TEA_DB_URL}:3306/${TEA_DATABASE_NAME}?zeroDateTimeBehavior=convertToNull" />
+	   <property name="username" value="${TEA_DB_USER}"/>
+	   <property name="password" value="${TEA_DB_PASSWORD}"/>
+	   <property name="idleConnectionTestPeriodInMinutes" value="60"/>
+	   <property name="idleMaxAgeInMinutes" value="240"/>
+	   <property name="maxConnectionsPerPartition" value="30"/>
+	   <property name="minConnectionsPerPartition" value="10"/>
+	   <property name="partitionCount" value="3"/>
+	   <property name="acquireIncrement" value="5"/>
+	   <property name="statementsCacheSize" value="100"/>
+	</bean>
+	
+	<!-- DataSource configuration end here -->
+	
+	<bean class="com.googlecode.flyway.core.Flyway" id="flyway" init-method="migrate">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="outOfOrder" value="true"/>
+	</bean>
+
+</beans>

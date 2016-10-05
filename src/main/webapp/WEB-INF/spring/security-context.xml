@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+ 	<security:global-method-security pre-post-annotations="enabled"/>
+	<security:http auto-config="false" use-expressions="true" entry-point-ref="loginUrlAuthenticationEntryPoint">        
+		<security:intercept-url pattern="/favicon.ico" access="permitAll" />        
+		<security:intercept-url pattern="/resources/**" access="permitAll" />           
+		<security:intercept-url pattern="/images/**" access="permitAll" />           
+		<security:intercept-url pattern="/js/**" access="permitAll" />           
+		<security:intercept-url pattern="/styles/**" access="permitAll" />           
+		<security:intercept-url pattern="/lib/**" access="permitAll" />       
+		<security:intercept-url pattern="/login" access="permitAll" />
+		<security:intercept-url pattern="/googlelogin.htm" access="permitAll" />
+        <security:intercept-url pattern="/accessdenied" access="permitAll" />
+        <security:intercept-url pattern="/forgotpwd.htm" access="permitAll" />      
+		<security:intercept-url pattern="/logout.htm" access="permitAll" />
+        <security:intercept-url pattern="/printtermsandconditions.pdf" access="permitAll" />
+        <security:intercept-url pattern="/ssnTrack.htm" access="permitAll" />
+        <security:intercept-url pattern="/makepayment.htm" access="permitAll" />
+        <security:intercept-url pattern="/transfirstpayment.htm" access="permitAll" />
+        <security:intercept-url pattern="/revopaypayment.htm" access="permitAll" />
+        <security:intercept-url pattern="/submitApplication.htm" access="permitAll" />
+        <security:intercept-url pattern="/submitApplicationNew.htm" access="permitAll" />
+        <security:intercept-url pattern="/hashpasswords.htm" access="permitAll" />
+        <security:intercept-url pattern="/getpropertyname.htm" access="permitAll" />
+        <security:intercept-url pattern="/pdfapp.pdf" access="permitAll" />
+        <security:intercept-url pattern="/showimage.htm" access="permitAll" />
+        <security:intercept-url pattern="/rcvSigningMsg.htm" access="permitAll" />
+        <security:intercept-url pattern="/heartbeat.htm" access="permitAll" />
+        <security:intercept-url pattern="/healthcheck.htm" access="permitAll" />
+        <security:intercept-url pattern="/uploadDocuments.htm" access="permitAll" />
+        <security:intercept-url pattern="/approval.htm" access="permitAll" />
+        <security:intercept-url pattern="/api/*" access="permitAll" />
+        <security:intercept-url pattern="/mfaIdByEmail.json" access="permitAll" />
+        <security:intercept-url pattern="/clickpayCallback.htm" access="permitAll" />
+		<security:intercept-url pattern="/changepwd.htm" access="hasRole('USER') or hasRole('must.change.password')"/>
+		<security:intercept-url pattern="/*" access="hasRole('USER')"/>
+  		<security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" /> 
+		<security:custom-filter position="FORM_LOGIN_FILTER" ref="multipleInputAuthenticationFilter"/>  
+		<security:logout delete-cookies="JSESSIONID" logout-success-url="/login" logout-url="/logout.htm?message=LO" invalidate-session="true"/>
+		<security:csrf request-matcher-ref="csrfRequestMatcher" />
+		<security:session-management session-authentication-strategy-ref="sas" />
+		<security:access-denied-handler error-page="/login?denied"/>
+		<security:headers />
+	</security:http>
+
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider user-service-ref="teaUserDetailsService">
+			<security:password-encoder ref="standardPasswordEncoder"/>
+		</security:authentication-provider>
+	</security:authentication-manager>
+	
+
+	<bean id="multipleInputAuthenticationFilter" class="com.tea.landlordapp.beans.MultipleInputAuthenticationFilter">
+		<property name="authenticationManager" ref="authenticationManager"/>
+		<property name="filterProcessesUrl" value="/j_spring_security_check"/>
+		<property name="postOnly" value="true"/>
+		<property name="authenticationSuccessHandler" ref="successHandler"/>
+		<property name="authenticationFailureHandler" ref="failureHandler"/>
+		<property name="sessionAuthenticationStrategy" ref="sas"/>
+	</bean>
+	
+	<bean id="successHandler" class="com.tea.landlordapp.beans.MySimpleUrlAuthenticationSuccessHandler">
+<!-- 		<property name="defaultTargetUrl" value="/home.htm"/> -->
+
+	</bean>
+	
+	<bean id="failureHandler" class="com.tea.landlordapp.beans.CountedAuthenticationFailureHandler">
+		<property name="defaultFailureUrl" value="/login?error"/>
+	</bean>
+	
+	<bean id="loginUrlAuthenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<property name="loginFormUrl" value="/login"/>
+	</bean>
+	
+	<bean id="teaUserDetailsService" class="com.tea.landlordapp.service.TeaUserDetailsService">
+		<constructor-arg ref="dataSource"/>
+	</bean>
+	
+	<bean id="standardPasswordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder"/>
+	
+	<bean id="authenticationEventLogger" class="com.tea.landlordapp.beans.AuthenticationEventLogger"/>
+	
+	<bean id="csrfRequestMatcher" class="com.tea.landlordapp.beans.CsrfRequestMatcher"/>
+  
+	<bean id="concurrencyFilter" class="org.springframework.security.web.session.ConcurrentSessionFilter">
+    	<property name="sessionRegistry" ref="sessionRegistry" />
+    	<property name="expiredUrl" value="/login?expired" />
+	</bean>
+	
+	<bean id="sas" class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+    	<constructor-arg name="sessionRegistry" ref="sessionRegistry" />
+    	<property name="maximumSessions" value="1" />
+    	<property name="migrateSessionAttributes" value="false" />
+  	</bean>
+
+	<bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+</beans>
