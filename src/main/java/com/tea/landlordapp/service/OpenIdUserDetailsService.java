@@ -22,22 +22,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.tea.landlordapp.dto.TeaAuthority;
 import com.tea.landlordapp.dto.TeaUserDetails;
 
-public class TeaUserDetailsService implements UserDetailsService {
 
-	   protected final Logger logger = LoggerFactory.getLogger(getClass());
+public class OpenIdUserDetailsService implements UserDetailsService{
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	   
 	private JdbcTemplate jdbcTemplate;
 	
-	public TeaUserDetailsService(DataSource dataSource) {
+	public OpenIdUserDetailsService(DataSource dataSource) {
 		super();
 		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
-	@Override
-	public UserDetails loadUserByUsername(String arg0)
-			throws UsernameNotFoundException {
 
-		Detail detail = getUserDetail(arg0);
+	@Override
+	public UserDetails loadUserByUsername(String openIdIdentifier) throws UsernameNotFoundException {
+		Detail detail = getUserDetail(openIdIdentifier);
 		
 		Collection<TeaAuthority> authorities = getAuthoritiesByDetail(detail);
 		
@@ -61,8 +60,7 @@ public class TeaUserDetailsService implements UserDetailsService {
 							detail.questions == 3);
 		
 		return newDetail;
-	}
-	
+}
 	private Detail getUserDetail(String userName){
 		StringBuilder sb = new StringBuilder();
 		sb.append("select u.id, u.openid_identifier, u.email_id, u.password, u.status,");

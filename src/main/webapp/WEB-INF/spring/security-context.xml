@@ -46,6 +46,13 @@
 		<security:session-management session-authentication-strategy-ref="sas" />
 		<security:access-denied-handler error-page="/login?denied"/>
 		<security:headers />
+		<security:openid-login user-service-ref="openIdUserService">
+			<security:attribute-exchange>
+			    <security:openid-attribute name="email" type="http://schema.openid.net/contact/email" required="true" />
+			    <security:openid-attribute name="firstName" type="http://axschema.org/namePerson/first" required="true" />
+			    <security:openid-attribute name="lastName" type="http://axschema.org/namePerson/last" required="true" />
+	  		</security:attribute-exchange>
+		</security:openid-login>
 	</security:http>
 
 	<security:authentication-manager alias="authenticationManager">
@@ -79,6 +86,10 @@
 	
 	<bean id="teaUserDetailsService" class="com.tea.landlordapp.service.TeaUserDetailsService">
 		<constructor-arg ref="dataSource"/>
+	</bean>
+	
+	<bean id="openIdUserService" class="com.tea.landlordapp.service.OpenIdUserDetailsService" >
+	<constructor-arg ref="dataSource"/>
 	</bean>
 	
 	<bean id="standardPasswordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder"/>

@@ -34,7 +34,7 @@ import com.tea.landlordapp.utility.EncryptionService;
 
 		private static final long serialVersionUID = -1L;
 	
-
+		private String openIdIdentifier = null;
 		private char status = 'A';
 		private char accountType = 'L';
 
@@ -73,7 +73,15 @@ import com.tea.landlordapp.utility.EncryptionService;
 		// Support for MFA
 		private boolean enableMFA = false;
 
+		@Column(name = "openid_identifier")
+		public String getOpenIdIdentifier() {
+			return openIdIdentifier;
+		}
 
+		public void setOpenIdIdentifier(String openIdIdentifier) {
+			this.openIdIdentifier = openIdIdentifier;
+		}
+		
 		@Column(name = "email_id")
 		public String getUsername() {
 			return username;

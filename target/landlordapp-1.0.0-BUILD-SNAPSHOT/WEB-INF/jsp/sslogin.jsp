@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html>
 
@@ -35,7 +37,12 @@
 // 	  var tgt = "appstatusview.rpt?fromDt=" + fromDateVal + "&toDt=" + toDateVal + "&clientStrVal=" + clientStrVal + "&charType=" + charType + "&propertyIdVal=" + propertyIdVal;
 // 		window.open(tgt);
 // onClick="location.href='packge.htm?subscriberId=${subscriber.id}'"
-	  window.location='/login.htm?email='+profile.getEmail();
+// 	  window.location='/landlordapp/login.htm?email='+profile.getEmail();
+
+
+// window.location='/landlordapp/home.htm';
+
+
 // 	  window.location='viewinvoicepayments.htm?pageNo='+object.value+'&sortBy=${sortBy}&sortType=${sortType}';	 
 	}
 
@@ -341,9 +348,14 @@
 			
 						<p>PASSWORD<br><input name="j_password" size="70" type="password" id="j_password" autocomplete="off"></p>
 			
-						<table border="0" cellpadding="0" cellspacing="0" style="width:520px"><tbody><tr><td><a href="forgotpwd.htm" style="line-height: 1.6em;">FORGOT YOUR PASSWORD</a></td>
+						<table border="0" cellpadding="0" cellspacing="0" style="width:520px">
+							<tbody>
+								<tr>
+									<td><a href="forgotpwd.htm" style="line-height: 1.6em;">FORGOT YOUR PASSWORD</a></td>
 									<td style="text-align:right"><input type="submit" class="submit-button" name="submit-button" value="Submit"></td>
-								</tr></tbody></table>
+								</tr>
+							</tbody>
+						</table>
 			</form:form><br>
 </div>					
 					
@@ -373,9 +385,23 @@
 
 <tr>
 <td>
- <form:form method="POST" action="/home.htm">
-<div class="g-signin2" data-onsuccess="onSignIn"></div>
-</form:form>
+<%--  <form:form method="POST" action="/home.htm"> --%>
+<!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
+<%-- </form:form> --%>
+<spring:url value="/j_spring_openid_security_check" var="form_url_openid" />
+<%-- <form action="${fn:escapeXml(form_url_openid)}" id="google-login-form" method="post"> --%>
+<form action="j_spring_openid_security_check" id="google-login-form" method="post">
+
+    <input id="openid_identifier" name="openid_identifier"  size="20" 
+           maxlength="100" type="hidden"
+           value="http://www.google.com/accounts/o8/id"/>
+    <label class="fixed"><!-- intentionally left blank --></label>
+    <div class="input">
+       <input id="proceed-google" type="submit" value="Do it with Google" />
+    </div>
+</form>
+
+
 </td>
 <td>
 <a href="#" onclick="signOut();">Google Sign out</a>

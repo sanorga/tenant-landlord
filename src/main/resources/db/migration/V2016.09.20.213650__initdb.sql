@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `openid_identifier` varchar(50) NOT NULL,
   `email_id` varchar(50) NOT NULL,
   `password` varchar(100) NOT NULL,
   `first_name` varchar(50) DEFAULT NULL,

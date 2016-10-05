@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html>
 
@@ -36,7 +38,11 @@
 // 		window.open(tgt);
 // onClick="location.href='packge.htm?subscriberId=${subscriber.id}'"
 // 	  window.location='/landlordapp/login.htm?email='+profile.getEmail();
-window.location='/landlordapp/home.htm';
+
+
+// window.location='/landlordapp/home.htm';
+
+
 // 	  window.location='viewinvoicepayments.htm?pageNo='+object.value+'&sortBy=${sortBy}&sortType=${sortType}';	 
 	}
 
@@ -379,9 +385,23 @@ window.location='/landlordapp/home.htm';
 
 <tr>
 <td>
- <form:form method="POST" action="/home.htm">
-<div class="g-signin2" data-onsuccess="onSignIn"></div>
-</form:form>
+<%--  <form:form method="POST" action="/home.htm"> --%>
+<!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
+<%-- </form:form> --%>
+<spring:url value="/j_spring_openid_security_check" var="form_url_openid" />
+<%-- <form action="${fn:escapeXml(form_url_openid)}" id="google-login-form" method="post"> --%>
+<form action="j_spring_openid_security_check" id="google-login-form" method="post">
+
+    <input id="openid_identifier" name="openid_identifier"  size="20" 
+           maxlength="100" type="text"
+           value="http://www.google.com/accounts/o8/id"/>
+    <label class="fixed"><!-- intentionally left blank --></label>
+    <div class="input">
+       <input id="proceed-google" type="submit" value="Do it with Google" />
+    </div>
+</form>
+
+
 </td>
 <td>
 <a href="#" onclick="signOut();">Google Sign out</a>
