@@ -1,0 +1,23 @@
+# Eclipse
+.classpath
+.project
+.settings/
+**/rebel.xml
+**/target/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+stage-wars.cmd
+/Latest/
+/stage-wars.ps1
+/stage-wars.sh
+/common/
+/app-common/
