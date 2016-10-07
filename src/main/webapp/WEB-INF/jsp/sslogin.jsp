@@ -2,6 +2,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 <html>
@@ -388,13 +389,13 @@
 <%--  <form:form method="POST" action="/home.htm"> --%>
 <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
 <%-- </form:form> --%>
-<spring:url value="/j_spring_openid_security_check" var="form_url_openid" />
-<%-- <form action="${fn:escapeXml(form_url_openid)}" id="google-login-form" method="post"> --%>
-<form action="j_spring_openid_security_check" id="google-login-form" method="post">
+<c:url value="j_spring_openid_security_check" var="form_url_openid" />
+<form action="${fn:escapeXml(form_url_openid)}" id="google-login-form" method="post" class="text-centered">
+<%-- <form action="j_spring_openid_security_check" id="google-login-form" method="post"> --%>
 
-    <input id="openid_identifier" name="openid_identifier"  size="20" 
-           maxlength="100" type="text"
-           value="http://www.google.com/accounts/o8/id"/>
+    <input id="openid_identifier" name="openid_identifier"  size="50" 
+           maxlength="100" type="hidden"
+           value="https://www.google.com/accounts/o8/id"/>
     <label class="fixed"><!-- intentionally left blank --></label>
     <div class="input">
        <input id="proceed-google" type="submit" value="Do it with Google" />
@@ -415,10 +416,18 @@
 <%--  </form:form> --%>
 
 	
-							<td style="text-align:center">
-<!-- 							<input type="submit" class="submit-button" name="submit-button" value="Login" onclick="hideAndShowSpouse()"></td> -->
-							 <input type="button" value="Facebook Account"  id ="FacebookAcc" name="FacebookAcc" class="button" "/>
-							 </td>
+				<td style="text-align:center">
+<!-- 				<input type="submit" class="submit-button" name="submit-button" value="Login" onclick="hideAndShowSpouse()"></td> -->
+					<input type="button" value="Facebook Account"  id ="FacebookAcc" name="FacebookAcc" class="button" "/>
+				 </td>
+				 <td>
+					<div class="row social-button-row">
+	                	<div class="col-lg-4">
+	                    <!-- Add Facebook sign in button -->
+	                    <a href="${pageContext.request.contextPath}/auth/facebook"><button class="btn btn-facebook"><i class="icon-facebook"></i> | <spring:message code="label.facebook.sign.in.button"/></button></a>
+	                	</div>
+            		</div>
+            	</td>
 						</tr>
 						</tbody>
 					</table>

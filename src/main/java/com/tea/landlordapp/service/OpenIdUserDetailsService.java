@@ -15,15 +15,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.openid.OpenIDAuthenticationToken;
 
 import com.tea.landlordapp.dto.TeaAuthority;
 import com.tea.landlordapp.dto.TeaUserDetails;
 
 
-public class OpenIdUserDetailsService implements UserDetailsService{
+public class OpenIdUserDetailsService implements UserDetailsService, AuthenticationUserDetailsService<OpenIDAuthenticationToken>{
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	   
 	private JdbcTemplate jdbcTemplate;
@@ -46,6 +48,7 @@ public class OpenIdUserDetailsService implements UserDetailsService{
 		}
 		
 		TeaUserDetails newDetail = new TeaUserDetails(authorities, 
+							detail.openIdIdentifier,
 							detail.password, 
 							detail.username,
 							!StringUtils.equals(detail.status, "I"),
@@ -77,7 +80,7 @@ public class OpenIdUserDetailsService implements UserDetailsService{
 		sb.append("   from password_history");
 		sb.append("   order by date_changed desc limit 1");
 		sb.append(" ) ph on ph.user_id = u.id");
-		sb.append(" where u.email_id = ?");
+		sb.append(" where u.openid_identifier = ?");
 		
 		Detail detail;
 		try {
@@ -170,6 +173,7 @@ public class OpenIdUserDetailsService implements UserDetailsService{
 		}
 		
 		TeaUserDetails newDetail = new TeaUserDetails(authorities, 
+				userDetails.getOpenIdIdentifier(),
 				userDetails.getPassword(), 
 				userDetails.getUsername(),
 				userDetails.isAccountNonExpired(),
@@ -205,6 +209,12 @@ public class OpenIdUserDetailsService implements UserDetailsService{
 		private Date lockoutUntil;
 		private String subscriberStatus;
 		private Integer questions;
+	}
+
+	@Override
+	public UserDetails loadUserDetails(OpenIDAuthenticationToken token) throws UsernameNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

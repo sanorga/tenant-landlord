@@ -105,10 +105,10 @@
 			<version>${org.springsecurity-version}</version>
 		</dependency>
 		<dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-openid</artifactId>
-    <version>${org.springsecurity-version}</version>
-</dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-openid</artifactId>
+		    <version>${org.springsecurity-version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>

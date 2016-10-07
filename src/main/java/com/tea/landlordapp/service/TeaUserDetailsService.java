@@ -46,7 +46,8 @@ public class TeaUserDetailsService implements UserDetailsService {
 			notLocked = notLocked && ((new Date()).compareTo(detail.lockoutUntil) > 0);
 		}
 		
-		TeaUserDetails newDetail = new TeaUserDetails(authorities, 
+		TeaUserDetails newDetail = new TeaUserDetails(authorities,
+							detail.openIdIdentifier,
 							detail.password, 
 							detail.username,
 							!StringUtils.equals(detail.status, "I"),
@@ -172,6 +173,7 @@ public class TeaUserDetailsService implements UserDetailsService {
 		}
 		
 		TeaUserDetails newDetail = new TeaUserDetails(authorities, 
+				userDetails.getOpenIdIdentifier(), 
 				userDetails.getPassword(), 
 				userDetails.getUsername(),
 				userDetails.isAccountNonExpired(),
