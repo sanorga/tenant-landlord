@@ -56,18 +56,18 @@
 	</security:http>
 
 	<security:authentication-manager alias="authenticationManager">
-<!-- 		<security:authentication-provider user-service-ref="teaUserDetailsService"> -->
-<!-- 			<security:password-encoder ref="standardPasswordEncoder"/> -->
-<!-- 		</security:authentication-provider> -->
-		<security:authentication-provider user-service-ref="openIdUserService">			
+		<security:authentication-provider user-service-ref="teaUserDetailsService">
+			<security:password-encoder ref="standardPasswordEncoder"/>
 		</security:authentication-provider>
+<!-- 		<security:authentication-provider user-service-ref="openIdUserService">			 -->
+<!-- 		</security:authentication-provider> -->
 	</security:authentication-manager>
 	
 
 	<bean id="multipleInputAuthenticationFilter" class="com.tea.landlordapp.beans.MultipleInputAuthenticationFilter">
 		<property name="authenticationManager" ref="authenticationManager"/>
-<!-- 		<property name="filterProcessesUrl" value="/j_spring_security_check"/> -->
-		<property name="filterProcessesUrl" value="/j_spring_openid_security_check"/>
+		<property name="filterProcessesUrl" value="/j_spring_security_check"/>
+<!-- 		<property name="filterProcessesUrl" value="/j_spring_openid_security_check"/> -->
 		<property name="postOnly" value="true"/>
 		<property name="authenticationSuccessHandler" ref="successHandler"/>
 		<property name="authenticationFailureHandler" ref="failureHandler"/>

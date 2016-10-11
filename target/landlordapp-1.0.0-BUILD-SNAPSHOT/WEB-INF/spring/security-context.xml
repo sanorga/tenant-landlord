@@ -46,11 +46,11 @@
 		<security:session-management session-authentication-strategy-ref="sas" />
 		<security:access-denied-handler error-page="/login?denied"/>
 		<security:headers />
-		<security:openid-login user-service-ref="openIdUserService">
+		<security:openid-login login-page="/login" user-service-ref="openIdUserService">
 			<security:attribute-exchange>
-			    <security:openid-attribute name="email" type="http://schema.openid.net/contact/email" required="true" />
-			    <security:openid-attribute name="firstName" type="http://axschema.org/namePerson/first" required="true" />
-			    <security:openid-attribute name="lastName" type="http://axschema.org/namePerson/last" required="true" />
+			    <security:openid-attribute name="email" type="http://schema.openid.net/contact/email" required="true"  count="1"/>
+			    <security:openid-attribute name="firstName" type="http://axschema.org/namePerson/first" required="true" count="1"/>
+			    <security:openid-attribute name="lastName" type="http://axschema.org/namePerson/last" required="true" count="1"/>
 	  		</security:attribute-exchange>
 		</security:openid-login>
 	</security:http>
@@ -59,12 +59,15 @@
 		<security:authentication-provider user-service-ref="teaUserDetailsService">
 			<security:password-encoder ref="standardPasswordEncoder"/>
 		</security:authentication-provider>
+<!-- 		<security:authentication-provider user-service-ref="openIdUserService">			 -->
+<!-- 		</security:authentication-provider> -->
 	</security:authentication-manager>
 	
 
 	<bean id="multipleInputAuthenticationFilter" class="com.tea.landlordapp.beans.MultipleInputAuthenticationFilter">
 		<property name="authenticationManager" ref="authenticationManager"/>
 		<property name="filterProcessesUrl" value="/j_spring_security_check"/>
+<!-- 		<property name="filterProcessesUrl" value="/j_spring_openid_security_check"/> -->
 		<property name="postOnly" value="true"/>
 		<property name="authenticationSuccessHandler" ref="successHandler"/>
 		<property name="authenticationFailureHandler" ref="failureHandler"/>

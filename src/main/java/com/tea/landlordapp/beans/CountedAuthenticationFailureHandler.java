@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -35,7 +36,11 @@ public class CountedAuthenticationFailureHandler extends
 		
 		String usernameParameter = usernamePasswordAuthenticationFilter.getUsernameParameter();
 		String username = request.getParameter(usernameParameter);
+		String acctType = request.getParameter("socialService");
 		User user = userDao.findUserWithPolicy(username);
+		if (user == null && StringUtils.equals(acctType, "1")) {
+			//save account for the first time
+		}
 		if (user != null){
 			PasswordPolicy pol = user.getRole().getPasswordPolicy();
 			int maxAttempts = pol.getAttemptsAllowed();

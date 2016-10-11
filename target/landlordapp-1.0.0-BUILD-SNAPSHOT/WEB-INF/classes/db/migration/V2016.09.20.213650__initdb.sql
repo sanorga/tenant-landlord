@@ -5,6 +5,7 @@ CREATE TABLE `user` (
   `openid_identifier` varchar(50) NOT NULL,
   `email_id` varchar(50) NOT NULL,
   `password` varchar(100) NOT NULL,
+  `social_acct_type` varchar(50) DEFAULT NULL,
   `first_name` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
   `account_type` enum('L','F','G','T') NOT NULL DEFAULT 'L',

@@ -211,4 +211,90 @@ public class TeaUserDetailsService implements UserDetailsService {
 		private Integer questions;
 	}
 
+
+	public UserDetails loadUserByGoogleAcct(String arg0)
+			throws UsernameNotFoundException {
+
+		Detail detail = getUserDetailByGoogleAcct(arg0);
+		
+		Collection<TeaAuthority> authorities = getAuthoritiesByDetail(detail);
+		
+		boolean notLocked = !StringUtils.equals(detail.status, "L") || StringUtils.equals(detail.status, "X");
+		if (detail.lockoutUntil != null){
+			notLocked = notLocked && ((new Date()).compareTo(detail.lockoutUntil) > 0);
+		}
+		
+		TeaUserDetails newDetail = new TeaUserDetails(authorities,
+							detail.openIdIdentifier,
+							detail.password, 
+							detail.username,
+							!StringUtils.equals(detail.status, "I"),
+							notLocked,
+							true,
+							(StringUtils.equals(detail.status, "A") || StringUtils.equals(detail.status, "X")) && StringUtils.equals(detail.subscriberStatus, "A"),
+							detail.userId, detail.mfaDesired, detail.mfaRequired, 
+							detail.secondFactorValid, detail.role,
+							StringUtils.equalsIgnoreCase(detail.subscriberType, "P"),
+							StringUtils.equalsIgnoreCase(detail.subscriberType, "C"),
+							StringUtils.equalsIgnoreCase(detail.subscriberType, "S"),
+							detail.questions == 3);
+		
+		return newDetail;
+	}
+	
+	private Detail getUserDetailByGoogleAcct(String userName){
+		StringBuilder sb = new StringBuilder();
+		sb.append("select u.id, u.openid_identifier, u.email_id, u.password, u.status,");
+		sb.append(" u.enable_mfa mfa_desired, coalesce(pp.require_mfa,0) mfa_required,");
+		sb.append(" coalesce(pp.max_age,0) max_age, coalesce(datediff(now(),ph.date_changed),-1) password_age,");
+		sb.append(" 'Y' tenant_screen, 'N' emp_screen, r.role, 'S' subscriber_type, u.lockout_until, 'A' subscriber_status");
+		sb.append(" , if(u.question1 is null,0,1) + if(u.question2 is null,0,1) + if(u.question3 is null,0,1) questions");
+		sb.append(" from user u");
+		sb.append(" inner join role r on r.id = u.role_id");
+//		sb.append(" inner join subscriber s on s.id = u.subscriber_id");
+		sb.append(" left join password_policy pp on pp.id = r.password_policy_id");
+		sb.append(" left join (");
+		sb.append("   select user_id, date_changed");
+		sb.append("   from password_history");
+		sb.append("   order by date_changed desc limit 1");
+		sb.append(" ) ph on ph.user_id = u.id");
+		sb.append(" where u.email_id = ?");
+		
+		Detail detail = null;
+		try {
+			detail = this.jdbcTemplate.queryForObject(sb.toString(),
+					new Object[]{userName},
+					new RowMapper<Detail>(){
+							public Detail mapRow(ResultSet rs, int rowNum) throws SQLException {
+								Detail det = new Detail();
+								det.userId = rs.getInt("id");
+								det.openIdIdentifier = rs.getString("openid_identifier");
+								det.username = rs.getString("email_id");
+								det.password = rs.getString("password");
+								det.status = rs.getString("status");
+								det.mfaDesired = rs.getBoolean("mfa_desired");
+								det.mfaRequired = rs.getBoolean("mfa_required");
+								det.maxAge = rs.getInt("max_age");
+								det.passwordAge = rs.getInt("password_age");
+								det.allowEmpScreen = StringUtils.equalsIgnoreCase("Y", rs.getString("emp_screen"));
+								det.allowTenantScreen = StringUtils.equalsIgnoreCase("Y", rs.getString("tenant_screen"));
+								det.role = rs.getString("role");
+								det.subscriberType = rs.getString("subscriber_type");
+								det.lockoutUntil = rs.getTimestamp("lockout_until");
+								det.subscriberStatus = rs.getString("subscriber_status");
+								det.questions = rs.getInt("questions");
+								return det;
+							}
+						});
+		} catch (DataAccessException e1) {
+//			throw new UsernameNotFoundException("Invalid Username");
+			  logger.debug("Invalid Username.." + userName);
+		}
+		
+		if (detail == null) 
+//			throw new UsernameNotFoundException("Invalid Username");
+		  logger.debug("Invalid Username" + userName);
+		return detail;
+	}
+	
 }

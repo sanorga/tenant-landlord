@@ -150,7 +150,7 @@ public class AnonymousUserForm extends AbstractDataController {
 //      if (subscriber.isPartner()) {
     	  List<IntegerStringKVDto> list = listService.findPropertyLookupList(userId);
     	  if (list.size()> 0)
-    		  properties.put(-1, "Enter Property Details");
+    		  properties.put(-1, "None");
     	  for (final IntegerStringKVDto s : list) {
             properties.put(s.getKey(), StringEscapeUtils.escapeJavaScript(s.getValue()));
          }

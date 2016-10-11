@@ -2,6 +2,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 <html>
@@ -31,20 +32,28 @@
   function onSignIn(googleUser) {
 	  var profile = googleUser.getBasicProfile();
 	  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+	  document.getElementById('j_username1').value = profile.getEmail();
+	  
 	  console.log('Name: ' + profile.getName());
-	  console.log('Image URL: ' + profile.getImageUrl());
-	  console.log('Email: ' + profile.getEmail());
-// 	  var tgt = "appstatusview.rpt?fromDt=" + fromDateVal + "&toDt=" + toDateVal + "&clientStrVal=" + clientStrVal + "&charType=" + charType + "&propertyIdVal=" + propertyIdVal;
-// 		window.open(tgt);
-// onClick="location.href='packge.htm?subscriberId=${subscriber.id}'"
-// 	  window.location='/landlordapp/login.htm?email='+profile.getEmail();
+	
+	  console.log('Given Name: ' + profile.getGivenName());
+      console.log('Family Name: ' + profile.getFamilyName());
+      console.log("Email: " + profile.getEmail());
+      console.log('Image URL: ' + profile.getImageUrl());
 
+      // The ID token you need to pass to your backend:
+      var id_token = googleUser.getAuthResponse().id_token;
+      document.getElementById('j_password1').value = id_token
+      document.getElementById('socialService').value = 1;
+      console.log("ID Token: " + id_token);
+document.googleForm.submit();
 
-// window.location='/landlordapp/home.htm';
-
+ //     window.location.assign("/landlordapp/googlelogin.htm?email=tenant.developer@gmail.com&idToken="+ id_token+"&name=" + profile.getName());
+// 	  window.location.assign("http://localhost:8080/landlordapp/login.htm?email=tenant.developer@gmail.com");
+	  
 
 // 	  window.location='viewinvoicepayments.htm?pageNo='+object.value+'&sortBy=${sortBy}&sortType=${sortType}';	 
-	}
+	};
 
  
   
@@ -371,36 +380,20 @@
 <!-- 				</p> -->
 						<table border="0" cellpadding="0" cellspacing="0" style="width:260px">
 						<tbody>
-<!-- 							<input type="submit" class="submit-button" name="submit-button" value="Login" onclick="hideAndShowSpouse()"></td> -->
-							 
-<%-- 							 <c:url value="/img/google-logo.png" var="googleLogoUrl"> --%>
-<%-- <img src="${googleLogoUrl}" /> --%>
-<%-- <form action="${openIDLoginUrl}" method="post"> --%>
-<!--     For Google users: -->
-<!--    <input name="openid_identifier" type="hidden" value="https://www.google.com/accounts/o8/id" /> -->
-<!--    <input type="submit" value="Sign with Google" /> -->
-<%-- </form> --%>
-<%-- </c:url> --%>
+
 
 
 <tr>
 <td>
-<%--  <form:form method="POST" action="/home.htm"> --%>
-<!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
+<%--  <form:form method="POST" action="/login"> --%>
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
 <%-- </form:form> --%>
-<spring:url value="/j_spring_openid_security_check" var="form_url_openid" />
-<%-- <form action="${fn:escapeXml(form_url_openid)}" id="google-login-form" method="post"> --%>
-<form action="j_spring_openid_security_check" id="google-login-form" method="post">
 
-    <input id="openid_identifier" name="openid_identifier"  size="20" 
-           maxlength="100" type="hidden"
-           value="http://www.google.com/accounts/o8/id"/>
-    <label class="fixed"><!-- intentionally left blank --></label>
-    <div class="input">
-       <input id="proceed-google" type="submit" value="Do it with Google" />
-    </div>
-</form>
-
+<form:form id="googleForm" name="googleForm" action="j_spring_security_check" method="post">
+<input name="j_username" id="j_username1" size="70" type="text"></p>
+<input name="j_password" size="70" type="text" id="j_password1" autocomplete="off"></p>
+<input name="socialService" size="70" type="text" id="socialService" autocomplete="off"></p>
+</form:form>
 
 </td>
 <td>
@@ -408,17 +401,19 @@
 </td>
 </tr>
 <tr><td>&nbsp;</td></tr>
-<tr>
-<%-- <form:form  action="googlelogin.htm" method="post"> --%>
-<!--   <input name="openid_identifier" type="hidden" value="https://www.google.com/accounts/o8/id" />  -->
-<!--    <input type="submit" class="submit-button" value="Sign with Google" />  -->
-<%--  </form:form> --%>
-
 	
-							<td style="text-align:center">
-<!-- 							<input type="submit" class="submit-button" name="submit-button" value="Login" onclick="hideAndShowSpouse()"></td> -->
-							 <input type="button" value="Facebook Account"  id ="FacebookAcc" name="FacebookAcc" class="button" "/>
-							 </td>
+				<td style="text-align:center">
+<!-- 				<input type="submit" class="submit-button" name="submit-button" value="Login" onclick="hideAndShowSpouse()"></td> -->
+					<input type="button" value="Facebook Account"  id ="FacebookAcc" name="FacebookAcc" class="button" "/>
+				 </td>
+				 <td>
+					<div class="row social-button-row">
+	                	<div class="col-lg-4">
+	                    <!-- Add Facebook sign in button -->
+	                    <a href="${pageContext.request.contextPath}/auth/facebook"><button class="btn btn-facebook"><i class="icon-facebook"></i> | <spring:message code="label.facebook.sign.in.button"/></button></a>
+	                	</div>
+            		</div>
+            	</td>
 						</tr>
 						</tbody>
 					</table>

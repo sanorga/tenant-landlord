@@ -26,6 +26,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.tea.landlordapp.enums.SocialAcctService;
 import com.tea.landlordapp.utility.EncryptionService;
 
 @Entity
@@ -41,6 +42,7 @@ import com.tea.landlordapp.utility.EncryptionService;
 		private String username;
 		private String passwordHash;
 		private String rePassword;
+	    private SocialAcctService socialAcctType;
 		private String firstName;
 		private String lastName;
 
@@ -111,6 +113,25 @@ import com.tea.landlordapp.utility.EncryptionService;
 				setPasswordHash(EncryptionService.hash(pw.trim()));
 		}
 
+		@Column(name = "social_account_type")
+		public SocialAcctService getSocialAcctType() {
+			return socialAcctType;
+		}
+
+		public void setSocialAcctType(SocialAcctService socialAcctType) {
+			this.socialAcctType = socialAcctType;
+		}
+
+		@Transient
+		public boolean isNormalRegistration() {
+	        return socialAcctType == null;
+	    }
+	 
+		@Transient
+	    public boolean isSocialSignIn() {
+	        return socialAcctType != null;
+	    }
+	    
 		@ManyToOne
 		@JoinColumn(name = "role_id")
 		public Role getRole() {
