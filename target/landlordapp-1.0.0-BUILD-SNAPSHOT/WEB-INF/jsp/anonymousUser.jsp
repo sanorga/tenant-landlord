@@ -20,7 +20,7 @@
 
 		<c:if test = "${empty clients}">document.getElementById("SendEMailBtn").disabled=true;</c:if>
 
-	}
+	};
 	
 	 $(document).ready(function() {
 	  
@@ -128,7 +128,7 @@
 <!-- breadcrumbs ends -->
 
 	<!-- sub heading starts -->
-	<div id="subheader"><p>Create E-Mail Applicant</p></div>
+	<div id="subheader"><p>Create Invitation</p></div>
 	
 	<!-- sub heading ends -->
 

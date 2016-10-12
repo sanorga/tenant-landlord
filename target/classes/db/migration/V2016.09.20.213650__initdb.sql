@@ -210,7 +210,21 @@ CREATE TABLE `anonymous_user` (
   CONSTRAINT `anonymous_user_ibfk_5` FOREIGN KEY (`modified_by`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=408 DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `system_property`;
+CREATE TABLE `system_property` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `property_name` varchar(50) NOT NULL,
+  `value` varchar(100) NOT NULL,
+  `property_group` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `system_property_unique_name` (`property_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=148 DEFAULT CHARSET=latin1;
 
 INSERT INTO `landlord`.`capability` (`request_id`, `name`, `is_available`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES ('USER', 'USER', 'Y', '162', '2015-03-19 00:00:00', '162', '2015-03-19 00:00:00');
 INSERT INTO `landlord`.`capability` (`request_id`, `name`, `is_available`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES ('new.anonymous_user', 'new.anonymous_user', 'Y', '162', '2015-03-19 00:00:00', '162', '2015-03-19 00:00:00');
+
+INSERT INTO `landlord`.`system_property` (`property_name`, `value`, `property_group`) VALUES ('apiurl', 'https://smlegacygateway-integration.mysmartmove.com/LandlordApi/v1/', 'TransUnion');
+INSERT INTO `landlord`.`system_property` (`property_name`, `value`, `property_group`) VALUES ('partner.id', '126', 'TransUnion');
+INSERT INTO `landlord`.`system_property` (`property_name`, `value`, `property_group`) VALUES ('key', 'SI2o6o78UaXBg1DgQj1ULmGBNJKcUQ1vn+qL0SR9hAX9PiFhQSNgRGJK0M4QZwyK9BULpRbEzkCmx4YSg05kBA==', 'TransUnion');
+INSERT INTO `landlord`.`system_property` (`property_name`, `value`, `property_group`) VALUES ('live', '0', 'TransUnion');
 

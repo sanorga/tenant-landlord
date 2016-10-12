@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tea.landlordapp.domain.SystemProperty;
 import com.tea.landlordapp.enums.EncryptionPropertyParameter;
+import com.tea.landlordapp.enums.TransUnionApiParameter;
 import com.tea.landlordapp.repository.SystemPropertyDao;
 
 @Repository("systemPropertyDao")
@@ -50,5 +51,9 @@ public class SystemPropertyDaoImpl implements
 		return getPropertyValue(param.getLabel());
 	}
 	
+	@Override
+	public String getPropertyValue(TransUnionApiParameter param) {
+		return getPropertyValue(param.getLabel());
+	}
 
 }

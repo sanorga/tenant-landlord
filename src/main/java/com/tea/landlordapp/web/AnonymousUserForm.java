@@ -27,6 +27,7 @@ import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.dto.IntegerStringKVDto;
 //import com.tea.landlordapp.enums.ApplicationPaymentMethod;
 import com.tea.landlordapp.enums.UserRole;
+import com.tea.landlordapp.service.InviteService;
 import com.tea.landlordapp.service.ListService;
 //import com.tea.landlordapp.service.MessageService;
 //import com.tea.landlordapp.service.ServiceService;
@@ -53,6 +54,9 @@ public class AnonymousUserForm extends AbstractDataController {
    
    @Autowired
    ListService listService;
+   
+   @Autowired
+   InviteService inviteService;
 
    @RequestMapping(method = RequestMethod.POST)
    public String processSubmit(@ModelAttribute AnonymousUser anonymousUser, BindingResult result, HttpServletRequest request, SessionStatus status, Model model) 
@@ -71,8 +75,8 @@ public class AnonymousUserForm extends AbstractDataController {
       property.setRentalAmount(p.getRentalAmount());
       property.setRentalDeposit(p.getRentalDeposit());
       property.setStreet(p.getStreet());
-     
       
+      property.setPropertyId(Integer.parseInt(p.getApartmentNo()));
       
       if ((anonymousUser.getProperty().getId() == -1) && (anonymousUser.getProperty().getName() != null)){
     	
@@ -126,6 +130,15 @@ public class AnonymousUserForm extends AbstractDataController {
 
       final boolean flag = true;
 
+      // send info to TransUnion
+      try {
+		inviteService.invite(anonymousUser);
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+      
+      
       // send email
 //      try {
 //         if (flag) {

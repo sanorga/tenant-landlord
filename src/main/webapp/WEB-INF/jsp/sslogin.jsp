@@ -378,53 +378,9 @@ document.googleForm.submit();
 					
 					<br>
 
-				<p> <span style="color:#000000; line-height: 1.6em; ">	<strong> EXPRESS REGISTRATION</strong></span></p>
-
-				<p>Sign up using your Facebook or Google Account</p>
-				<p>No password to remember Fast and Convenient</p>
-<br> 
-<!-- 				<p><span style="color:#000000">	<strong>Data Security: </strong></span> -->
-<!-- 				Precise Background Technologies complies with the Fair Credit Reporting Act and the Federal Trade Commission Act which require that we provide reasonable security for your social security, date of birth, full name, etc. Your data will be encrypted using 256 bits and will be deleted from our system after 30 days. -->
-<!-- 				</p> -->
-						<table border="0" cellpadding="0" cellspacing="0" style="width:260px">
-						<tbody>
 
 
 
-<tr>
-<td>
-<%--  <form:form method="POST" action="/login"> --%>
-<div class="g-signin2" data-onsuccess="onSignIn"></div>
-<%-- </form:form> --%>
-
-<form:form id="googleForm" name="googleForm" action="j_spring_security_check" method="post">
-<input name="j_username" id="j_username1" size="70" type="text"></p>
-<input name="j_password" size="70" type="text" id="j_password1" autocomplete="off"></p>
-<input name="socialService" size="70" type="text" id="socialService" autocomplete="off"></p>
-</form:form>
-
-</td>
-<td>
-<a href="#" onclick="signOut();">Google Sign out</a>
-</td>
-</tr>
-<tr><td>&nbsp;</td></tr>
-	
-				<td style="text-align:center">
-<!-- 				<input type="submit" class="submit-button" name="submit-button" value="Login" onclick="hideAndShowSpouse()"></td> -->
-					<input type="button" value="Facebook Account"  id ="FacebookAcc" name="FacebookAcc" class="button" "/>
-				 </td>
-				 <td>
-					<div class="row social-button-row">
-	                	<div class="col-lg-4">
-	                    <!-- Add Facebook sign in button -->
-	                    <a href="${pageContext.request.contextPath}/auth/facebook"><button class="btn btn-facebook"><i class="icon-facebook"></i> | <spring:message code="label.facebook.sign.in.button"/></button></a>
-	                	</div>
-            		</div>
-            	</td>
-						</tr>
-						</tbody>
-					</table>
 <br> <br><br> <br> <br> <br> 
 			</td>
 		</tr>
