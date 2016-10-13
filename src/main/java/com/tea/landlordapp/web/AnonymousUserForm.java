@@ -93,6 +93,8 @@ public class AnonymousUserForm extends AbstractDataController {
       // onCancel, redirect to view users view
       
       property.setId(property.getId());
+      anonymousUser.setProperty(property);
+      
       if (WebUtils.hasSubmitParameter(request, Globals.PARAM_CANCEL)) {
          status.setComplete();
          return onCancel1(user);
