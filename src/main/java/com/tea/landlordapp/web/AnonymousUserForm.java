@@ -75,7 +75,7 @@ public class AnonymousUserForm extends AbstractDataController {
       property.setRentalAmount(p.getRentalAmount());
       property.setRentalDeposit(p.getRentalDeposit());
       property.setStreet(p.getStreet());
-      
+      property.setUserId(user.getId());
       property.setPropertyId(Integer.parseInt(p.getApartmentNo()));
       
       if ((anonymousUser.getProperty().getId() == -1) && (anonymousUser.getProperty().getName() != null)){

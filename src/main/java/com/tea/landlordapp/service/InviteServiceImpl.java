@@ -128,18 +128,34 @@ public class InviteServiceImpl implements InviteService{
 			aurl.append("Property");
 			apiCall = aurl.toString();
 			
+			String credentials = null;
+			StringBuilder strb = new StringBuilder();
+			strb.append("smartmovepartner ");
+			strb.append("partnerId=");
+			strb.append("\"");
+			strb.append(String.format("%3s", partnerId));
+			strb.append("\"");
+			strb.append(", serverTime=");
+			strb.append("\"");
+			strb.append(String.format("%19s", serverTimeUpd));
+			strb.append("\"");
+			strb.append(", securityToken=");
+			strb.append("\"");
+			strb.append(String.format("%s", token));
+			strb.append("\"");
+			credentials = strb.toString();
 			
 			Map<String, String> saleInfo = inviteHelper.buildInfoMap(au);
 			
-			if (Double.valueOf(saleInfo.get("rentalAmount")) <= 0) {
+			if (Double.valueOf(saleInfo.get("RentalAmount")) <= 0) {
 				return;
 			}
 			
-			String xmlString = getXmlString(saleInfo,"Add Property");
+			String xmlString = getXmlString(saleInfo,"ADDPROPERTY");
 			String sanitizedXml = sanitizeMessageForLogging(xmlString);
 			
 			// post property
-			response=postRequest(apiCall, xmlString);
+			response=postRequest(apiCall, xmlString, credentials);
 			if (StringUtils.isBlank(response)) {
 				logger.debug("no property request obtained");
 				return;
@@ -321,14 +337,14 @@ public class InviteServiceImpl implements InviteService{
 	}
 
 	@Override
-	public String postRequest(String apiUrl, String xmlString) {
+	public String postRequest(String apiUrl, String cleanXml, String credentials) {
 		
-		String cleanXml=null, sanitizedMsg = null;
+		String sanitizedMsg = null;
 		
-		if (xmlString != null) {
-			cleanXml = StringHelper.cleanXml(xmlString);
-			sanitizedMsg = sanitizeMessageForLogging(cleanXml);
-		}
+//		if (xmlString != null) {
+//			cleanXml = StringHelper.cleanXml(xmlString);
+//			sanitizedMsg = sanitizeMessageForLogging(cleanXml);
+//		}
 		
 		try { 
 			
@@ -346,10 +362,15 @@ public class InviteServiceImpl implements InviteService{
 			if (cleanXml!= null)
 				connection.setRequestProperty("Content-length",String.valueOf (cleanXml.length())); 
 			
-			connection.setRequestProperty("Content-Type","text/xml"); 
+//			connection.setRequestProperty("Content-Type","text/xml"); 
 			connection.setRequestProperty("Content-Type","application/xml"); 
 			connection.setRequestProperty("Accept","application/xml"); 
 			// open up the output stream of the connection 
+			
+//			String Credentials = String.format("{0}:{1},{2}:{3},{4}:{5}",
+//					"[USERNAME]", "[PASSWORD]");
+			connection.setRequestProperty("Authorization", credentials);
+			
 			DataOutputStream output = new DataOutputStream( connection.getOutputStream() ); 
 
 			// write out the data 
@@ -447,49 +468,46 @@ public class InviteServiceImpl implements InviteService{
 //		if (dto.getAppId() != null) {
 //			transId = "APP-" + dto.getAppId().toString();
 //		}
-		String xmlString = null;
+		String xmlString = null, cleanXml=null;
 		StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
 		
 		switch (inviteFunction) {
-		case "Add property":
+		case "ADDPROPERTY":
 			sb.append("<PropertyIdentifier>");
-			sb.append(saleInfo.get(Globals.RP_APPLICATION_ID));
+			sb.append(saleInfo.get(Globals.TU_PROPERTY_IDENTIFIER));
 			sb.append("</PropertyIdentifier>");
 			sb.append("<Active>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_APPLICATION_ID)));
+			sb.append(String.format("%s",saleInfo.get(Globals.TU_ACTIVE)));
 			sb.append("</Active>");
 			sb.append("<Name>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_APPLICATION_ID)));
+			sb.append(String.format("%s",saleInfo.get(Globals.TU_NAME)));
 			sb.append("</Name>");
 			sb.append("<UnitNumber>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_APPLICATION_ID)));
+			sb.append(String.format("%s",saleInfo.get(Globals.TU_UNIT_NUMBER)));
 			sb.append("</UnitNumber>");
 			sb.append("<FirstName>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_APPLICATION_ID)));
+			sb.append(String.format("%s",saleInfo.get(Globals.TU_FIRSTNAME)));
 			sb.append("</FirstName>");
 			sb.append("<LastName>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_APPLICATION_ID)));
+			sb.append(String.format("%s",saleInfo.get(Globals.TU_LASTNAME)));
 			sb.append("</LastName>");
 			sb.append("<Street>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_APPLICATION_ID)));
-			sb.append("</Street>");
-			sb.append("<Street>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_APPLICATION_ID)));
+			sb.append(String.format("%s",saleInfo.get(Globals.TU_STREET)));
 			sb.append("</Street>");
 			sb.append("<City>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_MERCHANT_ID)));
+			sb.append(String.format("%s",saleInfo.get(Globals.TU_CITY)));
 			sb.append("</City>");
 			sb.append("<State>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_MERCHANT_ID)));
+			sb.append(String.format("%s",saleInfo.get(Globals.TU_STATE)));
 			sb.append("</State>");
 			sb.append("<Zip>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_MERCHANT_ID)));
+			sb.append(String.format("%s",saleInfo.get(Globals.TU_ZIP)));
 			sb.append("</Zip>");
 			sb.append("<Phone>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_MERCHANT_ID)));
+			sb.append(String.format("%s",saleInfo.get(Globals.TU_PHONE)));
 			sb.append("</Phone>");
 			sb.append("<PhoneExtension>");
-//			sb.append(String.format("%s",transId));
+			sb.append(String.format("%s",saleInfo.get(Globals.TU_PHONE_EXTENSION)));
 			sb.append("</PhoneExtension>");
 			sb.append("<Questions>");
 			sb.append("<Question>");
@@ -706,29 +724,7 @@ public class InviteServiceImpl implements InviteService{
 			sb.append("<IsFcraAgreementAccepted>");
 			sb.append("true");
 			sb.append("</IsFcraAgreementAccepted>");
-//			sb.append(String.format("%s",saleInfo.get(Globals.RP_MERCHANT_ID)));
 
-//			case VISA:
-//				sb.append("0");
-//				break;
-//			case MASTERCARD:
-//				sb.append("1");
-//				break;
-//			case DISCOVER:
-//				sb.append("2");
-//				break;
-//			case DINERSCLUB:
-//				sb.append("3");
-//				break;
-//			case AMEX:
-//				sb.append("4");
-//				break;
-//
-//			default:
-//				break;
-//			}
-			
-			
 
 //			sb.append("<CFee>");
 //			sb.append(String.format("%s","0.00"));
@@ -770,10 +766,12 @@ public class InviteServiceImpl implements InviteService{
 //			dto.setSuccessful(false);
 			return xmlString;
 		}
+		if (xmlString != null) {
+			cleanXml = StringHelper.cleanXml(xmlString);
+		}
 		
-		String cleanXml = StringHelper.cleanXml(xmlString);
-
 		return cleanXml;
 	}
+
 	
 }

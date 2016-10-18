@@ -6,6 +6,6 @@ public interface InviteService {
 
 	public void invite(AnonymousUser au) throws Exception;
 
-	public String postRequest(String apiUrl, String xmlString);
+	public String postRequest(String apiUrl, String xmlString, String securityToken);
 
 }

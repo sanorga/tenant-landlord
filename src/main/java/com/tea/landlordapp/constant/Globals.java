@@ -1675,7 +1675,23 @@ public class Globals {
 	public final static String TC_ACH_CHECKWRITERNAME = "Name";
 	public final static String TC_ACH_PROCESSDATE = "ProcessDate";
 
-		
+	//TransUnion variables
+	public final static String TU_PROPERTY_IDENTIFIER = "PropertyIdentifier";
+	public final static String TU_ACTIVE = "Active";
+	public final static String TU_NAME = "Name";
+	public final static String TU_UNIT_NUMBER = "UnitNumber";
+	public final static String TU_FIRSTNAME = "FirstName";
+	public final static String TU_LASTNAME = "LastName";
+	public final static String TU_STREET = "Street";
+	public final static String TU_CITY = "City";
+	public final static String TU_STATE = "State";
+	public final static String TU_ZIP = "Zip";
+	public final static String TU_PHONE = "Phone";
+	public final static String TU_PHONE_EXTENSION = "PhoneExtension";
+	public final static String TU_QUESTIONS = "Questions";
+	public final static String TU_QUESTION = "Question";
+	public final static String TU_QUESTION_ID = "QuestionId";
+	
 	//RevoPay variables
 	public final static String RP_MERCHANT_ID = "MerchantId";
 	public final static String RP_AMOUNT = "Amount";
