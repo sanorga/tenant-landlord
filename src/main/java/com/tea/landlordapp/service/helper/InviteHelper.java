@@ -6,5 +6,7 @@ import com.tea.landlordapp.domain.AnonymousUser;
 
 public interface InviteHelper {
 
-	public Map<String, String>  buildInfoMap(AnonymousUser au);
+	public Map<String, String> buildPropertyInfoMap(AnonymousUser au);
+
+	public Map<String, String> buildApplicationInfoMap(AnonymousUser au, String propertyIdStr);
 }

@@ -59,7 +59,8 @@ public class Property extends AuditableEntity {
 	private Date availableFrom;
 
 
-	private boolean active = false;
+	private boolean active = true;
+	private boolean futureUse = false;
 	private boolean prefillAddress = false;
 	private boolean declineForOpenBkr = false;
 	private boolean incForeclosures = false;
@@ -449,6 +450,15 @@ public class Property extends AuditableEntity {
    public void setActive(boolean active) {
       this.active = active;
    }
+   
+   @Column(name = "future_use")
+   public boolean isFutureUse() {
+      return futureUse;
+   }
+
+   public void setFutureUse(boolean futureUse) {
+      this.futureUse = futureUse;
+   }  
    
    @Column(name = "decline_for_open_bkr")
    public boolean isDeclineForOpenBkr() {

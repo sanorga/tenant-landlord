@@ -67,6 +67,8 @@ CREATE TABLE `property` (
   `is_fcra_accepted` bit(1) NOT NULL DEFAULT b'0',
   `open_bkr_window` int(10) unsigned DEFAULT 0,
   `phone` varchar(10) DEFAULT NULL,
+  `phone_extension` varchar(6) DEFAULT NULL,
+  `future_use` bit(1) NOT NULL DEFAULT b'0',
   `extension` varchar(6) DEFAULT NULL,
   `created_by` int(10) unsigned NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

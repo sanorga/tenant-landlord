@@ -27,6 +27,7 @@ import javax.net.ssl.SSLSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -46,6 +47,8 @@ import com.tea.landlordapp.repository.SystemPropertyDao;
 import com.tea.landlordapp.service.helper.InviteHelper;
 //import com.tea.landlordapp.service.helper.RevoPayHelper;
 import com.tea.landlordapp.utility.StringHelper;
+//import com.tea.landlordapp.utility.HttpURLConnectionFacade;
+//import com.tea.landlord.exception.DocusignMessageException;
 import com.tea.landlordapp.constant.Globals;
 
 @Service("inviteService")
@@ -69,161 +72,218 @@ public class InviteServiceImpl implements InviteService{
 	}
 	
 	@Override
-	public void invite(AnonymousUser au) throws Exception {
+	public String invite(AnonymousUser au) throws Exception {
 
 			String apiUrl = systemPropertyDao.getPropertyValue(TransUnionApiParameter.URL);
 			String partnerId = systemPropertyDao.getPropertyValue(TransUnionApiParameter.PARTNER_ID);
 			String key = systemPropertyDao.getPropertyValue(TransUnionApiParameter.KEY);
 			String live = systemPropertyDao.getPropertyValue(TransUnionApiParameter.IS_LIVE);
-			String apiCall = null, response=null;
-			StringBuilder aurl = null;
-			
+	
 			//-----------------------------------------------------------------
-			//Create or update property - (POST or PUT)/LandlordApi/V1/Property
+			//Create property - (POST)/LandlordApi/V1/Property
 			//-----------------------------------------------------------------
-			
-			//  Create Header authorization Field
-			//  1- Get Server Time
-			aurl = new StringBuilder();
-			aurl.append(apiUrl);
-			aurl.append("ServerTime");
-			apiCall = aurl.toString();
-			
-			// get Server time
-			response=getRequest(apiCall, null);
-			if (response == null) {
-				logger.debug("no server time obtained");
-				return;
+			String propertyIdStr = addProperty(apiUrl, partnerId, key, au);
+			if (propertyIdStr == null){
+				logger.debug("no property obtained");
+				return "Unsuccessful Invite Attempt";
 			}
-			
-			Map<String,String> saleResponse = getAuthorizeResponseXml(response);
-			String serverTime = saleResponse.get("dateTime");
-			String serverTimeUpd = null;
-//			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm.ss.SSSSSSS'Z'");
-//			Date date = df.parse(serverTime);
-//			
-//			DateFormat dfnew = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm.ss");
+			//-----------------------------------------------------------------
+			//Create Application - (POST)/LandlordApi/V1/Application
+			//-----------------------------------------------------------------
 
-//			serverTimeUpd = dfnew.format(date);
-			
-			int zIndex = serverTime.indexOf('Z');
-			int serverTimeLength = serverTime.length();
-			if (zIndex == serverTimeLength - 1)				
-				serverTimeUpd = serverTime.substring(0,zIndex - 8);
-			else serverTimeUpd = serverTime;
-			
-			//  2- get a token
-			
-			String token = getSecurityToken(partnerId, key, serverTimeUpd);
-			
-			if (token == null){
-				logger.debug("no token obtained");
-				return;
+			String applicationIdStr = addApplication(apiUrl, partnerId, key, au, propertyIdStr);
+			if (applicationIdStr == null){
+				logger.debug("no application obtained");
+				return "Unsuccessful Invite Attempt";
 			}
-			
-			// 3- add property
-			
-			aurl = new StringBuilder();
-			aurl.append(apiUrl);
-			aurl.append("Property");
-			apiCall = aurl.toString();
-			
-			String credentials = null;
-			StringBuilder strb = new StringBuilder();
-			strb.append("smartmovepartner ");
-			strb.append("partnerId=");
-			strb.append("\"");
-			strb.append(String.format("%3s", partnerId));
-			strb.append("\"");
-			strb.append(", serverTime=");
-			strb.append("\"");
-			strb.append(String.format("%19s", serverTimeUpd));
-			strb.append("\"");
-			strb.append(", securityToken=");
-			strb.append("\"");
-			strb.append(String.format("%s", token));
-			strb.append("\"");
-			credentials = strb.toString();
-			
-			Map<String, String> saleInfo = inviteHelper.buildInfoMap(au);
-			
-			if (Double.valueOf(saleInfo.get("RentalAmount")) <= 0) {
-				return;
-			}
-			
-			String xmlString = getXmlString(saleInfo,"ADDPROPERTY");
-			String sanitizedXml = sanitizeMessageForLogging(xmlString);
-			
-			// post property
-			response=postRequest(apiCall, xmlString, credentials);
-			if (StringUtils.isBlank(response)) {
-				logger.debug("no property request obtained");
-				return;
-			}
-			
-			Map<String,String> propertyResponse = getAuthorizeResponseXml(response);
-			String propertyId = saleResponse.get("propertyId");
-			
-//			String xmlString = getXmlString(dto,saleInfo,"CCAuthorize");
-//			String sanitizedXml = sanitizeMessageForLogging(xmlString);
-//		
-//			try {
-//				String resp=postRequest(apiUrl, xmlString);
-//				// check for null 
-//				if (StringUtils.isBlank(resp)) {
-//					dto.setSuccessful(false);
-//					dto.setVendorResult("ERROR");
-//					logger.error("RevoPay CC payment - empty response for request: {}",sanitizedXml);
-//					return;
-//				}
-//					
-//				Map<String,String> saleResponse = getAuthorizeResponseXml(resp);
-//				//check for Fault
-//				String faultcode = saleResponse.get("faultcode");
-//				if (!StringUtils.isBlank(faultcode)){
-//					// Fault response
-//					logger.error(String.format("RevoPay - fault code: %s for request: $s", faultcode, sanitizedXml));
-//					dto.setSuccessful(false);
-//					dto.setVendorResult(faultcode);
-//					return;
-//				}
-//				
-//				String refId = saleResponse.get("RefId");
-//				String statusCode = saleResponse.get("StatusCode");
-//				String statusMsg = saleResponse.get("StatusMsg");
-//				String approvalCode = saleResponse.get("ApprovalCode");
-//				switch (statusCode) {
-//				case "00":
-//					dto.setSuccessful(true);
-//					dto.setApprovalCode(approvalCode);
-//					dto.setVendorTransactionId(refId);
-//					dto.setVendorAmount(Double.valueOf(saleInfo.get("Amount")));
-//					dto.setVendorAction(statusMsg);
-//					Timestamp stamp = new Timestamp(System.currentTimeMillis());
-//					Date date = new Date(stamp.getTime());
-//					dto.setPostedDate(date);
-//					break;
-//				default:
-//					logger.error(String.format("RevoPay - status code: %s for request: %s", statusCode, sanitizedXml));
-//					dto.setSuccessful(false);
-//				}
-//				dto.setVendorResult(statusMsg);
-//
-//			} catch (Exception e) {
-//				logger.error("{}", e);
-//			}
-//			return;
 		
-		
-		//create Application - POST/LandlordApi/V1/Application
-		
+			return null;
 	}
 	
-	private String getSecurityToken(String partnerId, String securityKey, String serverTime) {
-		// TODO Auto-generated method stub
+	
+	private String addApplication (String apiUrl, String partnerId, 
+								   String key, AnonymousUser au,
+								   String propertyIdStr) throws XPathExpressionException, IOException, ParserConfigurationException, SAXException {
+		
+		String apiCall = null, response=null;
+		StringBuilder aurl = null;
+		
+		//call
+		aurl = new StringBuilder();
+		aurl.append(apiUrl);
+		aurl.append("Application");
+		apiCall = aurl.toString();
+			
+		Map<String, String> applicationInfo = inviteHelper.buildApplicationInfoMap(au, propertyIdStr);
+		
+		if (Double.valueOf(applicationInfo.get("RentalAmount")) <= 0) {
+			return "ZeroRentalAmount";
+		}
+		
+//		String xmlString = getXmlString(propertyInfo,"ADDPROPERTY");
+		String jsonString = getJSONString(applicationInfo,"ADDAPPLICATION");
+//		String sanitizedXml = sanitizeMessageForLogging(jsonString);
+		
+		// get credentials
+		String credentials = getCredentials(apiUrl, partnerId, key);
+		if (credentials == null){
+			logger.debug("no credentials obtained");
+			return "NoCredentialsObtained";
+		}
+		
+		// post property
+//		response=postRequest(apiCall, xmlString, credentials);
+		response=postJSONMessageGetJSON(apiCall, jsonString, credentials);
+		if (StringUtils.isBlank(response)) {
+			logger.debug("no application request obtained");
+			return "Unsuccessful POST";
+		}
+		
+		Map<String,String> applicationResponse = getAuthorizeResponseXml(response);
+		String applicationId = applicationResponse.get("applicationId");
+		Integer aId;
+		try {
+			aId = Integer.valueOf(applicationId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "InvalidApplicationId";
+		}
+		
+		
+		return applicationId;
+				
+	}
+	
+	private String addProperty(String apiUrl, String partnerId, String key, AnonymousUser au) throws XPathExpressionException, IOException, ParserConfigurationException, SAXException {
+		
+		String apiCall = null, response=null;
+		StringBuilder aurl = null;
+		
+		//call
+		aurl = new StringBuilder();
+		aurl.append(apiUrl);
+		aurl.append("Property");
+		apiCall = aurl.toString();
+			
+		Map<String, String> propertyInfo = inviteHelper.buildPropertyInfoMap(au);
+		
+		if (Double.valueOf(propertyInfo.get("RentalAmount")) <= 0) {
+			return "ZeroRentalAmount";
+		}
+		
+//		String xmlString = getXmlString(propertyInfo,"ADDPROPERTY");
+		String jsonString = getJSONString(propertyInfo,"ADDPROPERTY");
+//		String sanitizedXml = sanitizeMessageForLogging(jsonString);
+		
+		// get credentials
+		String credentials = getCredentials(apiUrl, partnerId, key);
+		if (credentials == null){
+			logger.debug("no credentials obtained");
+			return "NoCredentialsObtained";
+		}
+		
+		// post property
+//		response=postRequest(apiCall, xmlString, credentials);
+		response=postJSONMessageGetJSON(apiCall, jsonString, credentials);
+		if (StringUtils.isBlank(response)) {
+			logger.debug("no property request obtained");
+			return "Unsuccessful POST";
+		}
+		
+		Map<String,String> propertyResponse = getAuthorizeResponseXml(response);
+		String propertyId = propertyResponse.get("propertyId");
+		Integer pId;
+		try {
+			pId = Integer.valueOf(propertyId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "InvalidPropertyId";
+		}
+		
+		
+		return propertyId;
+				
+	}
+			
+	
+	private String getCredentials(String apiUrl, String partnerId, String key) throws ParserConfigurationException, SAXException, IOException{
+		
+		// 1- get serverTime
+		String serverTime = getServerTime(apiUrl);
+		if (serverTime == null){
+			logger.debug("no server time obtained");
+			return "NoServerTimeObtained";
+		}
+		
+		//  2- get a token
+		String token = getSecurityToken(apiUrl, partnerId, key, serverTime);
+		
+		if (token == null){
+			logger.debug("no token obtained");
+			return "NoTokenObtained";
+		}
+		
+		//  3- get credentials
+		String credentials = null;
+		StringBuilder strb = new StringBuilder();
+		strb.append("smartmovepartner ");
+		strb.append("partnerid=");
+		strb.append("\"");
+		strb.append(String.format("%3s", partnerId));
+		strb.append("\"");
+		strb.append(",servertime=");
+		strb.append("\"");
+		strb.append(String.format("%19s", serverTime));
+		strb.append("\"");
+		strb.append(",securitytoken=");
+		strb.append("\"");
+		strb.append(String.format("%s", token));
+		strb.append("\"");
+		credentials = strb.toString();
+		
+		return credentials;
+	}
+	
+	private String getServerTime(String apiUrl) throws ParserConfigurationException, SAXException, IOException  {
+
+		//  1- Get Server Time
+		StringBuilder aurl = new StringBuilder();
+		aurl.append(apiUrl);
+		aurl.append("ServerTime");
+		String apiCall = aurl.toString();
+		
+		// get Server time
+		String response=getRequest(apiCall, null);
+		if (response == null) {
+			logger.debug("no server time obtained");
+			return "NoServerTimeObtained";
+		}
+		
+		Map<String,String> saleResponse = getAuthorizeResponseXml(response);
+		String serverTime = saleResponse.get("dateTime");
+		String serverTimeUpd = null;
+//		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm.ss.SSSSSSS'Z'");
+//		Date date = df.parse(serverTime);
+//		
+//		DateFormat dfnew = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm.ss");
+
+//		serverTimeUpd = dfnew.format(date);
+		
+		int zIndex = serverTime.indexOf('Z');
+		int serverTimeLength = serverTime.length();
+		if (zIndex == serverTimeLength - 1)				
+			serverTimeUpd = serverTime.substring(0,zIndex - 8);
+		else serverTimeUpd = serverTime;
+		return serverTimeUpd;
+	
+	}
+	
+	private String getSecurityToken(String apiUrl, String partnerId, String securityKey, String serverTimeUpd) throws ParserConfigurationException, SAXException, IOException {
 		
 		// Concatenate the partnerId and the serverTime   
-		String inputString = partnerId + serverTime;
+		String inputString = partnerId + serverTimeUpd;
 		
 		// Convert security key into ASCII bytes using utf8 encoding   
 //		byte[] securityKeyBytes = UTF8Encoding.ASCII.GetBytes(securityKey);   
@@ -261,8 +321,6 @@ public class InviteServiceImpl implements InviteService{
 		byte[] raw = mac.doFinal(inputBytes);
 		String securityToken = Base64.getEncoder().encodeToString(raw); 
 
-        
-        
 		// Convert input string into ASCII bytes using utf8 encoding   
 //		byte[] inputBytes = UTF8Encoding.ASCII.GetBytes(inputString.toCharArray());
 
@@ -337,14 +395,14 @@ public class InviteServiceImpl implements InviteService{
 	}
 
 	@Override
-	public String postRequest(String apiUrl, String cleanXml, String credentials) {
+	public String postRequest(String apiUrl, String xmlString, String credentials) {
 		
-		String sanitizedMsg = null;
+		String sanitizedMsg = null, cleanXml = null;
 		
-//		if (xmlString != null) {
-//			cleanXml = StringHelper.cleanXml(xmlString);
-//			sanitizedMsg = sanitizeMessageForLogging(cleanXml);
-//		}
+		if (xmlString != null) {
+			cleanXml = StringHelper.cleanXml(xmlString);
+			sanitizedMsg = sanitizeMessageForLogging(cleanXml);
+		}
 		
 		try { 
 			
@@ -357,7 +415,7 @@ public class InviteServiceImpl implements InviteService{
 			connection.setDoOutput(true);
 			 
 			connection.setRequestMethod("POST"); 
-			connection.setFollowRedirects(true); 
+//			connection.setFollowRedirects(true); 
 			
 			if (cleanXml!= null)
 				connection.setRequestProperty("Content-length",String.valueOf (cleanXml.length())); 
@@ -382,7 +440,7 @@ public class InviteServiceImpl implements InviteService{
 			String responseMessage = connection.getResponseMessage();
 			
 			if (responseCode != 200) {
-				logger.error(String.format("Service returned problem message -- %d:%s\\nrequest: %s", responseCode, responseMessage, sanitizedMsg));
+				logger.error(String.format("Service returned problem message -- %d:%s\\nrequest: %s", responseCode, responseMessage, cleanXml));
 				return null;
 		    }
 
@@ -412,6 +470,12 @@ public class InviteServiceImpl implements InviteService{
 		
 		return cleanXml;
 	}
+	
+	private Map<String, String> getAuthorizeResponseJson(String resp) {
+		Map<String, String> mapResponse =  new HashMap<String,String>();
+		return mapResponse;
+	}
+	
 	
 	private Map<String, String> getAuthorizeResponseXml(String resp) throws ParserConfigurationException, SAXException, IOException {
 		
@@ -457,321 +521,650 @@ public class InviteServiceImpl implements InviteService{
 		return mapResponse;
 	}
 	
-	private String getXmlString(Map<String, String> saleInfo, String inviteFunction) {
+//	private String getXmlString(Map<String, String> propertyInfo, String inviteFunction) {
+//	
+//		String xmlString = null, cleanXml=null;
+//		StringBuilder sb = new StringBuilder("\""?xml version=\"1.0\" encoding=\"utf-8\"?>");
+//		
+//		switch (inviteFunction) {
+//		case "ADDPROPERTY":
+//			sb.append("{");
+//
+////			sb.append("\""PropertyId>");
+////			sb.append(String.format("%s",propertyInfo.get(Globals.TU_ID)));
+////			sb.append("\""/PropertyId>");
+//			sb.append("\""PropertyIdentifier>");
+//			sb.append(propertyInfo.get(Globals.TU_PROPERTY_IDENTIFIER));
+//			sb.append("\""/PropertyIdentifier>");
+//			sb.append("\""Active>");
+//			sb.append(String.format("%s",propertyInfo.get(Globals.TU_ACTIVE)));
+//			sb.append("\""/Active>");
+//			sb.append("\""Name>");
+//			sb.append(String.format("%s",propertyInfo.get(Globals.TU_NAME)));
+//			sb.append("\""/Name>");
+//			sb.append("\""UnitNumber>");
+//			sb.append(String.format("%s",propertyInfo.get(Globals.TU_UNIT_NUMBER)));
+//			sb.append("\""/UnitNumber>");
+//			sb.append("\""FirstName>");
+//			sb.append(String.format("%s",propertyInfo.get(Globals.TU_FIRSTNAME)));
+//			sb.append("\""/FirstName>");
+//			sb.append("\""LastName>");
+//			sb.append(String.format("%s",propertyInfo.get(Globals.TU_LASTNAME)));
+//			sb.append("\""/LastName>");
+//			sb.append("\""Street>");
+//			sb.append(String.format("%s",propertyInfo.get(Globals.TU_STREET)));
+//			sb.append("\""/Street>");
+//			sb.append("\""City>");
+//			sb.append(String.format("%s",propertyInfo.get(Globals.TU_CITY)));
+//			sb.append("\""/City>");
+//			sb.append("\""State>");
+//			sb.append(String.format("%s",propertyInfo.get(Globals.TU_STATE)));
+//			sb.append("\""/State>");
+//			sb.append("\""Zip>");
+//			sb.append(String.format("%s",propertyInfo.get(Globals.TU_ZIP)));
+//			sb.append("\""/Zip>");
+//			sb.append("\""Phone>");
+//			sb.append(String.format("%s",propertyInfo.get(Globals.TU_PHONE)));
+//			sb.append("\""/Phone>");
+//			if (propertyInfo.get(Globals.TU_PHONE_EXTENSION)!= null) {
+//				sb.append("\""PhoneExtension>");
+//				sb.append(String.format("%s",propertyInfo.get(Globals.TU_PHONE_EXTENSION)));
+//				sb.append("\""/PhoneExtension>");
+//			}
+//			sb.append("\""Questions>");
+//			sb.append("\""e>");
+//			sb.append("\""QuestionId>");
+//			sb.append("1");
+//			sb.append("\""/QuestionId>");
+//			sb.append("\""QuestionText>");
+//			sb.append("How would you describe your property?");
+//			sb.append("\""/QuestionText>");
+//			sb.append("\""Options>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("A");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("High end property offering many amenities and convenience to renters (for example on-site fitness facility with modern, maintained equipment or easy access to the same, laundry facilities within the unit or within the immediate building, etc.). If the property is new, it employs higher-end equipment, appliances and convenience features throughout the facility and/or unit(s). If the property is aged, it has been significantly renovated recently to modernize key areas within the property (for example parking areas, parking garages or overhangs, gated community, etc.) and key features (for example appliances, furnishing, cabinets, bathroom fixtures, etc.). 'A' properties will have a lower risk factor, requiring higher standards of renters in regards to income and credit history.");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("B");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("High end property offering many amenities and convenience to renters (for example on-site fitness facility with modern, maintained equipment or easy access to the same, laundry facilities within the unit or within the immediate building, etc.). If the property is new, it employs higher-end equipment, appliances and convenience features throughout the facility and/or unit(s). If the property is aged, it has been significantly renovated recently to modernize key areas within the property (for example parking areas, parking garages or overhangs, gated community, etc.) and key features (for example appliances, furnishing, cabinets, bathroom fixtures, etc.). 'A' properties will have a lower risk factor, requiring higher standards of renters in regards to income and credit history.");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("C");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Low-end property offering few, if any, amenities or conveniences to renters (for example laundry facilities, fitness facility, etc.). If the property has been recently built, the quality of materials used for common features of the property and/or unit(s) is average or bulk building supplies. For somewhat aged properties, few, if any, renovations have been applied to update common-use features (for example water heaters, appliances, bathroom fixtures, paint, etc.). 'C' properties employ a high risk factor reflecting a lower quality offering to potential renters and allowing lower standards for potential lessees.");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""/Options>");
+//			sb.append("\""SelectedAnswer>");
+//			sb.append("A");
+//			sb.append("\""/SelectedAnswer>");
+//			sb.append("\""/e>");
+//
+//			sb.append("\""e>");
+//			sb.append("\""QuestionId>");
+//			sb.append("2");
+//			sb.append("\""/QuestionId>");
+//			sb.append("\""QuestionText>");
+//			sb.append("How does your unit(s)'s rent compare to others in the neighborhood?");
+//			sb.append("\""/QuestionText>");
+//			sb.append("\""Options>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("A");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Average applicant income will be significantly higher than expected rent");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("B");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Average applicant income will be somewhat higher than expected rent");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("C");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Average applicant income will be just above the expected rent");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""/Options>");
+//			sb.append("\""SelectedAnswer>");
+//			sb.append("C");
+//			sb.append("\""/SelectedAnswer>");
+//			sb.append("\""/e>");			
+//			
+//			sb.append("\""e>");
+//			sb.append("\""QuestionId>");
+//			sb.append("3");
+//			sb.append("\""/QuestionId>");
+//			sb.append("\""QuestionText>");
+//			sb.append("What do you expect the average income of your potential applicants to be?");
+//			sb.append("\""/QuestionText>");
+//			sb.append("\""Options>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("A");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Average applicant income will be much greater than the average income for the area");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("B");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Average applicant income will be at the average income for the area");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("C");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Average applicant income will be below the average income for the area");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""/Options>");
+//			sb.append("\""SelectedAnswer>");
+//			sb.append("C");
+//			sb.append("\""/SelectedAnswer>");
+//			sb.append("\""/e>");
+//			
+//			sb.append("\""e>");
+//			sb.append("\""QuestionId>");
+//			sb.append("4");
+//			sb.append("\""/QuestionId>");
+//			sb.append("\""QuestionText>");
+//			sb.append("Do you expect the average income of your potential applicnats to be above, at, or below the average income of other tenants in the neighborhood?");
+//			sb.append("\""/QuestionText>");
+//			sb.append("\""Options>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("A");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Expected rent will be greater than the average rent for the area");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("B");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Expected rent will be at the average rent for the area");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("C");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Expected rent will be below the average rent for the area");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""/Options>");
+//			sb.append("\""SelectedAnswer>");
+//			sb.append("B");
+//			sb.append("\""/SelectedAnswer>");
+//			sb.append("\""/e>");
+//			
+//			sb.append("\""e>");
+//			sb.append("\""QuestionId>");
+//			sb.append("5");
+//			sb.append("\""/QuestionId>");
+//			sb.append("\""QuestionText>");
+//			sb.append("Do you expect many applicants to apply for your unit(s)?");
+//			sb.append("\""/QuestionText>");
+//			sb.append("\""Options>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("A");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Expect many applicants and good visibility for these units");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("B");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Expect a steady number of applicants with average visibility for these unit(s)");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""e>");
+//			sb.append("\""AnswerText>");
+//			sb.append("C");
+//			sb.append("\""/AnswerText>");
+//			sb.append("\""AnswerDescription>");
+//			sb.append("Expect few applicants");
+//			sb.append("\""/AnswerDescription>");
+//			sb.append("\""/e>");
+//			sb.append("\""/Options>");
+//			sb.append("\""SelectedAnswer>");
+//			sb.append("A");
+//			sb.append("\""/SelectedAnswer>");
+//			sb.append("\""/e>");
+//			
+//			sb.append("\""/Questions>");
+//			
+//			
+//			sb.append("\""Classification>");
+//			sb.append("Conventional");
+//			sb.append("\""/Classification>");
+//			sb.append("\""IR>");
+//			sb.append("2.0");
+//			sb.append("\""/IR>");
+////			sb.append("\""IncludeMedicalCollections>");
+////			sb.append("false");
+////			sb.append("\""/IncludeMedicalCollections>");
+////			sb.append("\""IncludeForeclosures>");
+////			sb.append("false");
+////			sb.append("\""/IncludeForeclosures>");
+////			sb.append("\""DeclineForOpenBankruptcies>");
+////			sb.append("false");
+////			sb.append("\""/DeclineForOpenBankruptcies>");
+////			sb.append("\""OpenBankruptcyWindow>");
+////			sb.append("0");
+////			sb.append("\""/OpenBankruptcyWindow>");
+//			sb.append("\""IsFcraAgreementAccepted>");
+//			sb.append("true");
+//			sb.append("\""/IsFcraAgreementAccepted>");
+//			sb.append("\""/Property>");
+//
+//
+////			sb.append("\""CFee>");
+////			sb.append(String.format("%s","0.00"));
+//			xmlString = sb.toString();
+//			break;
+//
+//		default:
+////			dto.setSuccessful(false);
+//			return xmlString;
+//		}
+//		if (xmlString != null) {
+//			cleanXml = StringHelper.cleanXml(xmlString);
+//		}
+//		
+//		return cleanXml;
+//	}
 
+	private String getJSONString(Map<String, String> propertyInfo, String inviteFunction) {
 		
-//		String transId = UUID.randomUUID().toString().replaceAll("-", "");
-		
-//		if (dto.getAipId() != null) {
-//			transId = "AIP-" + dto.getAipId().toString();
-//		}
-//		if (dto.getAppId() != null) {
-//			transId = "APP-" + dto.getAppId().toString();
-//		}
-		String xmlString = null, cleanXml=null;
-		StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+		String jsonString = null, cleanXml=null;
+		StringBuilder sb = new StringBuilder();
 		
 		switch (inviteFunction) {
 		case "ADDPROPERTY":
-			sb.append("<PropertyIdentifier>");
-			sb.append(saleInfo.get(Globals.TU_PROPERTY_IDENTIFIER));
-			sb.append("</PropertyIdentifier>");
-			sb.append("<Active>");
-			sb.append(String.format("%s",saleInfo.get(Globals.TU_ACTIVE)));
-			sb.append("</Active>");
-			sb.append("<Name>");
-			sb.append(String.format("%s",saleInfo.get(Globals.TU_NAME)));
-			sb.append("</Name>");
-			sb.append("<UnitNumber>");
-			sb.append(String.format("%s",saleInfo.get(Globals.TU_UNIT_NUMBER)));
-			sb.append("</UnitNumber>");
-			sb.append("<FirstName>");
-			sb.append(String.format("%s",saleInfo.get(Globals.TU_FIRSTNAME)));
-			sb.append("</FirstName>");
-			sb.append("<LastName>");
-			sb.append(String.format("%s",saleInfo.get(Globals.TU_LASTNAME)));
-			sb.append("</LastName>");
-			sb.append("<Street>");
-			sb.append(String.format("%s",saleInfo.get(Globals.TU_STREET)));
-			sb.append("</Street>");
-			sb.append("<City>");
-			sb.append(String.format("%s",saleInfo.get(Globals.TU_CITY)));
-			sb.append("</City>");
-			sb.append("<State>");
-			sb.append(String.format("%s",saleInfo.get(Globals.TU_STATE)));
-			sb.append("</State>");
-			sb.append("<Zip>");
-			sb.append(String.format("%s",saleInfo.get(Globals.TU_ZIP)));
-			sb.append("</Zip>");
-			sb.append("<Phone>");
-			sb.append(String.format("%s",saleInfo.get(Globals.TU_PHONE)));
-			sb.append("</Phone>");
-			sb.append("<PhoneExtension>");
-			sb.append(String.format("%s",saleInfo.get(Globals.TU_PHONE_EXTENSION)));
-			sb.append("</PhoneExtension>");
-			sb.append("<Questions>");
-			sb.append("<Question>");
-			sb.append("<QuestionId>");
+			sb.append("{");
+//			sb.append("\"PropertyId\": \"");
+//			sb.append(String.format("%s",propertyInfo.get(Globals.TU_ID)));
+//			sb.append("\","PropertyId\": \"");
+			sb.append("\"PropertyIdentifier\": \"");
+			sb.append(propertyInfo.get(Globals.TU_PROPERTY_IDENTIFIER));
+			sb.append("\",");
+			sb.append("\"Active\": \"");
+			sb.append(String.format("%s",propertyInfo.get(Globals.TU_ACTIVE)));
+			sb.append("\",");
+			sb.append("\"Name\": \"");
+			sb.append(String.format("%s",propertyInfo.get(Globals.TU_NAME)));
+			sb.append("\",");
+			sb.append("\"UnitNumber\": \"");
+			sb.append(String.format("%s",propertyInfo.get(Globals.TU_UNIT_NUMBER)));
+			sb.append("\",");
+			sb.append("\"FirstName\": \"");
+			sb.append(String.format("%s",propertyInfo.get(Globals.TU_FIRSTNAME)));
+			sb.append("\",");
+			sb.append("\"LastName\": \"");
+			sb.append(String.format("%s",propertyInfo.get(Globals.TU_LASTNAME)));
+			sb.append("\",");
+			sb.append("\"Street\": \"");
+			sb.append(String.format("%s",propertyInfo.get(Globals.TU_STREET)));
+			sb.append("\",");
+			sb.append("\"City\": \"");
+			sb.append(String.format("%s",propertyInfo.get(Globals.TU_CITY)));
+			sb.append("\",");
+			sb.append("\"State\": \"");
+			sb.append(String.format("%s",propertyInfo.get(Globals.TU_STATE)));
+			sb.append("\",");
+			sb.append("\"Zip\": \"");
+			sb.append(String.format("%s",propertyInfo.get(Globals.TU_ZIP)));
+			sb.append("\",");
+			sb.append("\"Phone\": \"");
+			sb.append(String.format("%s",propertyInfo.get(Globals.TU_PHONE)));
+			sb.append("\",");
+			if (propertyInfo.get(Globals.TU_PHONE_EXTENSION)!= null) {
+				sb.append("\"PhoneExtension\": \"");
+				sb.append(String.format("%s",propertyInfo.get(Globals.TU_PHONE_EXTENSION)));
+				sb.append("\",");
+			}
+			sb.append("\"Questions\": \"");
+			sb.append("\"e\": \"");
+			sb.append("\"QuestionId\": \"");
 			sb.append("1");
-			sb.append("</QuestionId>");
-			sb.append("<QuestionText>");
+			sb.append("\",");
+			sb.append("\"QuestionText\": \"");
 			sb.append("How would you describe your property?");
-			sb.append("</QuestionText>");
-			sb.append("<Options>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\"Options\": \"");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("A");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("High end property offering many amenities and convenience to renters (for example on-site fitness facility with modern, maintained equipment or easy access to the same, laundry facilities within the unit or within the immediate building, etc.). If the property is new, it employs higher-end equipment, appliances and convenience features throughout the facility and/or unit(s). If the property is aged, it has been significantly renovated recently to modernize key areas within the property (for example parking areas, parking garages or overhangs, gated community, etc.) and key features (for example appliances, furnishing, cabinets, bathroom fixtures, etc.). 'A' properties will have a lower risk factor, requiring higher standards of renters in regards to income and credit history.");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("B");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("High end property offering many amenities and convenience to renters (for example on-site fitness facility with modern, maintained equipment or easy access to the same, laundry facilities within the unit or within the immediate building, etc.). If the property is new, it employs higher-end equipment, appliances and convenience features throughout the facility and/or unit(s). If the property is aged, it has been significantly renovated recently to modernize key areas within the property (for example parking areas, parking garages or overhangs, gated community, etc.) and key features (for example appliances, furnishing, cabinets, bathroom fixtures, etc.). 'A' properties will have a lower risk factor, requiring higher standards of renters in regards to income and credit history.");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("C");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Low-end property offering few, if any, amenities or conveniences to renters (for example laundry facilities, fitness facility, etc.). If the property has been recently built, the quality of materials used for common features of the property and/or unit(s) is average or bulk building supplies. For somewhat aged properties, few, if any, renovations have been applied to update common-use features (for example water heaters, appliances, bathroom fixtures, paint, etc.). 'C' properties employ a high risk factor reflecting a lower quality offering to potential renters and allowing lower standards for potential lessees.");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("</Options>");
-			sb.append("<SelectedAnswer>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"SelectedAnswer\": \"");
 			sb.append("A");
-			sb.append("</SelectedAnswer>");
-			sb.append("</Question>");
+			sb.append("\",");
+			sb.append("\",");
 
-			sb.append("<Question>");
-			sb.append("<QuestionId>");
+			sb.append("\"e\": \"");
+			sb.append("\"QuestionId\": \"");
 			sb.append("2");
-			sb.append("</QuestionId>");
-			sb.append("<QuestionText>");
+			sb.append("\",");
+			sb.append("\"QuestionText\": \"");
 			sb.append("How does your unit(s)'s rent compare to others in the neighborhood?");
-			sb.append("</QuestionText>");
-			sb.append("<Options>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\"Options\": \"");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("A");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Average applicant income will be significantly higher than expected rent");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("B");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Average applicant income will be somewhat higher than expected rent");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("C");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Average applicant income will be just above the expected rent");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("</Options>");
-			sb.append("<SelectedAnswer>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"SelectedAnswer\": \"");
 			sb.append("C");
-			sb.append("</SelectedAnswer>");
-			sb.append("</Question>");			
+			sb.append("\",");
+			sb.append("\",");			
 			
-			sb.append("<Question>");
-			sb.append("<QuestionId>");
+			sb.append("\"e>");
+			sb.append("\"QuestionId\": \"");
 			sb.append("3");
-			sb.append("</QuestionId>");
-			sb.append("<QuestionText>");
+			sb.append("\",");
+			sb.append("\"QuestionText\": \"");
 			sb.append("What do you expect the average income of your potential applicants to be?");
-			sb.append("</QuestionText>");
-			sb.append("<Options>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\"Options\": \"");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("A");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Average applicant income will be much greater than the average income for the area");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("B");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Average applicant income will be at the average income for the area");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("C");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Average applicant income will be below the average income for the area");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("</Options>");
-			sb.append("<SelectedAnswer>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"SelectedAnswer\": \"");
 			sb.append("C");
-			sb.append("</SelectedAnswer>");
-			sb.append("</Question>");
+			sb.append("\",");
+			sb.append("\",");
 			
-			sb.append("<Question>");
-			sb.append("<QuestionId>");
+			sb.append("\"e\": \"");
+			sb.append("\"QuestionId\": \"");
 			sb.append("4");
-			sb.append("</QuestionId>");
-			sb.append("<QuestionText>");
+			sb.append("\",");
+			sb.append("\"QuestionText\": \"");
 			sb.append("Do you expect the average income of your potential applicnats to be above, at, or below the average income of other tenants in the neighborhood?");
-			sb.append("</QuestionText>");
-			sb.append("<Options>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\"Options\": \"");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("A");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Expected rent will be greater than the average rent for the area");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("B");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Expected rent will be at the average rent for the area");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("C");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Expected rent will be below the average rent for the area");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("</Options>");
-			sb.append("<SelectedAnswer>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"SelectedAnswer\": \"");
 			sb.append("B");
-			sb.append("</SelectedAnswer>");
-			sb.append("</Question>");
+			sb.append("\",");
+			sb.append("\",");
 			
-			sb.append("<Question>");
-			sb.append("<QuestionId>");
+			sb.append("\"e\": \"");
+			sb.append("\"QuestionId\": \"");
 			sb.append("5");
-			sb.append("</QuestionId>");
-			sb.append("<QuestionText>");
+			sb.append("\",");
+			sb.append("\"QuestionText\": \"");
 			sb.append("Do you expect many applicants to apply for your unit(s)?");
-			sb.append("</QuestionText>");
-			sb.append("<Options>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\"Options\": \"");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("A");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Expect many applicants and good visibility for these units");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("B");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Expect a steady number of applicants with average visibility for these unit(s)");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("<Answer>");
-			sb.append("<AnswerText>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"e\": \"");
+			sb.append("\"AnswerText\": \"");
 			sb.append("C");
-			sb.append("</AnswerText>");
-			sb.append("<AnswerDescription>");
+			sb.append("\",");
+			sb.append("\"AnswerDescription\": \"");
 			sb.append("Expect few applicants");
-			sb.append("</AnswerDescription>");
-			sb.append("</Answer>");
-			sb.append("</Options>");
-			sb.append("<SelectedAnswer>");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\",");
+			sb.append("\"SelectedAnswer\": \"");
 			sb.append("A");
-			sb.append("</SelectedAnswer>");
-			sb.append("</Question>");
+			sb.append("\",");
+			sb.append("\",");
 			
-			sb.append("</Questions>");
+			sb.append("\",");
 			
 			
-			sb.append("<Classification>");
+			sb.append("\"Classification\": \"");
 			sb.append("Conventional");
-			sb.append("</Classification>");
-			sb.append("<IR>");
-			sb.append("2");
-			sb.append("</IR>");
-			sb.append("<IncludeMedicalCollections>");
-			sb.append("false");
-			sb.append("</IncludeMedicalCollections>");
-			sb.append("<IncludeForeclosures>");
-			sb.append("false");
-			sb.append("</IncludeForeclosures>");
-			sb.append("<DeclineOpenBankruptcies>");
-			sb.append("false");
-			sb.append("</DeclineOpenBankruptcies>");
-			sb.append("<OpenBankruptcyWindow>");
-			sb.append("0");
-			sb.append("</OpenBankruptcyWindow>");
-			sb.append("<IsFcraAgreementAccepted>");
+			sb.append("\"");
+			sb.append("\"IR\": \"");
+			sb.append("2.0");
+			sb.append("\",");
+//			sb.append("\"IncludeMedicalCollections\": \"");
+//			sb.append("false");
+//			sb.append("\","IncludeMedicalCollections\": \"");
+//			sb.append("\"IncludeForeclosures\": \"");
+//			sb.append("false");
+//			sb.append("\""/IncludeForeclosures\": \"");
+//			sb.append("\"DeclineForOpenBankruptcies\": \"");
+//			sb.append("false");
+//			sb.append("\","DeclineForOpenBankruptcies\": \"");
+//			sb.append("\"OpenBankruptcyWindow\": \"");
+//			sb.append("0");
+//			sb.append("\","OpenBankruptcyWindow\": \"");
+			sb.append("\"IsFcraAgreementAccepted>");
 			sb.append("true");
-			sb.append("</IsFcraAgreementAccepted>");
+			sb.append("\",");
+			sb.append("}");
 
 
-//			sb.append("<CFee>");
+//			sb.append("\""CFee>");
 //			sb.append(String.format("%s","0.00"));
-			xmlString = sb.toString();
+			jsonString = sb.toString();
 			break;
-		case "ECAUTHORIZE":
 
-			sb.append("<ApplicationID>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_APPLICATION_ID)));
-
-			sb.append("<ReferenceNumber>");
-			sb.append(String.format("%s",""));
-			sb.append("</ReferenceNumber>");
-
-			xmlString = sb.toString();
-			break;
-		case "VOID":
-			sb.append("<Void>");
-			sb.append("<RVData>");
-			sb.append("<ApplicationID>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_APPLICATION_ID)));
-			sb.append("</ApplicationID>");
-			sb.append("<MerchantID>");
-			sb.append(String.format("%s",saleInfo.get(Globals.RP_MERCHANT_ID)));
-			sb.append("</MerchantID>");
-			sb.append("<RefId>");
-			sb.append(String.format("%s",""));
-			sb.append("</RefId>");	
-			sb.append("</RVData>");
-			sb.append("<Void>");
-			xmlString = sb.toString();
-			break;
-		case "REFUND":
-			sb.append("<Refund>");
-
-			xmlString = sb.toString();
-			break;
 		default:
 //			dto.setSuccessful(false);
-			return xmlString;
+			return jsonString;
 		}
-		if (xmlString != null) {
-			cleanXml = StringHelper.cleanXml(xmlString);
-		}
+//		if (jsonString != null) {
+//			cleanXml = StringHelper.cleanXml(xmlString);
+//		}
+//		
+//		return cleanXml;
 		
-		return cleanXml;
+		return jsonString;
 	}
-
 	
+	
+	@Override
+	public String postJSONMessageGetJSON(String apiUrl, String message, String credentials)
+			throws IOException, XPathExpressionException {
+		// try {
+		
+		message = "{ \"PropertyIdentifier\": \"Hanks PropertyIdentifier\", \"Active\": \"false\", \"Name\": \"Hanks Property Name\", \"UnitNumber\":\"Abcd 123\",\"FirstName\": \"Tom\", \"LastName\": \"Hanks\", \"Street\": \"123 Mickey Mouse St\",\"City\": \"Littleton\", \"State\": \"CO\", \"Zip\": \"80124\", \"Phone\": \"3031432323\", \"PhoneExtension\": \"1111\", \"Questions\": [ { \"QuestionId\": \"1\", \"QuestionText\": \"How would you describe your property?\", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"High end property offering many amenities and convenience to renters (for example on-site fitness facility with modern, maintained equipment or easy access to the same, laundry facilities within the unit or within the immediate building, etc.). If the property is new, it employs higher-end equipment, appliances and convenience features throughout the facility and/or unit(s). If the property is aged, it has been significantly renovated recently to modernize key areas within the property (for example parking areas, parking garages or overhangs, gated community, etc.) and key features (for example appliances, furnishing, cabinets, bathroom fixtures, etc.). 'A' properties will have a lower risk factor, requiring higher standards of renters in regards to income and credit history.\" },{ \"AnswerText\": \"B\", \"AnswerDescription\": \"Moderate living property offering some key amenities and/or conveniences to renters (for example laundry facilities within the building or in a facility very near by, easily accessible, though not on-site, fitness facility with modern equipment, etc.). If the property has been recently built, the quality of materials used for common features of the property and/or unit(s) is good, though not high-end. For somewhat aged properties, significant renovations have been applied to improve common-use features (for example water heaters, appliances, bathroom fixtures, paint, etc.). 'B' properties employ a moderate risk factor that will eliminate applicants with poor credit histories while still accepting moderate to good credit histories and income.\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Low-end property offering few, if any, amenities or conveniences to renters (for example laundry facilities, fitness facility, etc.). If the property has been recently built, the quality of materials used for common features of the property and/or unit(s) is average or bulk building supplies. For somewhat aged properties, few, if any, renovations have been applied to update common-use features (for example water heaters, appliances, bathroom fixtures, paint, etc.). 'C' properties employ a high risk factor reflecting a lower quality offering to potential renters and allowing lower standards for potential lessees.\" } ], \"SelectedAnswer\": \"A\" }, {\"QuestionId\": \"2\", \"QuestionText\": \"How does your unit(s)'s rent compare to others in the neighborhood?\", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"Average applicant income will be significantly higher than expected rent\" }, { \"AnswerText\": \"B\", \"AnswerDescription\": \"Average applicant income will be somewhat higher than expected rent\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Average applicant income will be just above the expected rent\" } ], \"SelectedAnswer\": \"C\" }, {\"QuestionId\": \"3\", \"QuestionText\": \"What do you expect the average income of your potential applicants to be?\", \"Options\": [{ \"AnswerText\": \"A\", \"AnswerDescription\": \"Average applicant income will be much greater than the average income for the area\" }, { \"AnswerText\": \"B\", \"AnswerDescription\": \"Average applicant income will be at the average income for the area\"}, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Average applicant income will be below the average income for the area\" } ], \"SelectedAnswer\": \"C\" },{ \"QuestionId\": \"4\", \"QuestionText\": \"Do you expect the average income of your potential applicnats to be above, at, or below the average income of other tenants in the neighborhood?\", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"Expected rent will be greaterthan the average rent for the area\" }, { \"AnswerText\": \"B\", \"AnswerDescription\": \"Expected rent will be at the average rent for the area\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Expected rent will be below the average rent for the area\" } ], \"SelectedAnswer\": \"B\" }, { \"QuestionId\": \"5\", \"QuestionText\": \"Do you expect many applicants to apply for your unit(s)? \", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"Expect many applicants and good visibility for these units\" }, {\"AnswerText\": \"B\", \"AnswerDescription\": \"Expect a steady number of applicants with average visibility for these unit(s)\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Expect few applicants\" } ], \"SelectedAnswer\": \"A\" } ], \"Classification\": \"Conventional\",\"IR\": \"2\", \"IncludeMedicalCollections\": \"false\", \"IncludeForeclosures\": \"false\", \"DeclineForOpenBankruptcies\": \"false\", \"OpenBankruptcyWindow\": \"6\", \"IsFcraAgreementAccepted\": \"true\" }";
+		
+//		URL baseUrl = new URL(getBaseURL());
+//		HttpURLConnectionFacade conn = connectionFactoryService.getConnection(baseUrl);
+		
+		URL url = new URL(apiUrl); 
+		HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+		
+//		final HttpURLConnection conn = (HttpURLConnection) new URL(getBaseURL()
+//				+ urlExtension).openConnection();
+		conn.setRequestMethod("POST");
+		conn.setDoOutput(true);
+//		conn.setRequestProperty("X-DocuSign-Authentication", getAuthStr());
+		conn.setRequestProperty("Content-Type", "application/json");
+		conn.setRequestProperty("Content-Length",
+				Integer.toString(message.length()));
+		conn.setRequestProperty("Accept", "application/json");
+		conn.setRequestProperty("Authorization", credentials);
+//		logger.debug(baseUrl.toString());
+		logger.debug(message);
+//		logger.debug("X-DocuSign-Authentication - " + getAuthStr());
+		logger.debug("Content-Type - application/json");
+		logger.debug("Accept - application/json");
+		// write the body of the request...
+		
+		DataOutputStream output = new DataOutputStream( conn.getOutputStream() ); 
+
+		// write out the data 
+		int queryLength = message.length(); 
+		output.writeBytes( message ); 
+//		//output.close();
+		
+		int responseCode = conn.getResponseCode();
+		String responseMessage = conn.getResponseMessage();
+		
+		if (responseCode != 200) {
+			logger.error(String.format("Service returned problem message -- %d:%s\\nrequest: %s", responseCode, responseMessage, message));
+			return null;
+	    }
+		
+	return responseMessage;	
+		
+//		conn.sendOutput(message);
+//		final byte[] outputBytes = message.getBytes();
+//		final OutputStream dos = conn.getOutputStream();
+//		dos.write(outputBytes);
+//		dos.flush();
+//		dos.close();
+
+//		final int status = conn.getResponseCode(); // triggers the request
+//		final String msg = conn.getResponseMessage();
+//		String body = conn.getBody();
+//		InputStream in = conn.getInputStream();
+//		String encoding = conn.getContentEncoding();
+//		encoding = encoding == null ? "UTF-8" : encoding;
+//		String body = IOUtils.toString(in, encoding);
+//		if (status != 200) {
+//			logger.error(String.format(
+//					"Invalid response retrieving document list: %d", status));
+//			throw new DocusignMessageException(String.format(
+//					"Invalid response retrieving document list: %d", status),
+//					status, msg);
+//		}
+
+//		return body;
+		// } catch (IOException e) {
+		// logger.error(
+		// "Unable to delete envelope {}.  Error: {}",
+		// envelopeId, e.getMessage());
+		// }
+	}
 }

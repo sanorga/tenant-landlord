@@ -1676,6 +1676,7 @@ public class Globals {
 	public final static String TC_ACH_PROCESSDATE = "ProcessDate";
 
 	//TransUnion variables
+	public final static String TU_ID = "PropertyId";
 	public final static String TU_PROPERTY_IDENTIFIER = "PropertyIdentifier";
 	public final static String TU_ACTIVE = "Active";
 	public final static String TU_NAME = "Name";

@@ -8,6 +8,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.tea.landlordapp.domain.AnonymousUser;
+import com.tea.landlordapp.validation.TeaValidationUtils;
 
 public class AnonymousUserValidator implements Validator {
 
@@ -27,7 +28,8 @@ public class AnonymousUserValidator implements Validator {
 
       TeaValidationUtils.rejectIfNotValidEmail(errors, "emailId", "invalid.emailId", new Object[]{"Anonymous User"}, false);
       if (ObjectUtils.equals(au.getApplicationType(), 'T')) {
-         TeaValidationUtils.rejectIfNotValidNumber(errors, "property.id", "required.property", false);
+ //        TeaValidationUtils.rejectIfNotValidNumber(errors, "property.id", "required.property", false);
+         TeaValidationUtils.rejectIfBlank(errors, "property.name", "required.property");
       }
 
    }

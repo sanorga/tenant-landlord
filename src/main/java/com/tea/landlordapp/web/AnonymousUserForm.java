@@ -27,6 +27,7 @@ import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.dto.IntegerStringKVDto;
 //import com.tea.landlordapp.enums.ApplicationPaymentMethod;
 import com.tea.landlordapp.enums.UserRole;
+import com.tea.landlordapp.repository.UserDao;
 import com.tea.landlordapp.service.InviteService;
 import com.tea.landlordapp.service.ListService;
 //import com.tea.landlordapp.service.MessageService;
@@ -57,6 +58,9 @@ public class AnonymousUserForm extends AbstractDataController {
    
    @Autowired
    InviteService inviteService;
+   
+   @Autowired
+   UserDao userDao;
 
    @RequestMapping(method = RequestMethod.POST)
    public String processSubmit(@ModelAttribute AnonymousUser anonymousUser, BindingResult result, HttpServletRequest request, SessionStatus status, Model model) 
@@ -65,8 +69,24 @@ public class AnonymousUserForm extends AbstractDataController {
 
       // login User
       final User user = getAuthenticatedUser();
+      
+      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_CANCEL)) {
+          status.setComplete();
+          return onCancel1(user);
+       }
+
+       if (ObjectUtils.equals(anonymousUser.getProperty(), null)) {
+          result.reject("property.id", "Please select the property");
+       }
+
+       // Validation
+       anonymousUserValidator.validate(anonymousUser, result);
+       if (result.hasErrors()) {
+          setAnonymousUserValues(model, user.getId());
+          return "anonymousUser";
+       }
 //      Subscriber client = null;
-      Property p = anonymousUser.getProperty();;
+      Property p = anonymousUser.getProperty();
       Property property = new Property();
             
       property.setApartmentNo(p.getApartmentNo());
@@ -76,14 +96,18 @@ public class AnonymousUserForm extends AbstractDataController {
       property.setRentalDeposit(p.getRentalDeposit());
       property.setStreet(p.getStreet());
       property.setUserId(user.getId());
-      property.setPropertyId(Integer.parseInt(p.getApartmentNo()));
+      property.setZipcode(p.getZipcode());
+      property.setState(p.getState());
+      
+//      property.setPropertyId(0);
       
       if ((anonymousUser.getProperty().getId() == -1) && (anonymousUser.getProperty().getName() != null)){
     	
     	  if (anonymousUser.getSaveNewAddress() == 'Y')
-    		  
-    	 property = userService.saveNewProperty(property, user);
+    		  property.setFutureUse(true);
+     	 
       }
+      property = userService.saveNewProperty(property, user);
 //      if (user.hasRole(UserRole.PartnerAdmin.getCode()) || user.hasRole(UserRole.CustomerServiceRep.getCode())) {
 //         property = userService.findPropertyById(anonymousUser.getProperty().getId());
 //      } else { 
@@ -95,21 +119,7 @@ public class AnonymousUserForm extends AbstractDataController {
       property.setId(property.getId());
       anonymousUser.setProperty(property);
       
-      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_CANCEL)) {
-         status.setComplete();
-         return onCancel1(user);
-      }
 
-      if (ObjectUtils.equals(property, null)) {
-         result.reject("property.id", "Please select the property");
-      }
-
-      // Validation
-      anonymousUserValidator.validate(anonymousUser, result);
-      if (result.hasErrors()) {
-         setAnonymousUserValues(model, user.getId());
-         return "anonymousUser";
-      }
 
       // save anonymousUser
 //      Property property = null;
@@ -131,10 +141,11 @@ public class AnonymousUserForm extends AbstractDataController {
       logger.debug("anonymous user saved successfully.." + au.getId());
 
       final boolean flag = true;
-
+      String propertyId = null;
       // send info to TransUnion
       try {
-		inviteService.invite(anonymousUser);
+		propertyId = inviteService.invite(anonymousUser);
+		
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -153,7 +164,20 @@ public class AnonymousUserForm extends AbstractDataController {
 //      }
 
       // set message and return
+      Integer pId;
+		try {
+			pId = Integer.valueOf(propertyId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "InvalidPropertyId";
+		}
+		
       setActionMessage(request, "confirm.anonymous_user_save_success");
+      property.setPropertyId(pId);
+      userDao.saveProperty(property);
+      
+      
       return "redirect:home.htm";
    }
 

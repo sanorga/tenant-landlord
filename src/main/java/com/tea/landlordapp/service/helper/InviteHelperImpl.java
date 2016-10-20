@@ -29,8 +29,8 @@ public class InviteHelperImpl implements InviteHelper {
 	}	
 	
 	@Override
-	public Map<String, String> buildInfoMap(AnonymousUser au) {
-		Map<String, String> saleInfo = new HashMap<String,String>();
+	public Map<String, String> buildPropertyInfoMap(AnonymousUser au) {
+		Map<String, String> propertyInfo = new HashMap<String,String>();
 		
 		Property p = au.getProperty();
 		if (p== null) {
@@ -42,32 +42,69 @@ public class InviteHelperImpl implements InviteHelper {
 		final Double rentalAmount = p.getRentalAmount();
 		final Double rentalDeposit = p.getRentalDeposit();
 		
-		saleInfo.put("RentalAmount", df.format(rentalAmount));
-		saleInfo.put("RentalDeposit", df.format(rentalDeposit));
-		saleInfo.put("PropertyId", "");
-		saleInfo.put("ApartmentNumber", p.getApartmentNo());
-		saleInfo.put("City", p.getCity());
-		saleInfo.put("Street", p.getStreet());
-		saleInfo.put("Name", p.getName());
-		saleInfo.put("FirstName",user.getFirstName());
-		saleInfo.put("LastName",user.getLastName());
+		propertyInfo.put("RentalAmount", df.format(rentalAmount));
+		propertyInfo.put("RentalDeposit", df.format(rentalDeposit));
+		propertyInfo.put("PropertyId", "");
+		propertyInfo.put("PropertyIdentifier", "Identifier");
+		propertyInfo.put("Active", "true");
+		propertyInfo.put("Zip", p.getZipcode());
+		if (p.getPhone() != null) {
+			propertyInfo.put("Phone", p.getPhone());
+		} 
+		else propertyInfo.put("Phone", "9999999999");
+		propertyInfo.put("PhoneExtension",p.getExtension());
+		propertyInfo.put("UnitNumber", p.getApartmentNo());
+		propertyInfo.put("City", p.getCity());
+		propertyInfo.put("Street", p.getStreet());
+		propertyInfo.put("State", p.getState());
+		propertyInfo.put("Name", p.getName());
+		propertyInfo.put("FirstName",user.getFirstName());
+		propertyInfo.put("LastName",user.getLastName());
 		
-		saleInfo.put("Classification","Conventional");
-		saleInfo.put("IR","2");
-		saleInfo.put("IncludeMedicalCollections","false");
-		saleInfo.put("IncludeForeclosures","false");
-		saleInfo.put("DeclineForOpenBankruptcies","false");
-		saleInfo.put("OpenBankruptcyWindow","0");
-		saleInfo.put("IsFcraAgreeentAccepted","true");
+		propertyInfo.put("Classification","Conventional");
+		propertyInfo.put("IR","2");
+		propertyInfo.put("IncludeMedicalCollections","false");
+		propertyInfo.put("IncludeForeclosures","false");
+		propertyInfo.put("DeclineForOpenBankruptcies","false");
+		propertyInfo.put("OpenBankruptcyWindow","0");
+		propertyInfo.put("IsFcraAgreeentAccepted","true");
 		
 		String partnerId = systemPropertyDao
 				.getPropertyValue(TransUnionApiParameter.PARTNER_ID);
 		String key = systemPropertyDao
 				.getPropertyValue(TransUnionApiParameter.KEY);
-		saleInfo.put("partnerId", partnerId);
-		saleInfo.put("key", key);
+		propertyInfo.put("partnerId", partnerId);
+		propertyInfo.put("key", key);
 
-		return saleInfo;
+		return propertyInfo;
 	}
 
+	@Override
+	public Map<String, String> buildApplicationInfoMap(AnonymousUser au, String propertyIdStr) {
+		Map<String, String> applicationInfo = new HashMap<String,String>();
+		
+		Property p = au.getProperty();
+		if (p== null) {
+			return null;
+		}
+		
+		User user = userDao.findUser(p.getUserId());
+		final NumberFormat df = new DecimalFormat("#0.00");
+		final Double rent = p.getRentalAmount();
+		final Double deposit = p.getRentalDeposit();
+		
+		applicationInfo.put("Deposit", df.format(deposit));
+		applicationInfo.put("ApplicationId", "");
+		applicationInfo.put("LeaseTermInMonths", "12");
+		applicationInfo.put("LandlordPays", "True");
+		applicationInfo.put("PropertyId", propertyIdStr);
+		applicationInfo.put("Rent", df.format(rent));
+		applicationInfo.put("UnitNumber", p.getApartmentNo());
+		applicationInfo.put("ProductBundle", "PackageCore");
+		
+		applicationInfo.put("ApplicantEmail", au.getEmailId());
+		applicationInfo.put("CoApplicantEmail",  au.getCoappEmailId());
+		
+		return applicationInfo;
+	}
 }
