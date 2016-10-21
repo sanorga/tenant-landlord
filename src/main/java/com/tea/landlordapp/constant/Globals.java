@@ -1692,6 +1692,16 @@ public class Globals {
 	public final static String TU_QUESTIONS = "Questions";
 	public final static String TU_QUESTION = "Question";
 	public final static String TU_QUESTION_ID = "QuestionId";
+	public final static String TU_INCLUDE_MEDICAL_COLLECTIONS = "IncludeMedicalCollections";
+	public final static String TU_INCLUDE_FORECLOSURES = "IncludeForeclosures";
+	public final static String TU_RENT = "Rent";
+	public final static String TU_DEPOSIT = "Deposit";
+	public final static String TU_PRODUCT_BUNDLE = "ProductBundle";
+	public final static String TU_LANDLORD_PAYS = "LandlordPays";
+	public final static String TU_LEASE_TERM_IN_MONTHS = "LeaseTermInMonths";
+	public final static String TU_APPLICANT_EMAIL = "ApplicantEmail";
+	public final static String TU_COAPPLICANT_EMAIL = "CoapplicantEmail";
+	public final static String TU_APPLICATION_ID = "ApplicationId";
 	
 	//RevoPay variables
 	public final static String RP_MERCHANT_ID = "MerchantId";

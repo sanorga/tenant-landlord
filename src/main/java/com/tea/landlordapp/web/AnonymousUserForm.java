@@ -162,22 +162,26 @@ public class AnonymousUserForm extends AbstractDataController {
 //         setActionMessage(request, "confirm.mail_send_fail");
 //         return "redirect:home.htm";
 //      }
-
+		if (propertyId.contains("Error:")) {
+				
+				logger.debug("no property obtained");
+			    setActionMessage(request, "confirm.unsuccessful_invitation_to_apply");
+			    return "redirect:home.htm";
+			}
       // set message and return
       Integer pId;
 		try {
 			pId = Integer.valueOf(propertyId);
+		      property.setPropertyId(pId);
+		      userDao.saveProperty(property);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "InvalidPropertyId";
+			
 		}
 		
-      setActionMessage(request, "confirm.anonymous_user_save_success");
-      property.setPropertyId(pId);
-      userDao.saveProperty(property);
-      
-      
+      setActionMessage(request, "confirm.successful_invitation_to_apply");
+
       return "redirect:home.htm";
    }
 

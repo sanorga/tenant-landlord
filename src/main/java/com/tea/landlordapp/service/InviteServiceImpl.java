@@ -41,6 +41,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import com.tea.landlordapp.domain.AnonymousUser;
 import com.tea.landlordapp.enums.TransUnionApiParameter;
 import com.tea.landlordapp.repository.SystemPropertyDao;
@@ -83,18 +88,20 @@ public class InviteServiceImpl implements InviteService{
 			//Create property - (POST)/LandlordApi/V1/Property
 			//-----------------------------------------------------------------
 			String propertyIdStr = addProperty(apiUrl, partnerId, key, au);
-			if (propertyIdStr == null){
+			if ((propertyIdStr.contains("Error:")) || 
+				(propertyIdStr == null)) {
 				logger.debug("no property obtained");
-				return "Unsuccessful Invite Attempt";
+				return "Error: Unsuccessful Invite Attempt";
 			}
 			//-----------------------------------------------------------------
 			//Create Application - (POST)/LandlordApi/V1/Application
 			//-----------------------------------------------------------------
 
 			String applicationIdStr = addApplication(apiUrl, partnerId, key, au, propertyIdStr);
-			if (applicationIdStr == null){
+			if (applicationIdStr.contains("Error:") || 
+			(applicationIdStr == null)) {
 				logger.debug("no application obtained");
-				return "Unsuccessful Invite Attempt";
+				return "Error: Unsuccessful Invite Attempt";
 			}
 		
 			return null;
@@ -117,7 +124,7 @@ public class InviteServiceImpl implements InviteService{
 		Map<String, String> applicationInfo = inviteHelper.buildApplicationInfoMap(au, propertyIdStr);
 		
 		if (Double.valueOf(applicationInfo.get("RentalAmount")) <= 0) {
-			return "ZeroRentalAmount";
+			return "Error:ZeroRentalAmount";
 		}
 		
 //		String xmlString = getXmlString(propertyInfo,"ADDPROPERTY");
@@ -128,7 +135,7 @@ public class InviteServiceImpl implements InviteService{
 		String credentials = getCredentials(apiUrl, partnerId, key);
 		if (credentials == null){
 			logger.debug("no credentials obtained");
-			return "NoCredentialsObtained";
+			return "Error:NoCredentialsObtained";
 		}
 		
 		// post property
@@ -136,18 +143,19 @@ public class InviteServiceImpl implements InviteService{
 		response=postJSONMessageGetJSON(apiCall, jsonString, credentials);
 		if (StringUtils.isBlank(response)) {
 			logger.debug("no application request obtained");
-			return "Unsuccessful POST";
+			return "Error:UnsuccessfulPOST";
 		}
 		
-		Map<String,String> applicationResponse = getAuthorizeResponseXml(response);
-		String applicationId = applicationResponse.get("applicationId");
+		logger.debug(response);
+		JsonObject applicationResponseJson = getAuthorizeResponseJson(response);
+		String applicationId = applicationResponseJson.get("applicationId").getAsString();
 		Integer aId;
 		try {
 			aId = Integer.valueOf(applicationId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "InvalidApplicationId";
+			return "Error:InvalidApplicationId";
 		}
 		
 		
@@ -169,7 +177,7 @@ public class InviteServiceImpl implements InviteService{
 		Map<String, String> propertyInfo = inviteHelper.buildPropertyInfoMap(au);
 		
 		if (Double.valueOf(propertyInfo.get("RentalAmount")) <= 0) {
-			return "ZeroRentalAmount";
+			return "Error:ZeroRentalAmount";
 		}
 		
 //		String xmlString = getXmlString(propertyInfo,"ADDPROPERTY");
@@ -180,7 +188,7 @@ public class InviteServiceImpl implements InviteService{
 		String credentials = getCredentials(apiUrl, partnerId, key);
 		if (credentials == null){
 			logger.debug("no credentials obtained");
-			return "NoCredentialsObtained";
+			return "Error:NoCredentialsObtained";
 		}
 		
 		// post property
@@ -188,18 +196,18 @@ public class InviteServiceImpl implements InviteService{
 		response=postJSONMessageGetJSON(apiCall, jsonString, credentials);
 		if (StringUtils.isBlank(response)) {
 			logger.debug("no property request obtained");
-			return "Unsuccessful POST";
+			return "Error:Unsuccessful POST";
 		}
 		
-		Map<String,String> propertyResponse = getAuthorizeResponseXml(response);
-		String propertyId = propertyResponse.get("propertyId");
+		JsonObject propertyResponseJson = getAuthorizeResponseJson(response);
+		String propertyId = propertyResponseJson.get("propertyId").getAsString();
 		Integer pId;
 		try {
 			pId = Integer.valueOf(propertyId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "InvalidPropertyId";
+			return "Error:InvalidPropertyId";
 		}
 		
 		
@@ -214,7 +222,7 @@ public class InviteServiceImpl implements InviteService{
 		String serverTime = getServerTime(apiUrl);
 		if (serverTime == null){
 			logger.debug("no server time obtained");
-			return "NoServerTimeObtained";
+			return "Error:NoServerTimeObtained";
 		}
 		
 		//  2- get a token
@@ -222,7 +230,7 @@ public class InviteServiceImpl implements InviteService{
 		
 		if (token == null){
 			logger.debug("no token obtained");
-			return "NoTokenObtained";
+			return "Error:NoTokenObtained";
 		}
 		
 		//  3- get credentials
@@ -258,7 +266,7 @@ public class InviteServiceImpl implements InviteService{
 		String response=getRequest(apiCall, null);
 		if (response == null) {
 			logger.debug("no server time obtained");
-			return "NoServerTimeObtained";
+			return "Error:NoServerTimeObtained";
 		}
 		
 		Map<String,String> saleResponse = getAuthorizeResponseXml(response);
@@ -471,9 +479,10 @@ public class InviteServiceImpl implements InviteService{
 		return cleanXml;
 	}
 	
-	private Map<String, String> getAuthorizeResponseJson(String resp) {
-		Map<String, String> mapResponse =  new HashMap<String,String>();
-		return mapResponse;
+	private JsonObject getAuthorizeResponseJson(String resp) {
+		JsonParser parser = new JsonParser();
+		JsonObject resJson = (JsonObject) parser.parse(resp);
+		return resJson;
 	}
 	
 	
@@ -805,7 +814,7 @@ public class InviteServiceImpl implements InviteService{
 //		return cleanXml;
 //	}
 
-	private String getJSONString(Map<String, String> propertyInfo, String inviteFunction) {
+	private String getJSONString(Map<String, String> entityInfo, String inviteFunction) {
 		
 		String jsonString = null, cleanXml=null;
 		StringBuilder sb = new StringBuilder();
@@ -814,245 +823,204 @@ public class InviteServiceImpl implements InviteService{
 		case "ADDPROPERTY":
 			sb.append("{");
 //			sb.append("\"PropertyId\": \"");
-//			sb.append(String.format("%s",propertyInfo.get(Globals.TU_ID)));
+//			sb.append(String.format("%s",entityInfo.get(Globals.TU_ID)));
 //			sb.append("\","PropertyId\": \"");
 			sb.append("\"PropertyIdentifier\": \"");
-			sb.append(propertyInfo.get(Globals.TU_PROPERTY_IDENTIFIER));
+			sb.append(entityInfo.get(Globals.TU_PROPERTY_IDENTIFIER));
 			sb.append("\",");
 			sb.append("\"Active\": \"");
-			sb.append(String.format("%s",propertyInfo.get(Globals.TU_ACTIVE)));
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_ACTIVE)));
 			sb.append("\",");
 			sb.append("\"Name\": \"");
-			sb.append(String.format("%s",propertyInfo.get(Globals.TU_NAME)));
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_NAME)));
 			sb.append("\",");
 			sb.append("\"UnitNumber\": \"");
-			sb.append(String.format("%s",propertyInfo.get(Globals.TU_UNIT_NUMBER)));
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_UNIT_NUMBER)));
 			sb.append("\",");
 			sb.append("\"FirstName\": \"");
-			sb.append(String.format("%s",propertyInfo.get(Globals.TU_FIRSTNAME)));
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_FIRSTNAME)));
 			sb.append("\",");
 			sb.append("\"LastName\": \"");
-			sb.append(String.format("%s",propertyInfo.get(Globals.TU_LASTNAME)));
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_LASTNAME)));
 			sb.append("\",");
 			sb.append("\"Street\": \"");
-			sb.append(String.format("%s",propertyInfo.get(Globals.TU_STREET)));
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_STREET)));
 			sb.append("\",");
 			sb.append("\"City\": \"");
-			sb.append(String.format("%s",propertyInfo.get(Globals.TU_CITY)));
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_CITY)));
 			sb.append("\",");
 			sb.append("\"State\": \"");
-			sb.append(String.format("%s",propertyInfo.get(Globals.TU_STATE)));
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_STATE)));
 			sb.append("\",");
 			sb.append("\"Zip\": \"");
-			sb.append(String.format("%s",propertyInfo.get(Globals.TU_ZIP)));
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_ZIP)));
 			sb.append("\",");
 			sb.append("\"Phone\": \"");
-			sb.append(String.format("%s",propertyInfo.get(Globals.TU_PHONE)));
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_PHONE)));
 			sb.append("\",");
-			if (propertyInfo.get(Globals.TU_PHONE_EXTENSION)!= null) {
+			if (entityInfo.get(Globals.TU_PHONE_EXTENSION)!= null) {
 				sb.append("\"PhoneExtension\": \"");
-				sb.append(String.format("%s",propertyInfo.get(Globals.TU_PHONE_EXTENSION)));
+				sb.append(String.format("%s",entityInfo.get(Globals.TU_PHONE_EXTENSION)));
 				sb.append("\",");
 			}
-			sb.append("\"Questions\": \"");
-			sb.append("\"e\": \"");
+			sb.append("\"Questions\": ");
+			sb.append("[{");
 			sb.append("\"QuestionId\": \"");
 			sb.append("1");
 			sb.append("\",");
 			sb.append("\"QuestionText\": \"");
 			sb.append("How would you describe your property?");
 			sb.append("\",");
-			sb.append("\"Options\": \"");
-			sb.append("\"e\": \"");
+			sb.append("\"Options\": ");
+			sb.append("[{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("A");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("High end property offering many amenities and convenience to renters (for example on-site fitness facility with modern, maintained equipment or easy access to the same, laundry facilities within the unit or within the immediate building, etc.). If the property is new, it employs higher-end equipment, appliances and convenience features throughout the facility and/or unit(s). If the property is aged, it has been significantly renovated recently to modernize key areas within the property (for example parking areas, parking garages or overhangs, gated community, etc.) and key features (for example appliances, furnishing, cabinets, bathroom fixtures, etc.). 'A' properties will have a lower risk factor, requiring higher standards of renters in regards to income and credit history.");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\"e\": \"");
+			sb.append("\"},{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("B");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("High end property offering many amenities and convenience to renters (for example on-site fitness facility with modern, maintained equipment or easy access to the same, laundry facilities within the unit or within the immediate building, etc.). If the property is new, it employs higher-end equipment, appliances and convenience features throughout the facility and/or unit(s). If the property is aged, it has been significantly renovated recently to modernize key areas within the property (for example parking areas, parking garages or overhangs, gated community, etc.) and key features (for example appliances, furnishing, cabinets, bathroom fixtures, etc.). 'A' properties will have a lower risk factor, requiring higher standards of renters in regards to income and credit history.");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\"e\": \"");
+			sb.append("\"},{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("C");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Low-end property offering few, if any, amenities or conveniences to renters (for example laundry facilities, fitness facility, etc.). If the property has been recently built, the quality of materials used for common features of the property and/or unit(s) is average or bulk building supplies. For somewhat aged properties, few, if any, renovations have been applied to update common-use features (for example water heaters, appliances, bathroom fixtures, paint, etc.). 'C' properties employ a high risk factor reflecting a lower quality offering to potential renters and allowing lower standards for potential lessees.");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\",");
+			sb.append("\"}],");
 			sb.append("\"SelectedAnswer\": \"");
 			sb.append("A");
-			sb.append("\",");
-			sb.append("\",");
+			sb.append("\"},{");
 
-			sb.append("\"e\": \"");
 			sb.append("\"QuestionId\": \"");
 			sb.append("2");
 			sb.append("\",");
 			sb.append("\"QuestionText\": \"");
 			sb.append("How does your unit(s)'s rent compare to others in the neighborhood?");
 			sb.append("\",");
-			sb.append("\"Options\": \"");
-			sb.append("\"e\": \"");
+			sb.append("\"Options\": ");
+			sb.append("[{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("A");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Average applicant income will be significantly higher than expected rent");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\"e\": \"");
+			sb.append("\"},{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("B");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Average applicant income will be somewhat higher than expected rent");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\"e\": \"");
+			sb.append("\"},{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("C");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Average applicant income will be just above the expected rent");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\",");
+			sb.append("\"}],");
 			sb.append("\"SelectedAnswer\": \"");
 			sb.append("C");
-			sb.append("\",");
-			sb.append("\",");			
-			
-			sb.append("\"e>");
+			sb.append("\"},{");
+
 			sb.append("\"QuestionId\": \"");
 			sb.append("3");
 			sb.append("\",");
 			sb.append("\"QuestionText\": \"");
 			sb.append("What do you expect the average income of your potential applicants to be?");
 			sb.append("\",");
-			sb.append("\"Options\": \"");
-			sb.append("\"e\": \"");
+			sb.append("\"Options\": ");
+			sb.append("[{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("A");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Average applicant income will be much greater than the average income for the area");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\"e\": \"");
+			sb.append("\"},{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("B");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Average applicant income will be at the average income for the area");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\"e\": \"");
+			sb.append("\"},{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("C");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Average applicant income will be below the average income for the area");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\",");
+			sb.append("\"}],");
 			sb.append("\"SelectedAnswer\": \"");
 			sb.append("C");
-			sb.append("\",");
-			sb.append("\",");
+			sb.append("\"},{");
 			
-			sb.append("\"e\": \"");
 			sb.append("\"QuestionId\": \"");
 			sb.append("4");
 			sb.append("\",");
 			sb.append("\"QuestionText\": \"");
 			sb.append("Do you expect the average income of your potential applicnats to be above, at, or below the average income of other tenants in the neighborhood?");
 			sb.append("\",");
-			sb.append("\"Options\": \"");
-			sb.append("\"e\": \"");
+			sb.append("\"Options\": ");
+			sb.append("[{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("A");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Expected rent will be greater than the average rent for the area");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\"e\": \"");
+			sb.append("\"},{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("B");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Expected rent will be at the average rent for the area");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\"e\": \"");
+			sb.append("\"},{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("C");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Expected rent will be below the average rent for the area");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\",");
+			sb.append("\"}],");
 			sb.append("\"SelectedAnswer\": \"");
 			sb.append("B");
-			sb.append("\",");
-			sb.append("\",");
+			sb.append("\"},{");
 			
-			sb.append("\"e\": \"");
 			sb.append("\"QuestionId\": \"");
 			sb.append("5");
 			sb.append("\",");
 			sb.append("\"QuestionText\": \"");
 			sb.append("Do you expect many applicants to apply for your unit(s)?");
 			sb.append("\",");
-			sb.append("\"Options\": \"");
-			sb.append("\"e\": \"");
+			sb.append("\"Options\": ");
+			sb.append("[{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("A");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Expect many applicants and good visibility for these units");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\"e\": \"");
+			sb.append("\"},{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("B");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Expect a steady number of applicants with average visibility for these unit(s)");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\"e\": \"");
+			sb.append("\"},{");
 			sb.append("\"AnswerText\": \"");
 			sb.append("C");
 			sb.append("\",");
 			sb.append("\"AnswerDescription\": \"");
 			sb.append("Expect few applicants");
-			sb.append("\",");
-			sb.append("\",");
-			sb.append("\",");
+			sb.append("\"}],");
 			sb.append("\"SelectedAnswer\": \"");
 			sb.append("A");
-			sb.append("\",");
-			sb.append("\",");
-			
-			sb.append("\",");
+			sb.append("\"}],");
 			
 			
 			sb.append("\"Classification\": \"");
 			sb.append("Conventional");
-			sb.append("\"");
+			sb.append("\",");
 			sb.append("\"IR\": \"");
-			sb.append("2.0");
+			sb.append("2");
 			sb.append("\",");
 //			sb.append("\"IncludeMedicalCollections\": \"");
 //			sb.append("false");
@@ -1060,15 +1028,21 @@ public class InviteServiceImpl implements InviteService{
 //			sb.append("\"IncludeForeclosures\": \"");
 //			sb.append("false");
 //			sb.append("\""/IncludeForeclosures\": \"");
-//			sb.append("\"DeclineForOpenBankruptcies\": \"");
-//			sb.append("false");
-//			sb.append("\","DeclineForOpenBankruptcies\": \"");
-//			sb.append("\"OpenBankruptcyWindow\": \"");
-//			sb.append("0");
-//			sb.append("\","OpenBankruptcyWindow\": \"");
-			sb.append("\"IsFcraAgreementAccepted>");
-			sb.append("true");
+			sb.append("\"IncludeMedicalCollections\": \"");
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_INCLUDE_MEDICAL_COLLECTIONS)));
 			sb.append("\",");
+			sb.append("\"IncludeForeclosures\": \"");
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_INCLUDE_FORECLOSURES)));
+			sb.append("\",");
+			sb.append("\"DeclineForOpenBankruptcies\": \"");
+			sb.append("false");
+			sb.append("\",");
+			sb.append("\"OpenBankruptcyWindow\": \"");
+			sb.append("6");
+			sb.append("\",");
+			sb.append("\"IsFcraAgreementAccepted\": \"");
+			sb.append("true");
+			sb.append("\"");
 			sb.append("}");
 
 
@@ -1076,7 +1050,36 @@ public class InviteServiceImpl implements InviteService{
 //			sb.append(String.format("%s","0.00"));
 			jsonString = sb.toString();
 			break;
-
+		case "ADDAPPLICATION":
+			sb.append("{");
+			sb.append("\"Applicants\": [");
+			sb.append(entityInfo.get(Globals.TU_APPLICANT_EMAIL));
+			sb.append("\",");
+			sb.append(entityInfo.get(Globals.TU_COAPPLICANT_EMAIL));
+			sb.append("\"],");
+			sb.append("\"PropertyId\": \"");
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_ID)));
+			sb.append("\",");	
+			sb.append("\"LeaseTermInMonths\": \"");
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_LEASE_TERM_IN_MONTHS)));
+			sb.append("\",");	
+			sb.append("\"Rent\": \"");
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_RENT)));
+			sb.append("\",");
+			sb.append("\"Deposit\": \"");
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_DEPOSIT)));
+			sb.append("\",");
+			sb.append("\"UnitNumber\": \"");
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_UNIT_NUMBER)));
+			sb.append("\",");
+			sb.append("\"ProductBundle\": \"");
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_PRODUCT_BUNDLE)));
+			sb.append("\",");
+			sb.append("\"LandLordPays\": \"");
+			sb.append(String.format("%s",entityInfo.get(Globals.TU_LANDLORD_PAYS)));
+			sb.append("\" }");
+			jsonString = sb.toString();
+			break;
 		default:
 //			dto.setSuccessful(false);
 			return jsonString;
@@ -1096,7 +1099,7 @@ public class InviteServiceImpl implements InviteService{
 			throws IOException, XPathExpressionException {
 		// try {
 		
-		message = "{ \"PropertyIdentifier\": \"Hanks PropertyIdentifier\", \"Active\": \"false\", \"Name\": \"Hanks Property Name\", \"UnitNumber\":\"Abcd 123\",\"FirstName\": \"Tom\", \"LastName\": \"Hanks\", \"Street\": \"123 Mickey Mouse St\",\"City\": \"Littleton\", \"State\": \"CO\", \"Zip\": \"80124\", \"Phone\": \"3031432323\", \"PhoneExtension\": \"1111\", \"Questions\": [ { \"QuestionId\": \"1\", \"QuestionText\": \"How would you describe your property?\", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"High end property offering many amenities and convenience to renters (for example on-site fitness facility with modern, maintained equipment or easy access to the same, laundry facilities within the unit or within the immediate building, etc.). If the property is new, it employs higher-end equipment, appliances and convenience features throughout the facility and/or unit(s). If the property is aged, it has been significantly renovated recently to modernize key areas within the property (for example parking areas, parking garages or overhangs, gated community, etc.) and key features (for example appliances, furnishing, cabinets, bathroom fixtures, etc.). 'A' properties will have a lower risk factor, requiring higher standards of renters in regards to income and credit history.\" },{ \"AnswerText\": \"B\", \"AnswerDescription\": \"Moderate living property offering some key amenities and/or conveniences to renters (for example laundry facilities within the building or in a facility very near by, easily accessible, though not on-site, fitness facility with modern equipment, etc.). If the property has been recently built, the quality of materials used for common features of the property and/or unit(s) is good, though not high-end. For somewhat aged properties, significant renovations have been applied to improve common-use features (for example water heaters, appliances, bathroom fixtures, paint, etc.). 'B' properties employ a moderate risk factor that will eliminate applicants with poor credit histories while still accepting moderate to good credit histories and income.\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Low-end property offering few, if any, amenities or conveniences to renters (for example laundry facilities, fitness facility, etc.). If the property has been recently built, the quality of materials used for common features of the property and/or unit(s) is average or bulk building supplies. For somewhat aged properties, few, if any, renovations have been applied to update common-use features (for example water heaters, appliances, bathroom fixtures, paint, etc.). 'C' properties employ a high risk factor reflecting a lower quality offering to potential renters and allowing lower standards for potential lessees.\" } ], \"SelectedAnswer\": \"A\" }, {\"QuestionId\": \"2\", \"QuestionText\": \"How does your unit(s)'s rent compare to others in the neighborhood?\", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"Average applicant income will be significantly higher than expected rent\" }, { \"AnswerText\": \"B\", \"AnswerDescription\": \"Average applicant income will be somewhat higher than expected rent\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Average applicant income will be just above the expected rent\" } ], \"SelectedAnswer\": \"C\" }, {\"QuestionId\": \"3\", \"QuestionText\": \"What do you expect the average income of your potential applicants to be?\", \"Options\": [{ \"AnswerText\": \"A\", \"AnswerDescription\": \"Average applicant income will be much greater than the average income for the area\" }, { \"AnswerText\": \"B\", \"AnswerDescription\": \"Average applicant income will be at the average income for the area\"}, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Average applicant income will be below the average income for the area\" } ], \"SelectedAnswer\": \"C\" },{ \"QuestionId\": \"4\", \"QuestionText\": \"Do you expect the average income of your potential applicnats to be above, at, or below the average income of other tenants in the neighborhood?\", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"Expected rent will be greaterthan the average rent for the area\" }, { \"AnswerText\": \"B\", \"AnswerDescription\": \"Expected rent will be at the average rent for the area\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Expected rent will be below the average rent for the area\" } ], \"SelectedAnswer\": \"B\" }, { \"QuestionId\": \"5\", \"QuestionText\": \"Do you expect many applicants to apply for your unit(s)? \", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"Expect many applicants and good visibility for these units\" }, {\"AnswerText\": \"B\", \"AnswerDescription\": \"Expect a steady number of applicants with average visibility for these unit(s)\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Expect few applicants\" } ], \"SelectedAnswer\": \"A\" } ], \"Classification\": \"Conventional\",\"IR\": \"2\", \"IncludeMedicalCollections\": \"false\", \"IncludeForeclosures\": \"false\", \"DeclineForOpenBankruptcies\": \"false\", \"OpenBankruptcyWindow\": \"6\", \"IsFcraAgreementAccepted\": \"true\" }";
+//		message = "{ \"PropertyIdentifier\": \"Hanks PropertyIdentifier\", \"Active\": \"false\", \"Name\": \"Hanks Property Name\", \"UnitNumber\":\"Abcd 123\",\"FirstName\": \"Tom\", \"LastName\": \"Hanks\", \"Street\": \"123 Mickey Mouse St\",\"City\": \"Littleton\", \"State\": \"CO\", \"Zip\": \"80124\", \"Phone\": \"3031432323\", \"PhoneExtension\": \"1111\", \"Questions\": [ { \"QuestionId\": \"1\", \"QuestionText\": \"How would you describe your property?\", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"High end property offering many amenities and convenience to renters (for example on-site fitness facility with modern, maintained equipment or easy access to the same, laundry facilities within the unit or within the immediate building, etc.). If the property is new, it employs higher-end equipment, appliances and convenience features throughout the facility and/or unit(s). If the property is aged, it has been significantly renovated recently to modernize key areas within the property (for example parking areas, parking garages or overhangs, gated community, etc.) and key features (for example appliances, furnishing, cabinets, bathroom fixtures, etc.). 'A' properties will have a lower risk factor, requiring higher standards of renters in regards to income and credit history.\" },{ \"AnswerText\": \"B\", \"AnswerDescription\": \"Moderate living property offering some key amenities and/or conveniences to renters (for example laundry facilities within the building or in a facility very near by, easily accessible, though not on-site, fitness facility with modern equipment, etc.). If the property has been recently built, the quality of materials used for common features of the property and/or unit(s) is good, though not high-end. For somewhat aged properties, significant renovations have been applied to improve common-use features (for example water heaters, appliances, bathroom fixtures, paint, etc.). 'B' properties employ a moderate risk factor that will eliminate applicants with poor credit histories while still accepting moderate to good credit histories and income.\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Low-end property offering few, if any, amenities or conveniences to renters (for example laundry facilities, fitness facility, etc.). If the property has been recently built, the quality of materials used for common features of the property and/or unit(s) is average or bulk building supplies. For somewhat aged properties, few, if any, renovations have been applied to update common-use features (for example water heaters, appliances, bathroom fixtures, paint, etc.). 'C' properties employ a high risk factor reflecting a lower quality offering to potential renters and allowing lower standards for potential lessees.\" } ], \"SelectedAnswer\": \"A\" }, {\"QuestionId\": \"2\", \"QuestionText\": \"How does your unit(s)'s rent compare to others in the neighborhood?\", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"Average applicant income will be significantly higher than expected rent\" }, { \"AnswerText\": \"B\", \"AnswerDescription\": \"Average applicant income will be somewhat higher than expected rent\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Average applicant income will be just above the expected rent\" } ], \"SelectedAnswer\": \"C\" }, {\"QuestionId\": \"3\", \"QuestionText\": \"What do you expect the average income of your potential applicants to be?\", \"Options\": [{ \"AnswerText\": \"A\", \"AnswerDescription\": \"Average applicant income will be much greater than the average income for the area\" }, { \"AnswerText\": \"B\", \"AnswerDescription\": \"Average applicant income will be at the average income for the area\"}, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Average applicant income will be below the average income for the area\" } ], \"SelectedAnswer\": \"C\" },{ \"QuestionId\": \"4\", \"QuestionText\": \"Do you expect the average income of your potential applicnats to be above, at, or below the average income of other tenants in the neighborhood?\", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"Expected rent will be greaterthan the average rent for the area\" }, { \"AnswerText\": \"B\", \"AnswerDescription\": \"Expected rent will be at the average rent for the area\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Expected rent will be below the average rent for the area\" } ], \"SelectedAnswer\": \"B\" }, { \"QuestionId\": \"5\", \"QuestionText\": \"Do you expect many applicants to apply for your unit(s)? \", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"Expect many applicants and good visibility for these units\" }, {\"AnswerText\": \"B\", \"AnswerDescription\": \"Expect a steady number of applicants with average visibility for these unit(s)\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Expect few applicants\" } ], \"SelectedAnswer\": \"A\" } ], \"Classification\": \"Conventional\",\"IR\": \"2\", \"IncludeMedicalCollections\": \"false\", \"IncludeForeclosures\": \"false\", \"DeclineForOpenBankruptcies\": \"false\", \"OpenBankruptcyWindow\": \"6\", \"IsFcraAgreementAccepted\": \"true\" }";
 		
 //		URL baseUrl = new URL(getBaseURL());
 //		HttpURLConnectionFacade conn = connectionFactoryService.getConnection(baseUrl);
@@ -1131,12 +1134,23 @@ public class InviteServiceImpl implements InviteService{
 		int responseCode = conn.getResponseCode();
 		String responseMessage = conn.getResponseMessage();
 		
-		if (responseCode != 200) {
+		if (responseCode != 201) {
 			logger.error(String.format("Service returned problem message -- %d:%s\\nrequest: %s", responseCode, responseMessage, message));
-			return null;
+			return "Error:not processed";
 	    }
+		BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		StringBuffer inputLine = new StringBuffer();
+		String tmp;
+		while ((tmp = input.readLine()) != null) {
+			inputLine.append(tmp);
+		}
+		input.close(); 
 		
-	return responseMessage;	
+		String resp = inputLine.toString();
+		return resp;
+		
+
+	
 		
 //		conn.sendOutput(message);
 //		final byte[] outputBytes = message.getBytes();

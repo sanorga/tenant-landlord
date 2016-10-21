@@ -45,14 +45,17 @@ public class InviteHelperImpl implements InviteHelper {
 		propertyInfo.put("RentalAmount", df.format(rentalAmount));
 		propertyInfo.put("RentalDeposit", df.format(rentalDeposit));
 		propertyInfo.put("PropertyId", "");
-		propertyInfo.put("PropertyIdentifier", "Identifier");
+		propertyInfo.put("PropertyIdentifier", p.getName());
 		propertyInfo.put("Active", "true");
 		propertyInfo.put("Zip", p.getZipcode());
 		if (p.getPhone() != null) {
 			propertyInfo.put("Phone", p.getPhone());
 		} 
-		else propertyInfo.put("Phone", "9999999999");
-		propertyInfo.put("PhoneExtension",p.getExtension());
+		else propertyInfo.put("Phone", "3056784433");
+		if (p.getExtension() != null) {
+			propertyInfo.put("PhoneExtension",p.getExtension());
+		}
+		else propertyInfo.put("PhoneExtension","111");
 		propertyInfo.put("UnitNumber", p.getApartmentNo());
 		propertyInfo.put("City", p.getCity());
 		propertyInfo.put("Street", p.getStreet());
@@ -94,7 +97,7 @@ public class InviteHelperImpl implements InviteHelper {
 		final Double deposit = p.getRentalDeposit();
 		
 		applicationInfo.put("Deposit", df.format(deposit));
-		applicationInfo.put("ApplicationId", "");
+		applicationInfo.put("ApplicationId", "0");
 		applicationInfo.put("LeaseTermInMonths", "12");
 		applicationInfo.put("LandlordPays", "True");
 		applicationInfo.put("PropertyId", propertyIdStr);
