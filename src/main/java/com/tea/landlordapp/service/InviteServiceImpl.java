@@ -13,6 +13,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
@@ -47,6 +49,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import com.tea.landlordapp.domain.AnonymousUser;
+import com.tea.landlordapp.domain.Property;
 import com.tea.landlordapp.enums.TransUnionApiParameter;
 import com.tea.landlordapp.repository.SystemPropertyDao;
 import com.tea.landlordapp.service.helper.InviteHelper;
@@ -77,43 +80,82 @@ public class InviteServiceImpl implements InviteService{
 	}
 	
 	@Override
-	public String invite(AnonymousUser au) throws Exception {
-
+	public Map<String, String> invite(AnonymousUser au) throws Exception {
+			
+			Map<String, String> result = new HashMap<String,String>();
+			String propertyIdStr = null, organizationIdStr = null;
 			String apiUrl = systemPropertyDao.getPropertyValue(TransUnionApiParameter.URL);
 			String partnerId = systemPropertyDao.getPropertyValue(TransUnionApiParameter.PARTNER_ID);
 			String key = systemPropertyDao.getPropertyValue(TransUnionApiParameter.KEY);
 			String live = systemPropertyDao.getPropertyValue(TransUnionApiParameter.IS_LIVE);
 	
-			//-----------------------------------------------------------------
-			//Create property - (POST)/LandlordApi/V1/Property
-			//-----------------------------------------------------------------
-			String propertyIdStr = addProperty(apiUrl, partnerId, key, au);
-			if ((propertyIdStr.contains("Error:")) || 
-				(propertyIdStr == null)) {
-				logger.debug("no property obtained");
-				return "Error: Unsuccessful Invite Attempt";
+			if (au.getProperty() == null) {
+				return null;
 			}
+		
+			Property p = au.getProperty();
+			Integer propertyId = p.getPropertyId();
+			Integer organizationId = p.getOrganizationId();
+			String organizationName = p.getOrganizationName();
+			
+			if (propertyId == 0) {
+				//-----------------------------------------------------------------
+				//Create property - (POST)/LandlordApi/V1/Property
+				//-----------------------------------------------------------------
+				Map<String, String> propertyResultMap = addProperty(apiUrl, partnerId, key, au);
+				if (propertyResultMap == null) {
+					logger.debug("no property obtained");
+					return null;
+				}
+				
+				propertyIdStr = propertyResultMap.get("propertyIdStr");
+				if (propertyIdStr == "0" || propertyIdStr == null){
+					logger.debug("no property id obtained");
+					return null;
+				}
+				organizationIdStr = propertyResultMap.get("organizationIdStr");
+				organizationName = propertyResultMap.get("organizationName");
+	//			propertyIdStr = "41704";
+			}
+			else {
+				propertyIdStr = propertyId.toString();
+				organizationIdStr = organizationId.toString();
+				
+			}
+			
+			result.put("propertyIdStr", propertyIdStr);
+			result.put("organizationIdStr", organizationIdStr);
+			result.put("organizationName", organizationName);
+			
 			//-----------------------------------------------------------------
 			//Create Application - (POST)/LandlordApi/V1/Application
 			//-----------------------------------------------------------------
 
-			String applicationIdStr = addApplication(apiUrl, partnerId, key, au, propertyIdStr);
-			if (applicationIdStr.contains("Error:") || 
-			(applicationIdStr == null)) {
+			Map<String, String> applicationResultMap = addApplication(apiUrl, partnerId, key, au, propertyIdStr);
+			if (applicationResultMap == null) {
 				logger.debug("no application obtained");
-				return "Error: Unsuccessful Invite Attempt";
+				return null;
+			}
+			String applicationIdStr = applicationResultMap.get("applicationIdStr");
+			if (applicationIdStr == "0" || applicationIdStr == null){
+				logger.debug("no application id obtained");
+				return null;
 			}
 		
-			return null;
+			result.put("applicationIdStr", applicationIdStr);
+			return result;
 	}
 	
 	
-	private String addApplication (String apiUrl, String partnerId, 
+	private Map<String,String> addApplication (String apiUrl, String partnerId, 
 								   String key, AnonymousUser au,
 								   String propertyIdStr) throws XPathExpressionException, IOException, ParserConfigurationException, SAXException {
 		
 		String apiCall = null, response=null;
 		StringBuilder aurl = null;
+		Map<String, String> responseMap;
+		String responseCodeStr = null, responseMessage = null;
+		Integer responseCode = 0;
 		
 		//call
 		aurl = new StringBuilder();
@@ -123,9 +165,9 @@ public class InviteServiceImpl implements InviteService{
 			
 		Map<String, String> applicationInfo = inviteHelper.buildApplicationInfoMap(au, propertyIdStr);
 		
-		if (Double.valueOf(applicationInfo.get("RentalAmount")) <= 0) {
-			return "Error:ZeroRentalAmount";
-		}
+//		if (Double.valueOf(applicationInfo.get("RentalAmount")) <= 0) {
+//			return "Error:ZeroRentalAmount";
+//		}
 		
 //		String xmlString = getXmlString(propertyInfo,"ADDPROPERTY");
 		String jsonString = getJSONString(applicationInfo,"ADDAPPLICATION");
@@ -135,36 +177,41 @@ public class InviteServiceImpl implements InviteService{
 		String credentials = getCredentials(apiUrl, partnerId, key);
 		if (credentials == null){
 			logger.debug("no credentials obtained");
-			return "Error:NoCredentialsObtained";
+			return null;
 		}
 		
 		// post property
 //		response=postRequest(apiCall, xmlString, credentials);
-		response=postJSONMessageGetJSON(apiCall, jsonString, credentials);
-		if (StringUtils.isBlank(response)) {
+		responseMap=postJSONMessageGetJSON(apiCall, jsonString, credentials);
+		
+		responseCodeStr = responseMap.get("responseCode");
+		responseCode = Integer.valueOf(responseCodeStr);
+		if (responseCode != 201) {
 			logger.debug("no application request obtained");
-			return "Error:UnsuccessfulPOST";
+			return null;
 		}
 		
-		logger.debug(response);
+		response = responseMap.get("response");
 		JsonObject applicationResponseJson = getAuthorizeResponseJson(response);
-		String applicationId = applicationResponseJson.get("applicationId").getAsString();
-		Integer aId;
+		String applicationIdStr = applicationResponseJson.get("ApplicationId").getAsString();
+		Integer applicationId;
 		try {
-			aId = Integer.valueOf(applicationId);
+			applicationId = Integer.valueOf(applicationIdStr);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "Error:InvalidApplicationId";
+			return null;
 		}
-		
-		
-		return applicationId;
+		responseMap.put("applicationIdStr",applicationIdStr);		
+		return responseMap;
 				
 	}
 	
-	private String addProperty(String apiUrl, String partnerId, String key, AnonymousUser au) throws XPathExpressionException, IOException, ParserConfigurationException, SAXException {
+	private Map<String, String> addProperty(String apiUrl, String partnerId, String key, AnonymousUser au) throws XPathExpressionException, IOException, ParserConfigurationException, SAXException {
 		
+		Map<String, String> responseMap;
+		String responseCodeStr = null, responseMessage = null;
+		Integer responseCode = 0;
 		String apiCall = null, response=null;
 		StringBuilder aurl = null;
 		
@@ -176,9 +223,9 @@ public class InviteServiceImpl implements InviteService{
 			
 		Map<String, String> propertyInfo = inviteHelper.buildPropertyInfoMap(au);
 		
-		if (Double.valueOf(propertyInfo.get("RentalAmount")) <= 0) {
-			return "Error:ZeroRentalAmount";
-		}
+//		if (Double.valueOf(propertyInfo.get("RentalAmount")) <= 0) {
+//			return "Error:ZeroRentalAmount";
+//		}
 		
 //		String xmlString = getXmlString(propertyInfo,"ADDPROPERTY");
 		String jsonString = getJSONString(propertyInfo,"ADDPROPERTY");
@@ -188,30 +235,37 @@ public class InviteServiceImpl implements InviteService{
 		String credentials = getCredentials(apiUrl, partnerId, key);
 		if (credentials == null){
 			logger.debug("no credentials obtained");
-			return "Error:NoCredentialsObtained";
+			return null;
 		}
 		
 		// post property
 //		response=postRequest(apiCall, xmlString, credentials);
-		response=postJSONMessageGetJSON(apiCall, jsonString, credentials);
-		if (StringUtils.isBlank(response)) {
+		responseMap=postJSONMessageGetJSON(apiCall, jsonString, credentials);
+
+		responseCodeStr = responseMap.get("responseCode");
+		responseCode = Integer.valueOf(responseCodeStr);
+		if (responseCode != 201) {
 			logger.debug("no property request obtained");
-			return "Error:Unsuccessful POST";
+			return null;
 		}
 		
+		response = responseMap.get("response");
 		JsonObject propertyResponseJson = getAuthorizeResponseJson(response);
-		String propertyId = propertyResponseJson.get("propertyId").getAsString();
-		Integer pId;
+		String propertyIdStr = propertyResponseJson.get("PropertyId").getAsString();
+		String organizationIdStr = propertyResponseJson.get("OrganizationId").getAsString();
+		String organizationName = propertyResponseJson.get("OrganizationName").getAsString();
+		Integer propertyId;
 		try {
-			pId = Integer.valueOf(propertyId);
+			propertyId = Integer.valueOf(propertyIdStr);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "Error:InvalidPropertyId";
+			return null;
 		}
-		
-		
-		return propertyId;
+		responseMap.put("propertyIdStr",propertyIdStr);	
+		responseMap.put("organizationIdStr",organizationIdStr);
+		responseMap.put("organizationName",organizationName);
+		return responseMap;
 				
 	}
 			
@@ -1052,10 +1106,12 @@ public class InviteServiceImpl implements InviteService{
 			break;
 		case "ADDAPPLICATION":
 			sb.append("{");
-			sb.append("\"Applicants\": [");
+			sb.append("\"Applicants\": [ \"");
 			sb.append(entityInfo.get(Globals.TU_APPLICANT_EMAIL));
 			sb.append("\",");
-			sb.append(entityInfo.get(Globals.TU_COAPPLICANT_EMAIL));
+			if (entityInfo.get(Globals.TU_COAPPLICANT_EMAIL) != null) {
+				sb.append(entityInfo.get(Globals.TU_COAPPLICANT_EMAIL));
+			}
 			sb.append("\"],");
 			sb.append("\"PropertyId\": \"");
 			sb.append(String.format("%s",entityInfo.get(Globals.TU_ID)));
@@ -1095,8 +1151,10 @@ public class InviteServiceImpl implements InviteService{
 	
 	
 	@Override
-	public String postJSONMessageGetJSON(String apiUrl, String message, String credentials)
+	public Map<String, String> postJSONMessageGetJSON(String apiUrl, String message, String credentials)
 			throws IOException, XPathExpressionException {
+		
+		Map<String,String> response = new HashMap<String,String>();
 		// try {
 		
 //		message = "{ \"PropertyIdentifier\": \"Hanks PropertyIdentifier\", \"Active\": \"false\", \"Name\": \"Hanks Property Name\", \"UnitNumber\":\"Abcd 123\",\"FirstName\": \"Tom\", \"LastName\": \"Hanks\", \"Street\": \"123 Mickey Mouse St\",\"City\": \"Littleton\", \"State\": \"CO\", \"Zip\": \"80124\", \"Phone\": \"3031432323\", \"PhoneExtension\": \"1111\", \"Questions\": [ { \"QuestionId\": \"1\", \"QuestionText\": \"How would you describe your property?\", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"High end property offering many amenities and convenience to renters (for example on-site fitness facility with modern, maintained equipment or easy access to the same, laundry facilities within the unit or within the immediate building, etc.). If the property is new, it employs higher-end equipment, appliances and convenience features throughout the facility and/or unit(s). If the property is aged, it has been significantly renovated recently to modernize key areas within the property (for example parking areas, parking garages or overhangs, gated community, etc.) and key features (for example appliances, furnishing, cabinets, bathroom fixtures, etc.). 'A' properties will have a lower risk factor, requiring higher standards of renters in regards to income and credit history.\" },{ \"AnswerText\": \"B\", \"AnswerDescription\": \"Moderate living property offering some key amenities and/or conveniences to renters (for example laundry facilities within the building or in a facility very near by, easily accessible, though not on-site, fitness facility with modern equipment, etc.). If the property has been recently built, the quality of materials used for common features of the property and/or unit(s) is good, though not high-end. For somewhat aged properties, significant renovations have been applied to improve common-use features (for example water heaters, appliances, bathroom fixtures, paint, etc.). 'B' properties employ a moderate risk factor that will eliminate applicants with poor credit histories while still accepting moderate to good credit histories and income.\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Low-end property offering few, if any, amenities or conveniences to renters (for example laundry facilities, fitness facility, etc.). If the property has been recently built, the quality of materials used for common features of the property and/or unit(s) is average or bulk building supplies. For somewhat aged properties, few, if any, renovations have been applied to update common-use features (for example water heaters, appliances, bathroom fixtures, paint, etc.). 'C' properties employ a high risk factor reflecting a lower quality offering to potential renters and allowing lower standards for potential lessees.\" } ], \"SelectedAnswer\": \"A\" }, {\"QuestionId\": \"2\", \"QuestionText\": \"How does your unit(s)'s rent compare to others in the neighborhood?\", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"Average applicant income will be significantly higher than expected rent\" }, { \"AnswerText\": \"B\", \"AnswerDescription\": \"Average applicant income will be somewhat higher than expected rent\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Average applicant income will be just above the expected rent\" } ], \"SelectedAnswer\": \"C\" }, {\"QuestionId\": \"3\", \"QuestionText\": \"What do you expect the average income of your potential applicants to be?\", \"Options\": [{ \"AnswerText\": \"A\", \"AnswerDescription\": \"Average applicant income will be much greater than the average income for the area\" }, { \"AnswerText\": \"B\", \"AnswerDescription\": \"Average applicant income will be at the average income for the area\"}, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Average applicant income will be below the average income for the area\" } ], \"SelectedAnswer\": \"C\" },{ \"QuestionId\": \"4\", \"QuestionText\": \"Do you expect the average income of your potential applicnats to be above, at, or below the average income of other tenants in the neighborhood?\", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"Expected rent will be greaterthan the average rent for the area\" }, { \"AnswerText\": \"B\", \"AnswerDescription\": \"Expected rent will be at the average rent for the area\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Expected rent will be below the average rent for the area\" } ], \"SelectedAnswer\": \"B\" }, { \"QuestionId\": \"5\", \"QuestionText\": \"Do you expect many applicants to apply for your unit(s)? \", \"Options\": [ { \"AnswerText\": \"A\", \"AnswerDescription\": \"Expect many applicants and good visibility for these units\" }, {\"AnswerText\": \"B\", \"AnswerDescription\": \"Expect a steady number of applicants with average visibility for these unit(s)\" }, { \"AnswerText\": \"C\", \"AnswerDescription\": \"Expect few applicants\" } ], \"SelectedAnswer\": \"A\" } ], \"Classification\": \"Conventional\",\"IR\": \"2\", \"IncludeMedicalCollections\": \"false\", \"IncludeForeclosures\": \"false\", \"DeclineForOpenBankruptcies\": \"false\", \"OpenBankruptcyWindow\": \"6\", \"IsFcraAgreementAccepted\": \"true\" }";
@@ -1133,11 +1191,15 @@ public class InviteServiceImpl implements InviteService{
 		
 		int responseCode = conn.getResponseCode();
 		String responseMessage = conn.getResponseMessage();
+		final NumberFormat nf = new DecimalFormat("##0");
+		response.put("responseCode",nf.format(responseCode));
+		response.put("responseMessage", responseMessage);
 		
 		if (responseCode != 201) {
 			logger.error(String.format("Service returned problem message -- %d:%s\\nrequest: %s", responseCode, responseMessage, message));
-			return "Error:not processed";
+			return response;
 	    }
+		
 		BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		StringBuffer inputLine = new StringBuffer();
 		String tmp;
@@ -1147,9 +1209,9 @@ public class InviteServiceImpl implements InviteService{
 		input.close(); 
 		
 		String resp = inputLine.toString();
-		return resp;
-		
+		response.put("response", resp);
 
+		return response;
 	
 		
 //		conn.sendOutput(message);
