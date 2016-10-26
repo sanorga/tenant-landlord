@@ -11,6 +11,7 @@ import org.javatuples.KeyValue;
 import org.springframework.dao.DataAccessException;
 
 import com.tea.landlordapp.domain.AnonymousUser;
+import com.tea.landlordapp.domain.Application;
 //import com.tea.landlordapp.domain.AnonymousUser;
 import com.tea.landlordapp.domain.Capability;
 //import com.tea.landlordapp.domain.IndexAuto;
@@ -182,6 +183,8 @@ public interface UserService extends Serializable {
 	public AnonymousUser saveAnonymousUser(AnonymousUser anonymousUser, User loginUser);
 
 	public Property findPropertyById(int propertyId);
+
+	public Application saveNewApplication(Application application, User loginUser);
 
 //	public Subscriber saveNewSubscriber(Subscriber subscriber, User loginUser);
 	

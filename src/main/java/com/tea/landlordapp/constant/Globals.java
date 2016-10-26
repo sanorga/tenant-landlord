@@ -1699,8 +1699,8 @@ public class Globals {
 	public final static String TU_PRODUCT_BUNDLE = "ProductBundle";
 	public final static String TU_LANDLORD_PAYS = "LandlordPays";
 	public final static String TU_LEASE_TERM_IN_MONTHS = "LeaseTermInMonths";
-	public final static String TU_APPLICANT_EMAIL = "ApplicantEmail";
-	public final static String TU_COAPPLICANT_EMAIL = "CoapplicantEmail";
+	public final static String TU_APPLICANT_EMAIL = "applicantEmail";
+	public final static String TU_COAPPLICANT_EMAIL = "coapplicantEmail";
 	public final static String TU_APPLICATION_ID = "ApplicationId";
 	
 	//RevoPay variables

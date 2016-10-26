@@ -15,4 +15,6 @@ public interface InviteService {
 
 	public Map<String, String> postJSONMessageGetJSON(String apiUrl, String message, String Credentials) throws IOException, XPathExpressionException;
 
+	public Map<String, String> submitProperty(AnonymousUser au) throws Exception;
+
 }

@@ -43,7 +43,9 @@ public class AnonymousUser extends AuditableEntity {
 
 //   private Subscriber client;
    private Property property;
-
+   private Double rentalAmount;
+   private double rentalDeposit;
+   
 //   private Application application;
 //   private Packge packge;
 
@@ -132,7 +134,24 @@ public class AnonymousUser extends AuditableEntity {
       this.price = price;
    }
 
-  
+   @Column(name = "rental_amount")
+   public Double getRentalAmount() {
+      return rentalAmount;
+   }
+
+   public void setRentalAmount(Double rentalAmount) {
+      this.rentalAmount = rentalAmount;
+   }
+
+   @Column(name = "rental_deposit")
+   public double getRentalDeposit() {
+      return rentalDeposit;
+   }
+
+   public void setRentalDeposit(double rentalDeposit) {
+      this.rentalDeposit = rentalDeposit;
+   }
+
    @Column(name = "application_type")
    public char getApplicationType() {
       return applicationType;

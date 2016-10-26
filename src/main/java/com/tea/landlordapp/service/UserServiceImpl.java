@@ -20,8 +20,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tea.landlordapp.domain.Application;
 import com.tea.landlordapp.constant.Globals;
 import com.tea.landlordapp.domain.AnonymousUser;
+import com.tea.landlordapp.domain.Applicant;
 //import com.tea.landlordapp.domain.AnonymousUser;
 import com.tea.landlordapp.domain.Capability;
 //import com.tea.landlordapp.domain.IndexAuto;
@@ -304,6 +306,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		userDao.saveProperty(property);
 	}
 
+	@Override
+	public Application saveNewApplication(Application application, User loginUser) {
+			application.setAuditInfo(loginUser);
+
+		application = simpleDao.merge(application);
+		return application;
+	}
+	
 	@Override
 	public void saveRole(Role role, User loginUser) {
 			role.setAuditInfo(loginUser);

@@ -23,11 +23,14 @@ import org.springframework.web.util.WebUtils;
 
 import com.tea.landlordapp.constant.Globals;
 import com.tea.landlordapp.domain.AnonymousUser;
+import com.tea.landlordapp.domain.Applicant;
+import com.tea.landlordapp.domain.Application;
 import com.tea.landlordapp.domain.Property;
 import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.dto.IntegerStringKVDto;
 //import com.tea.landlordapp.enums.ApplicationPaymentMethod;
 import com.tea.landlordapp.enums.UserRole;
+import com.tea.landlordapp.repository.ApplicantDao;
 import com.tea.landlordapp.repository.UserDao;
 import com.tea.landlordapp.service.InviteService;
 import com.tea.landlordapp.service.ListService;
@@ -36,6 +39,7 @@ import com.tea.landlordapp.service.ListService;
 import com.tea.landlordapp.service.UserService;
 import com.tea.landlordapp.utility.ServiceUtils;
 import com.tea.landlordapp.validation.AnonymousUserValidator;
+import com.tea.landlordapp.repository.ApplicationDao;
 
 @Controller
 @RequestMapping("/anonymousUser.htm")
@@ -63,17 +67,22 @@ public class AnonymousUserForm extends AbstractDataController {
    @Autowired
    UserDao userDao;
 
+   @Autowired
+   ApplicationDao applicationDao;
+	
    @RequestMapping(method = RequestMethod.POST)
    public String processSubmit(@ModelAttribute AnonymousUser anonymousUser, BindingResult result, HttpServletRequest request, SessionStatus status, Model model) 
             throws Exception {
       logger.debug("in POST method of anonymousUser.htm with id as.." + anonymousUser.getId());
-      String propertyIdStr = null, organizationIdStr = null, organizationName = null, applicationIdStr = null;
-      Integer pId = 0, propertyId = -1, organizationId = 0;
+      String propertyExtIdStr = null, organizationIdStr = null, propertyIdentifier = null,
+    		  organizationName = null, applicationExtIdStr = null;
+      Integer pId = 0, propertyExtId = -1, organizationId = 0, applicationExtId = 0;
       
       
       // login User
       final User user = getAuthenticatedUser();
-      Map<String, String> resultMap = new HashMap<String,String>();
+      Map<String, String> propertyResultMap = new HashMap<String,String>();
+      Map<String, String> applicationResultMap = new HashMap<String,String>();
       if (WebUtils.hasSubmitParameter(request, Globals.PARAM_CANCEL)) {
           status.setComplete();
           return onCancel1(user);
@@ -91,20 +100,17 @@ public class AnonymousUserForm extends AbstractDataController {
        }
 //      Subscriber client = null;
  
-      
        Property p = anonymousUser.getProperty();
        pId = p.getId();
        Property property = userService.findProperty(pId);
        if (property != null) {
-    	   logger.debug("property already exists: property id#" + property.getId());
+    	   logger.debug("property already exists in Tenant Evaluation Database: property id#" + property.getId());
        }
        else {
     	      property = new Property();
     	   	  property.setApartmentNo(p.getApartmentNo());
     	      property.setCity(p.getCity());
     	      property.setName(p.getName());
-    	      property.setRentalAmount(p.getRentalAmount());
-    	      property.setRentalDeposit(p.getRentalDeposit());
     	      property.setStreet(p.getStreet());
     	      property.setUserId(user.getId());
     	      property.setZipcode(p.getZipcode());
@@ -141,23 +147,136 @@ public class AnonymousUserForm extends AbstractDataController {
 
  //    anonymousUser.setClient(client);
       final AnonymousUser au = userService.saveAnonymousUser(anonymousUser, user);
-      status.setComplete();
+//     status.setComplete();
       logger.debug("anonymous user saved successfully.." + au.getId());
 
       final boolean flag = true;
      
       
-      // send info to TransUnion
-      try {
-		resultMap = inviteService.invite(anonymousUser);
+      
+	  propertyExtId = property.getPropertyExtId();
+				
+	  if (propertyExtId == 0 || propertyExtId == null) {
+		      //-------------------
+		      // Submit Property
+		      //-------------------
+		      try {
+				propertyResultMap = inviteService.submitProperty(au);
+				
+		      } catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		      }
+		  
+		      
+		      if (propertyResultMap == null) {
+					logger.debug("process error");
+				    setActionMessage(request, "confirm.unsuccessful_invitation_to_apply");
+				    return "redirect:home.htm";
+				}
+		      
+		      propertyExtIdStr = propertyResultMap.get("propertyExtIdStr");
+		      propertyIdentifier = propertyResultMap.get("propertyIdentifier");
+		      organizationIdStr = propertyResultMap.get("organizationIdStr");
+		      organizationName = propertyResultMap.get("organizationName");
+		      // set message and return
+		
+				try {
+					  propertyExtId = Integer.valueOf(propertyExtIdStr);
+				      property.setPropertyExtId(propertyExtId);
+				      property.setPropertyIdentifier(propertyIdentifier);
+				      organizationId = Integer.valueOf(organizationIdStr);
+				      property.setOrganizationId(organizationId);
+				      property.setOrganizationName(organizationName);
+				      
+				      userDao.saveProperty(property);
+				      
+				      //save application and applicants
+				      
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+				}
+				
+			 au.setProperty(property);
+//			 final AnonymousUser anonymousUserUpd = userService.saveAnonymousUser(au, user);
+			 logger.debug("anonymous user saved successfully.." + au.getId());
+	  }
+	  
+	  
+     //-------------------
+     // Submit Application
+     //-------------------
+   
+	  boolean isNotTest = false;
+	  if (isNotTest){
+    	
+	  try {
+		applicationResultMap = inviteService.invite(au);
 		
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
+ 
+      if (applicationResultMap == null) {
+			logger.debug("process error");
+		    setActionMessage(request, "confirm.unsuccessful_invitation_to_apply");
+		    return "redirect:home.htm";
+		}
       
-      
-      // send email
+      applicationExtIdStr = applicationResultMap.get("applicationExtIdStr");
+      String applicantEmail = applicationResultMap.get("applicantEmailAddress");
+      String coapplicantEmail = applicationResultMap.get("coapplicantEmailAddress");
+      // set message and return
+    }
+    else 
+      applicationExtIdStr = "38001";
+	  String applicantEmail = "sanorga@tenantevaluation.com";
+      String coapplicantEmail = "tenant.developer@gmail.com";
+		try {
+			  //save application 
+			  Application application = new Application();
+			  applicationExtId = Integer.valueOf(applicationExtIdStr);
+		      application.setApplicationExtId(applicationExtId);
+		      application.setRentalAmount(au.getRentalAmount());
+		      application.setRentalDeposit(au.getRentalDeposit());
+		      application.setLeaseTermMonths(12);    
+		      application.setLandlordPays(true);    
+		      application.setProperty(property);
+		      application.setApartmentNo(property.getApartmentNo());
+		      application.setCreditRecommendation('6'); 
+		      application.setSelectedBundle('1');
+		      Application app = userService.saveNewApplication(application, user);
+    	      application.setId(application.getId());
+		      
+    	      //save applicants
+    	      Applicant applicant = new Applicant();
+    	      applicant.setApplication(app);
+    	      applicant.setEmailAddress(applicantEmail);
+    	      applicant.setApplicantType("1");
+    	      applicationDao.saveApplicant(applicant);
+    	      if (coapplicantEmail != null) {
+    	    	  applicant = new Applicant();
+	    	      applicant.setApplication(app);
+	    	      applicant.setEmailAddress(coapplicantEmail);
+	    	      applicant.setApplicantType("2");
+	    	      applicationDao.saveApplicant(applicant);
+    	      }
+      	    	  
+		      
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			setActionMessage(request, "confirm.unsuccessful_invitation_to_apply");
+
+		    return "redirect:home.htm";
+		}
+		 
+		final AnonymousUser anonymousUserUpd = userService.saveAnonymousUser(au, user);
+		
+	      // send email
 //      try {
 //         if (flag) {
 //            messageService.sendAnonymousUserMail(au, request);
@@ -167,35 +286,6 @@ public class AnonymousUserForm extends AbstractDataController {
 //         setActionMessage(request, "confirm.mail_send_fail");
 //         return "redirect:home.htm";
 //      }
-      if (resultMap == null) {
-			logger.debug("process error");
-		    setActionMessage(request, "confirm.unsuccessful_invitation_to_apply");
-		    return "redirect:home.htm";
-		}
-      
-      propertyIdStr = resultMap.get("propertyIdStr");
-      organizationIdStr = resultMap.get("organizationIdStr");
-      organizationName = resultMap.get("organizationName");
-      applicationIdStr = resultMap.get("applicationIdStr");
-      // set message and return
-
-		try {
-			  propertyId = Integer.valueOf(propertyIdStr);
-		      property.setPropertyId(propertyId);
-		      organizationId = Integer.valueOf(organizationIdStr);
-		      property.setOrganizationId(organizationId);
-		      property.setOrganizationName(organizationName);
-		      
-		      userDao.saveProperty(property);
-		      
-		      //save application and applicants
-		      
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-		}
-		
       setActionMessage(request, "confirm.successful_invitation_to_apply");
 
       return "redirect:home.htm";

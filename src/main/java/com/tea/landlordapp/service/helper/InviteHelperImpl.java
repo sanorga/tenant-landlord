@@ -93,8 +93,8 @@ public class InviteHelperImpl implements InviteHelper {
 		
 		User user = userDao.findUser(p.getUserId());
 		final NumberFormat df = new DecimalFormat("#0.00");
-		final Double rent = p.getRentalAmount();
-		final Double deposit = p.getRentalDeposit();
+		final Double rent = au.getRentalAmount();
+		final Double deposit = au.getRentalDeposit();
 		
 		applicationInfo.put("Deposit", df.format(deposit));
 		applicationInfo.put("ApplicationId", "0");
@@ -105,8 +105,8 @@ public class InviteHelperImpl implements InviteHelper {
 		applicationInfo.put("UnitNumber", p.getApartmentNo());
 		applicationInfo.put("ProductBundle", "PackageCore");
 		
-		applicationInfo.put("ApplicantEmail", au.getEmailId());
-		applicationInfo.put("CoApplicantEmail",  au.getCoappEmailId());
+		applicationInfo.put("applicantEmail", au.getEmailId());
+		applicationInfo.put("coapplicantEmail",  au.getCoappEmailId());
 		
 		return applicationInfo;
 	}

@@ -83,7 +83,7 @@ public class InviteServiceImpl implements InviteService{
 	public Map<String, String> invite(AnonymousUser au) throws Exception {
 			
 			Map<String, String> result = new HashMap<String,String>();
-			String propertyIdStr = null, organizationIdStr = null;
+			String propertyExtIdStr = null;
 			String apiUrl = systemPropertyDao.getPropertyValue(TransUnionApiParameter.URL);
 			String partnerId = systemPropertyDao.getPropertyValue(TransUnionApiParameter.PARTNER_ID);
 			String key = systemPropertyDao.getPropertyValue(TransUnionApiParameter.KEY);
@@ -94,13 +94,57 @@ public class InviteServiceImpl implements InviteService{
 			}
 		
 			Property p = au.getProperty();
-			Integer propertyId = p.getPropertyId();
+			Integer propertyExtId = p.getPropertyExtId();
+			propertyExtIdStr = propertyExtId.toString();
+			
+				
+			
+			//-----------------------------------------------------------------
+			//Create Application - (POST)/LandlordApi/V1/Application
+			//-----------------------------------------------------------------
+
+			Map<String, String> applicationResultMap = addApplication(apiUrl, partnerId, key, au, propertyExtIdStr);
+			if (applicationResultMap == null) {
+				logger.debug("no application obtained");
+				return null;
+			}
+			String applicationExtIdStr = applicationResultMap.get("applicationExtIdStr");
+			String applicantEmail= applicationResultMap.get("applicantEmail");
+			String coapplicantEmail = applicationResultMap.get("coapplicantEmail");
+			if (applicationExtIdStr == "0" || applicationExtIdStr == null){
+				logger.debug("no application id obtained");
+				return null;
+			}
+		
+			result.put("applicationExtIdStr", applicationExtIdStr);
+			result.put("applicantEmail", applicantEmail);
+			result.put("coapplicantEmail",coapplicantEmail);
+			return result;
+	}
+
+	@Override
+	public Map<String, String> submitProperty (AnonymousUser au) throws Exception {
+			
+			Map<String, String> result = new HashMap<String,String>();
+			String propertyExtIdStr = null, organizationIdStr = null;
+			String apiUrl = systemPropertyDao.getPropertyValue(TransUnionApiParameter.URL);
+			String partnerId = systemPropertyDao.getPropertyValue(TransUnionApiParameter.PARTNER_ID);
+			String key = systemPropertyDao.getPropertyValue(TransUnionApiParameter.KEY);
+			String live = systemPropertyDao.getPropertyValue(TransUnionApiParameter.IS_LIVE);
+	
+			if (au.getProperty() == null) {
+				return null;
+			}
+		
+			Property p = au.getProperty();
+			Integer propertyExtId = p.getPropertyExtId();
 			Integer organizationId = p.getOrganizationId();
 			String organizationName = p.getOrganizationName();
+			String propertyIdentifier = p.getPropertyIdentifier();
 			
-			if (propertyId == 0) {
+			if (propertyExtId == 0) {
 				//-----------------------------------------------------------------
-				//Create property - (POST)/LandlordApi/V1/Property
+				//No property in SmartMove - Create property in SmartMove - (POST)/LandlordApi/V1/Property
 				//-----------------------------------------------------------------
 				Map<String, String> propertyResultMap = addProperty(apiUrl, partnerId, key, au);
 				if (propertyResultMap == null) {
@@ -108,44 +152,34 @@ public class InviteServiceImpl implements InviteService{
 					return null;
 				}
 				
-				propertyIdStr = propertyResultMap.get("propertyIdStr");
-				if (propertyIdStr == "0" || propertyIdStr == null){
+				propertyExtIdStr = propertyResultMap.get("propertyExtIdStr");
+				if (propertyExtIdStr == "0" || propertyExtIdStr == null){
 					logger.debug("no property id obtained");
 					return null;
 				}
+				propertyIdentifier = propertyResultMap.get("propertyIdentifier");
 				organizationIdStr = propertyResultMap.get("organizationIdStr");
 				organizationName = propertyResultMap.get("organizationName");
 	//			propertyIdStr = "41704";
 			}
 			else {
-				propertyIdStr = propertyId.toString();
+				if (organizationId == 0  || organizationName == null || propertyIdentifier == null) {
+					logger.debug("property already in SmartMove but with incomplete information");
+					return null;
+					}
+					
+				propertyExtIdStr = propertyExtId.toString();
 				organizationIdStr = organizationId.toString();
 				
 			}
 			
-			result.put("propertyIdStr", propertyIdStr);
+			result.put("propertyExtIdStr", propertyExtIdStr);
+			result.put("propertyIdentifier", propertyIdentifier);
 			result.put("organizationIdStr", organizationIdStr);
 			result.put("organizationName", organizationName);
-			
-			//-----------------------------------------------------------------
-			//Create Application - (POST)/LandlordApi/V1/Application
-			//-----------------------------------------------------------------
 
-			Map<String, String> applicationResultMap = addApplication(apiUrl, partnerId, key, au, propertyIdStr);
-			if (applicationResultMap == null) {
-				logger.debug("no application obtained");
-				return null;
-			}
-			String applicationIdStr = applicationResultMap.get("applicationIdStr");
-			if (applicationIdStr == "0" || applicationIdStr == null){
-				logger.debug("no application id obtained");
-				return null;
-			}
-		
-			result.put("applicationIdStr", applicationIdStr);
 			return result;
 	}
-	
 	
 	private Map<String,String> addApplication (String apiUrl, String partnerId, 
 								   String key, AnonymousUser au,
@@ -193,16 +227,28 @@ public class InviteServiceImpl implements InviteService{
 		
 		response = responseMap.get("response");
 		JsonObject applicationResponseJson = getAuthorizeResponseJson(response);
-		String applicationIdStr = applicationResponseJson.get("ApplicationId").getAsString();
-		Integer applicationId;
+		String applicationExtIdStr = applicationResponseJson.get("ApplicationId").getAsString();
+		Integer applicationExtId;
 		try {
-			applicationId = Integer.valueOf(applicationIdStr);
+			applicationExtId = Integer.valueOf(applicationExtIdStr);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
-		responseMap.put("applicationIdStr",applicationIdStr);		
+	
+		JsonElement jsonElement = new JsonObject();
+		String email = null;
+		JsonArray jsonArray = applicationResponseJson.getAsJsonArray("Applicants");
+		for(int i=0; i<jsonArray.size(); i++){
+			email = jsonArray.get(i).getAsString();
+//			email = jsonElement.getAsJsonObject().get("EmailAddress").getAsString();
+			if (i==0){
+				responseMap.put("applicantEmail",email);		
+			}
+			else responseMap.put("coapplicantEmail",email);
+		}
+		responseMap.put("applicationExtIdStr",applicationExtIdStr);		
 		return responseMap;
 				
 	}
@@ -251,18 +297,18 @@ public class InviteServiceImpl implements InviteService{
 		
 		response = responseMap.get("response");
 		JsonObject propertyResponseJson = getAuthorizeResponseJson(response);
-		String propertyIdStr = propertyResponseJson.get("PropertyId").getAsString();
+		String propertyExtIdStr = propertyResponseJson.get("PropertyId").getAsString();
 		String organizationIdStr = propertyResponseJson.get("OrganizationId").getAsString();
 		String organizationName = propertyResponseJson.get("OrganizationName").getAsString();
-		Integer propertyId;
+		Integer propertyExtId;
 		try {
-			propertyId = Integer.valueOf(propertyIdStr);
+			propertyExtId = Integer.valueOf(propertyExtIdStr);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
-		responseMap.put("propertyIdStr",propertyIdStr);	
+		responseMap.put("propertyExtIdStr",propertyExtIdStr);	
 		responseMap.put("organizationIdStr",organizationIdStr);
 		responseMap.put("organizationName",organizationName);
 		return responseMap;
@@ -1108,11 +1154,13 @@ public class InviteServiceImpl implements InviteService{
 			sb.append("{");
 			sb.append("\"Applicants\": [ \"");
 			sb.append(entityInfo.get(Globals.TU_APPLICANT_EMAIL));
-			sb.append("\",");
+			sb.append("\"");
 			if (entityInfo.get(Globals.TU_COAPPLICANT_EMAIL) != null) {
+				sb.append(",\"");
 				sb.append(entityInfo.get(Globals.TU_COAPPLICANT_EMAIL));
+				sb.append("\"");
 			}
-			sb.append("\"],");
+			sb.append("],");
 			sb.append("\"PropertyId\": \"");
 			sb.append(String.format("%s",entityInfo.get(Globals.TU_ID)));
 			sb.append("\",");	

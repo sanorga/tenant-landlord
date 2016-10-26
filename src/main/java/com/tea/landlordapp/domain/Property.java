@@ -72,7 +72,7 @@ public class Property extends AuditableEntity {
 	private boolean ownerSigningRequired = false;
 	private boolean priority = false;
 
-	private int propertyId;
+	private int propertyExtId = 0;
 	private int organizationId;
 	private int userId;
 	private int minimumLease = 6;
@@ -201,13 +201,13 @@ public class Property extends AuditableEntity {
       this.name = name;
    }
 
-	@Column(name = "property_id")
-	public int getPropertyId() {
-		return propertyId;
+	@Column(name = "property_ext_id")
+	public int getPropertyExtId() {
+		return propertyExtId;
 	}
 
-	public void setPropertyId(int propertyId) {
-		this.propertyId = propertyId;
+	public void setPropertyExtId(int propertyExtId) {
+		this.propertyExtId = propertyExtId;
 	}
 
 	@Column(name = "organization_id")
@@ -229,7 +229,7 @@ public class Property extends AuditableEntity {
 	}
 	
 	@Column(name = "property_identifier")
-	public String getpropertyIdentifier() {
+	public String getPropertyIdentifier() {
 		return propertyIdentifier;
 	}
 
