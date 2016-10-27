@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0emai Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>ApplicationLinkEmail</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body bgcolor="#FFFFFF">
+<table id="Table_01" width="720" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td rowspan="12" valign="top"><img src="cid:testing_01" width="34" height="1000" /></td>
+    <td colspan="4"><img src="cid:testing_02" width="654" height="114" border="0" usemap="#Map" /></td>
+    <td rowspan="12" valign="top"><img src="cid:testing_03" width="32" height="1000" /></td>
+  </tr>
+  <tr>
+    <td colspan="4"><img id="template11_07" src="cid:template11_07" width="654" height="245" alt="" /></td>
+  </tr>
+  <tr>
+    <td colspan="4"><img id="template11_08" src="cid:template11_08" width="654" height="6" alt="" /></td>
+  </tr>
+  <tr>
+    <td rowspan="7"><img id="template11_09" src="cid:template11_09" width="15" height="569" alt="" /></td>
+
+  </tr>
+  
+	<tr>
+	<td>
+	<p> <strong> Hello, </strong></p>
+	<br>
+	<p>A request for your background information is being requested for consideration in leasing the property at:</p>
+	<p>${ADDRESS} </p>
+	<br>
+	<p> To aid in your screening process, the property has requested access to your <strong>credit </strong> and <strong> criminal </strong> history. Please login to your SmartMove account to view the specific details of this request.
+	From there you will be able to either confirm or decline access to your information. No information has been, or will be, shared with the property until you authorize it.</p>
+	<p> SmartMove provides a safe, secure and convenient tool for potential tenants to exchange information with property owners for consideration in the lease process.</p>
+	<p> Your information, as always, will be kept private and secure.</p>
+	
+	<p> Please click <a href="${LINK}">here</a> or visit smtestweb.turss.com to access your account. If you have any questions regarding this request please contact TransUnion Customer Support at 1-866-775-0962</p>
+	
+	</td>
+	</tr>
+	
+	
+  <tr>
+    <td colspan="2">
+      <div style="display:block;height:186px;text-align:left;">
+        <p style="color:#838181;margin;0;padding:0;">	
+          Thanks,</p>
+          <p style="color:#838181;margin;0;padding:0;">- Support Team </p>
+          <p style="color:#838181;margin;0;padding:0;">PS: This message has been sent by an auto responder system.</p> 
+          <p style="color:#838181;margin;0;padding:0;">Please do not reply to this message.
+        </p>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="4"><img id="template11_18" src="cid:template11_18" width="654" height="34" alt="" /></td>
+  </tr>
+  <tr>
+    <td colspan="4"><img id="template11_19" src="cid:template11_19" width="654" height="29" alt="" /></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="cid:spacer" width="34" height="1" alt="" /></td>
+    <td><img src="cid:spacer" width="15" height="1" alt="" /></td>
+    <td><img src="cid:spacer" width="218" height="1" alt="" /></td>
+    <td><img src="cid:spacer" width="166" height="1" alt="" /></td>
+    <td><img src="cid:spacer" width="255" height="1" alt="" /></td>
+    <td valign="top"><img src="cid:spacer" width="32" height="1" alt="" /></td>
+  </tr>
+</table>
+<map name="Map" id="Map"><area shape="rect" coords="1,23,233,84" href="http://www.tenantevaluation.com" /></map>
+</body>
+</html>

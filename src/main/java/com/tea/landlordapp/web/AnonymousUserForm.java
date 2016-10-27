@@ -39,6 +39,7 @@ import com.tea.landlordapp.service.ListService;
 import com.tea.landlordapp.service.UserService;
 import com.tea.landlordapp.utility.ServiceUtils;
 import com.tea.landlordapp.validation.AnonymousUserValidator;
+import com.tea.landlordapp.service.MessageService;
 import com.tea.landlordapp.repository.ApplicationDao;
 
 @Controller
@@ -48,12 +49,12 @@ public class AnonymousUserForm extends AbstractDataController {
 
    @Autowired
    UserService userService;
-
+   
 //   @Autowired
 //   ServiceService serviceService;
 
-//   @Autowired
-//   MessageService messageService;
+   @Autowired
+   MessageService messageService;
 
    @Autowired
    AnonymousUserValidator anonymousUserValidator;
@@ -275,17 +276,17 @@ public class AnonymousUserForm extends AbstractDataController {
 		}
 		 
 		final AnonymousUser anonymousUserUpd = userService.saveAnonymousUser(au, user);
-		
+
 	      // send email
-//      try {
-//         if (flag) {
-//            messageService.sendAnonymousUserMail(au, request);
-//         }
-//      } catch (final Exception ex) {
-//         // set confirmation message
-//         setActionMessage(request, "confirm.mail_send_fail");
-//         return "redirect:home.htm";
-//      }
+      try {
+         if (flag) {
+            messageService.sendAnonymousUserMail(au, request);
+         }
+      } catch (final Exception ex) {
+         // set confirmation message
+         setActionMessage(request, "confirm.mail_send_fail");
+         return "redirect:home.htm";
+      }
       setActionMessage(request, "confirm.successful_invitation_to_apply");
 
       return "redirect:home.htm";

@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0emai Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>ApplicationLinkEmail</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body bgcolor="#FFFFFF">
+<table id="Table_01" width="720" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td rowspan="12" valign="top"><img src="cid:testing_01" width="34" height="1010" /></td>
+    <td colspan="4"><img src="cid:testing_02" width="654" height="114" border="0" usemap="#Map" /></td>
+    <td rowspan="12" valign="top"><img src="cid:testing_03" width="32" height="1010" /></td>
+  </tr>
+  <tr>
+    <td colspan="4"><img id="template11_07" src="cid:template11_07" width="654" height="245" alt="" /></td>
+  </tr>
+  <tr>
+    <td colspan="4"><img id="template11_08" src="cid:template11_08" width="654" height="6" alt="" /></td>
+  </tr>
+  <tr>
+    <td rowspan="7"><img id="template11_09" src="cid:template11_09" width="15" height="569" alt="" /></td>
+    <td colspan="2"><div style="color:#fff;display:block;height:24px;text-align:left;padding:4px;padding-left:14px;background:url('images/template11_10.jpg')"><font size="3" face="verdana" color="blue">Dear ${USER}, </font><font size="2" face="verdana" color="blue">${DATE} </font></div></td>
+	<td rowspan="7"><img id="template11_11" src="cid:template11_11" width="255" height="569" alt="" /></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <div style="display:block;text-align:left;">
+        <p style="color:#838181;margin;0;padding:0;">
+        Tenant Evaluation is committed to protecting the security and privacy of your information. We make significant investments in our electronic application process so it meets the highest standards for trust and security. Once we process your social security and all other private information, the data is deleted from our servers.
+        </p>
+       <p style="color:#838181;margin;0;padding:0;">
+       	Please have your credit card ready you will be charge in the amount of $${Price}.I UNDERSTAND THAT THE APPLICATION FEE IS REQUIRED AND NONREFUNDABLE REGARD	LESS OF THE OUTCOME OF THE APPLICATION.AGREE TO ALLOW MY CREDIT CARD TO BE CHARGED THE APPLICATION FEE.
+        </p>
+         <p style="color:#838181;margin;0;padding:0;">
+        Make sure print, sign and return the required documents for the condominium association along with a copy of your driver's license.
+     </p>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2"><img id="template11_13" src="cid:template11_13" width="384" height="49" alt="" /></td>
+  </tr>
+  <tr>
+    <td colspan="2"><div style="display:block;width:100px;height:31px;text-align:center;margin-top:5px;margin-bottom:-10px;">${REFERENCEKEY}</div></td>
+  </tr>
+  <tr>
+    <td colspan="2"><img id="template11_15" src="cid:template11_15" width="384" height="87" alt="" /></td>
+  </tr>
+  <tr>
+    <td colspan="2"><a href="${LINK}"><img id="template11_16" src="cid:template11_16" width="384" height="43" alt="${LINK}" /></a></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <div style="display:block;height:186px;text-align:left;">
+        <p style="color:#838181;margin;0;padding:0;">	
+          Assuring you of our best services and support at all times.</p>
+          <p style="color:#838181;margin;0;padding:0;">- Support Team </p>
+          <p style="color:#838181;margin;0;padding:0;">PS: This message has been sent by an auto responder system.</p> 
+          <p style="color:#838181;margin;0;padding:0;">Please do not reply<br />to this message.
+        </p>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="4"><img id="template11_18" src="cid:template11_18" width="654" height="34" alt="" /></td>
+  </tr>
+  <tr>
+    <td colspan="4"><img id="template11_19" src="cid:template11_19" width="654" height="29" alt="" /></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="cid:spacer" width="34" height="1" alt="" /></td>
+    <td><img src="cid:spacer" width="15" height="1" alt="" /></td>
+    <td><img src="cid:spacer" width="218" height="1" alt="" /></td>
+    <td><img src="cid:spacer" width="166" height="1" alt="" /></td>
+    <td><img src="cid:spacer" width="255" height="1" alt="" /></td>
+    <td valign="top"><img src="cid:spacer" width="32" height="1" alt="" /></td>
+  </tr>
+</table>
+<map name="Map" id="Map"><area shape="rect" coords="1,23,233,84" href="http://www.tenantevaluation.com" /></map>
+</body>
+</html>

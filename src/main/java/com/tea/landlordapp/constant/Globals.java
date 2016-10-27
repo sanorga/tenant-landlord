@@ -1534,7 +1534,10 @@ public class Globals {
 	public final static String TEA_ADMIN_URL = "tea.url";
 	public final static String TEA_TENANT_URL = "tea-tenant.url";
 	public final static String TEA_GUEST_URL = "tea-guest.url";
-
+	public final static String SMARTMOVE_NEW_ACCT_URL = "smartmove_newacct.url";
+	
+	// External Application URL
+	public final static String TEA_LANDLORDAPP_URL = "tea-landlordapp.url";
 	// Application Form PDF File
 	public final static String APP_FORM = "html/application.pdf";
 

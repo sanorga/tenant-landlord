@@ -17,6 +17,9 @@ import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.util.ByteArrayDataSource;
 //import javax.mail.MessagingException;
 //import javax.mail.internet.MimeMessage;
 //import javax.mail.util.ByteArrayDataSource;
@@ -35,6 +38,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 //import org.springframework.mail.MailException;
 //import org.springframework.mail.javamail.JavaMailSender;
 //import org.springframework.mail.javamail.MimeMessageHelper;
@@ -43,6 +49,7 @@ import org.springframework.util.CollectionUtils;
 //import com.tea.landlordapp.domain.Application;
 import com.tea.landlordapp.dto.BinaryFile;
 import com.tea.landlordapp.dto.LookupListItem;
+import com.tea.landlordapp.utility.UtilityMethods;
 
 public class ServiceUtils {
 
@@ -261,61 +268,142 @@ public class ServiceUtils {
 		}
 	}
 
-//	public static void sendMimeMessage(String[] recipientList,
-//			String subjectText, String fromAddress,
-//			Map<String, String> inlineResources, BinaryFile attachment,
-//			final String bodyText, JavaMailSender mailSender)
-//			throws MessagingException, MailException {
-//		sendMimeMessage(recipientList, null, null, subjectText, fromAddress,
-//				inlineResources, attachment, bodyText, mailSender);
-//	}
-	
-//	public static void sendMimeMessage(List<String> recipientList,
-//			String subjectText, String fromAddress,
-//			Map<String, String> inlineResources, BinaryFile attachment,
-//			final String bodyText, JavaMailSender mailSender)
-//			throws MessagingException, MailException {
-//		
-////		String[] destinations = (String[]) recipientList.toArray();
-//		
-//		String[] destinations = UtilityMethods.list2StringArray(recipientList);
-//		
-//		sendMimeMessage(destinations, null, null, subjectText, fromAddress,
-//				inlineResources, attachment, bodyText, mailSender);
-//	}
-//	
-//	public static void sendMimeMessage(List<String> recipientList, List<String> ccList,
-//			List<String> bccList, String subjectText, String fromAddress,
-//			Map<String, String> inlineResources, BinaryFile attachment,
-//			final String bodyText, JavaMailSender mailSender)
-//			throws MessagingException, MailException {
-//		
-////		String[] destinations = (String[]) recipientList.toArray();
-//		
-//		String[] destinations = UtilityMethods.list2StringArray(recipientList);
-//		
-//		sendMimeMessage(destinations, ccList, bccList, subjectText, fromAddress,
-//				inlineResources, attachment, bodyText, mailSender);
-//	}
 
-//	public static void sendMimeMessage(String[] recipientList, List<String> ccList,
-//			List<String> bccList, String subjectText, String fromAddress,
-//			Map<String, String> inlineResources, BinaryFile attachment,
-//			final String bodyText, JavaMailSender mailSender)
-//			throws MessagingException, MailException {
+	public static void sendMimeMessage(String[] recipientList,
+			String subjectText, String fromAddress,
+			Map<String, String> inlineResources, BinaryFile attachment,
+			final String bodyText, JavaMailSender mailSender)
+			throws MessagingException, MailException {
+		sendMimeMessage(recipientList, null, null, subjectText, fromAddress,
+				inlineResources, attachment, bodyText, mailSender);
+	}
+	
+	public static void sendMimeMessage(List<String> recipientList,
+			String subjectText, String fromAddress,
+			Map<String, String> inlineResources, BinaryFile attachment,
+			final String bodyText, JavaMailSender mailSender)
+			throws MessagingException, MailException {
+		
+//		String[] destinations = (String[]) recipientList.toArray();
+		
+		String[] destinations = UtilityMethods.list2StringArray(recipientList);
+		
+		sendMimeMessage(destinations, null, null, subjectText, fromAddress,
+				inlineResources, attachment, bodyText, mailSender);
+	}
+	
+	public static void sendMimeMessage(List<String> recipientList, List<String> ccList,
+			List<String> bccList, String subjectText, String fromAddress,
+			Map<String, String> inlineResources, BinaryFile attachment,
+			final String bodyText, JavaMailSender mailSender)
+			throws MessagingException, MailException {
+		
+//		String[] destinations = (String[]) recipientList.toArray();
+		
+		String[] destinations = UtilityMethods.list2StringArray(recipientList);
+		
+		sendMimeMessage(destinations, ccList, bccList, subjectText, fromAddress,
+				inlineResources, attachment, bodyText, mailSender);
+	}
+
+	public static void sendMimeMessage(String[] recipientList, List<String> ccList,
+			List<String> bccList, String subjectText, String fromAddress,
+			Map<String, String> inlineResources, BinaryFile attachment,
+			final String bodyText, JavaMailSender mailSender)
+			throws MessagingException, MailException {
+
+		final MimeMessage message = mailSender.createMimeMessage();
+
+//		final String[] recipientAddesses = recipientList
+//				.toArray(new String[recipientList.size()]);
 //
-//		final MimeMessage message = mailSender.createMimeMessage();
+		final MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+		for (int i = 0; i < recipientList.length; i++) {
+			logger.debug("Send to {}", recipientList[i]);
+		}
+		helper.setTo(recipientList);
+
+		if (bccList != null && bccList.size() > 0) {
+			String[] bccAddresses = bccList.toArray(new String[bccList
+					.size()]);
+			helper.setBcc(bccAddresses);
+		}
+
+		if (ccList != null && ccList.size() > 0) {
+			String[] ccAddresses = ccList.toArray(new String[ccList
+					.size()]);
+			helper.setCc(ccAddresses);
+		}
+
+		if (!StringUtils.isBlank(fromAddress)) {
+			logger.debug("Send from {}", fromAddress);
+			helper.setFrom(fromAddress);
+
+		}
+		logger.debug("Send subject {}", subjectText);
+		helper.setSubject(subjectText);
+		helper.setText(bodyText, true);
+
+		// add inlineResources, if any
+		if ((inlineResources != null) && !CollectionUtils.isEmpty(inlineResources)) {
+			for (final String name : inlineResources.keySet()) {
+				final String file = inlineResources.get(name);
+				final FileSystemResource res = new FileSystemResource(new File(
+						file));
+				helper.addInline(name, res);
+			}
+		}
+
+		// add attachment, if any
+		if (attachment != null) {
+			logger.debug("with Attachment");
+			helper.addAttachment(attachment.getName(), new ByteArrayDataSource(
+					attachment.getContent(), "application/octet-stream"));
+		}
+
+		try {
+			mailSender.send(message);
+		} catch (MailException e) {
+			logger.error(e.getMessage());
+			throw e;
+		}
+	}
+	
+	public static void sendMimeMessage(List<String> recipientList,
+			String subjectText, 
+			String fromAddress,
+			Map<String, Resource> inlineResources,
+			final String bodyText, 
+			JavaMailSender mailSender)
+			throws MessagingException, MailException {
+		
+		String[] destinations = UtilityMethods.list2StringArray(recipientList);		
+		
+		sendMimeMessage(destinations, subjectText, fromAddress,
+				inlineResources, bodyText, mailSender);
+	}
+	
+	public static void sendMimeMessage(String[] recipientList,
+								String subjectText, 
+								String fromAddress,
+								Map<String, Resource> inlineResources,
+								final String bodyText, 
+								JavaMailSender mailSender)
+			throws MessagingException, MailException {
+
+		final MimeMessage message = mailSender.createMimeMessage();
+
+//		final String[] recipientAddesses = recipientList
+//				.toArray(new String[recipientList.size()]);
 //
-////		final String[] recipientAddesses = recipientList
-////				.toArray(new String[recipientList.size()]);
-////
-//		final MimeMessageHelper helper = new MimeMessageHelper(message, true);
-//
-//		for (int i = 0; i < recipientList.length; i++) {
-//			logger.debug("Send to {}", recipientList[i]);
-//		}
-//		helper.setTo(recipientList);
-//
+		final MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+		for (int i = 0; i < recipientList.length; i++) {
+			logger.debug("Send to {}", recipientList[i]);
+		}
+		helper.setTo(recipientList);
+
 //		if (bccList != null && bccList.size() > 0) {
 //			String[] bccAddresses = bccList.toArray(new String[bccList
 //					.size()]);
@@ -327,120 +415,39 @@ public class ServiceUtils {
 //					.size()]);
 //			helper.setCc(ccAddresses);
 //		}
-//
-//		if (!StringUtils.isBlank(fromAddress)) {
-//			logger.debug("Send from {}", fromAddress);
-//			helper.setFrom(fromAddress);
-//
-//		}
-//		logger.debug("Send subject {}", subjectText);
-//		helper.setSubject(subjectText);
-//		helper.setText(bodyText, true);
-//
-//		// add inlineResources, if any
-//		if ((inlineResources != null) && !CollectionUtils.isEmpty(inlineResources)) {
-//			for (final String name : inlineResources.keySet()) {
+
+		if (!StringUtils.isBlank(fromAddress)) {
+			logger.debug("Send from {}", fromAddress);
+			helper.setFrom(fromAddress);
+
+		}
+		logger.debug("Send subject {}", subjectText);
+		helper.setSubject(subjectText);
+		helper.setText(bodyText, true);
+
+		// add inlineResources, if any
+		if ((inlineResources != null) && !CollectionUtils.isEmpty(inlineResources)) {
+			for (final String name : inlineResources.keySet()) {
 //				final String file = inlineResources.get(name);
 //				final FileSystemResource res = new FileSystemResource(new File(
 //						file));
-//				helper.addInline(name, res);
-//			}
-//		}
-//
+				helper.addInline(name, inlineResources.get(name));
+			}
+		}
+
 //		// add attachment, if any
 //		if (attachment != null) {
 //			logger.debug("with Attachment");
 //			helper.addAttachment(attachment.getName(), new ByteArrayDataSource(
 //					attachment.getContent(), "application/octet-stream"));
 //		}
-//
-//		try {
-//			mailSender.send(message);
-//		} catch (MailException e) {
-//			logger.error(e.getMessage());
-//			throw e;
-//		}
-//	}
-//	
-//	public static void sendMimeMessage(List<String> recipientList,
-//			String subjectText, 
-//			String fromAddress,
-//			Map<String, Resource> inlineResources,
-//			final String bodyText, 
-//			JavaMailSender mailSender)
-//			throws MessagingException, MailException {
-//		
-//		String[] destinations = UtilityMethods.list2StringArray(recipientList);		
-//		
-//		sendMimeMessage(destinations, subjectText, fromAddress,
-//				inlineResources, bodyText, mailSender);
-//	}
-//	
-//	public static void sendMimeMessage(String[] recipientList,
-//								String subjectText, 
-//								String fromAddress,
-//								Map<String, Resource> inlineResources,
-//								final String bodyText, 
-//								JavaMailSender mailSender)
-//			throws MessagingException, MailException {
-//
-//		final MimeMessage message = mailSender.createMimeMessage();
-//
-////		final String[] recipientAddesses = recipientList
-////				.toArray(new String[recipientList.size()]);
-////
-//		final MimeMessageHelper helper = new MimeMessageHelper(message, true);
-//
-//		for (int i = 0; i < recipientList.length; i++) {
-//			logger.debug("Send to {}", recipientList[i]);
-//		}
-//		helper.setTo(recipientList);
-//
-////		if (bccList != null && bccList.size() > 0) {
-////			String[] bccAddresses = bccList.toArray(new String[bccList
-////					.size()]);
-////			helper.setBcc(bccAddresses);
-////		}
-////
-////		if (ccList != null && ccList.size() > 0) {
-////			String[] ccAddresses = ccList.toArray(new String[ccList
-////					.size()]);
-////			helper.setCc(ccAddresses);
-////		}
-//
-//		if (!StringUtils.isBlank(fromAddress)) {
-//			logger.debug("Send from {}", fromAddress);
-//			helper.setFrom(fromAddress);
-//
-//		}
-//		logger.debug("Send subject {}", subjectText);
-//		helper.setSubject(subjectText);
-//		helper.setText(bodyText, true);
-//
-//		// add inlineResources, if any
-//		if ((inlineResources != null) && !CollectionUtils.isEmpty(inlineResources)) {
-//			for (final String name : inlineResources.keySet()) {
-////				final String file = inlineResources.get(name);
-////				final FileSystemResource res = new FileSystemResource(new File(
-////						file));
-//				helper.addInline(name, inlineResources.get(name));
-//			}
-//		}
-//
-////		// add attachment, if any
-////		if (attachment != null) {
-////			logger.debug("with Attachment");
-////			helper.addAttachment(attachment.getName(), new ByteArrayDataSource(
-////					attachment.getContent(), "application/octet-stream"));
-////		}
-//
-//		try {
-//			mailSender.send(message);
-//		} catch (MailException e) {
-//			logger.error(e.getMessage());
-//			throw e;
-//		}
-//	}
-	
 
+		try {
+			mailSender.send(message);
+		} catch (MailException e) {
+			logger.error(e.getMessage());
+			throw e;
+		}
+	
+	}
 }

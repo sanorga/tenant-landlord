@@ -53,24 +53,24 @@
 <!-- 		</property> -->
 <!-- 	</bean> -->
 	
-<!-- 	 Email configuration start here --> 
-<!-- 	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean"> -->
-<!-- 		<property name="resourceLoaderPath" value="classpath:/velocity" /> -->
-<!-- 		<property name="preferFileSystemAccess" value="false" /> -->
-<!-- 	</bean> -->
+<!-- 	 Email configuration start here  -->
+	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+		<property name="resourceLoaderPath" value="classpath:/velocity" />
+		<property name="preferFileSystemAccess" value="false" />
+	</bean>
 	
-<!-- 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> -->
-<!-- 		<property name="host" value="${TEA_MAIL_HOST}" /> -->
-<!-- 		<property name="port" value="${TEA_MAIL_PORT}" /> -->
-<!-- 		<property name="username" value="${TEA_MAIL_USER}" /> -->
-<!-- 		<property name="password" value="${TEA_MAIL_PASSWORD}" /> -->
-<!-- 		<property name="javaMailProperties"> -->
-<!-- 			<props> -->
-<!-- 				<prop key="mail.smtp.auth">${TEA_MAIL_AUTH}</prop> -->
-<!-- 				<prop key="mail.smtp.starttls.enable">${TEA_MAIL_TLS}</prop> -->
-<!-- 			</props> -->
-<!-- 		</property> -->
-<!-- 	</bean> -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${TEA_MAIL_HOST}" />
+		<property name="port" value="${TEA_MAIL_PORT}" />
+		<property name="username" value="${TEA_MAIL_USER}" />
+		<property name="password" value="${TEA_MAIL_PASSWORD}" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">${TEA_MAIL_AUTH}</prop>
+				<prop key="mail.smtp.starttls.enable">${TEA_MAIL_TLS}</prop>
+			</props>
+		</property>
+	</bean>
 	<!-- Email configuration end here -->
   	
   	
