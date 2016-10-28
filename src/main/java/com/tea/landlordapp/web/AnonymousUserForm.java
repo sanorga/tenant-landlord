@@ -146,14 +146,12 @@ public class AnonymousUserForm extends AbstractDataController {
 //    	  anonymousUser.setApplicationPaymentMethod(ApplicationPaymentMethod.BILL_CLIENT);
 //	}
 
- //    anonymousUser.setClient(client);
-      final AnonymousUser au = userService.saveAnonymousUser(anonymousUser, user);
+ 
+ //     final AnonymousUser au = userService.saveAnonymousUser(anonymousUser, user);
 //     status.setComplete();
-      logger.debug("anonymous user saved successfully.." + au.getId());
+      logger.debug("anonymous user .." + anonymousUser.getId());
 
       final boolean flag = true;
-     
-      
       
 	  propertyExtId = property.getPropertyExtId();
 				
@@ -162,7 +160,7 @@ public class AnonymousUserForm extends AbstractDataController {
 		      // Submit Property
 		      //-------------------
 		      try {
-				propertyResultMap = inviteService.submitProperty(au);
+				propertyResultMap = inviteService.submitProperty(anonymousUser);
 				
 		      } catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -200,9 +198,9 @@ public class AnonymousUserForm extends AbstractDataController {
 					
 				}
 				
-			 au.setProperty(property);
+			 anonymousUser.setProperty(property);
 //			 final AnonymousUser anonymousUserUpd = userService.saveAnonymousUser(au, user);
-			 logger.debug("anonymous user saved successfully.." + au.getId());
+			 logger.debug("anonymous user saved successfully.." + anonymousUser.getId());
 	  }
 	  
 	  
@@ -210,16 +208,17 @@ public class AnonymousUserForm extends AbstractDataController {
      // Submit Application
      //-------------------
    
-	  boolean isNotTest = false;
+	  String applicantEmail=null, coapplicantEmail=null;
+	  boolean isNotTest = true;
 	  if (isNotTest){
     	
 	  try {
-		applicationResultMap = inviteService.invite(au);
+		applicationResultMap = inviteService.invite(anonymousUser);
 		
-	} catch (Exception e) {
+	  } catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
-	}
+	  }
  
       if (applicationResultMap == null) {
 			logger.debug("process error");
@@ -228,21 +227,22 @@ public class AnonymousUserForm extends AbstractDataController {
 		}
       
       applicationExtIdStr = applicationResultMap.get("applicationExtIdStr");
-      String applicantEmail = applicationResultMap.get("applicantEmailAddress");
-      String coapplicantEmail = applicationResultMap.get("coapplicantEmailAddress");
+      applicantEmail = applicationResultMap.get("applicantEmailAddress");
+      coapplicantEmail = applicationResultMap.get("coapplicantEmailAddress");
       // set message and return
     }
-    else 
+    else {
       applicationExtIdStr = "38001";
-	  String applicantEmail = "sanorga@tenantevaluation.com";
-      String coapplicantEmail = "tenant.developer@gmail.com";
+	  applicantEmail = "sanorga@tenantevaluation.com";
+      coapplicantEmail = "tenant.developer@gmail.com";
+    }
 		try {
 			  //save application 
 			  Application application = new Application();
 			  applicationExtId = Integer.valueOf(applicationExtIdStr);
 		      application.setApplicationExtId(applicationExtId);
-		      application.setRentalAmount(au.getRentalAmount());
-		      application.setRentalDeposit(au.getRentalDeposit());
+		      application.setRentalAmount(anonymousUser.getRentalAmount());
+		      application.setRentalDeposit(anonymousUser.getRentalDeposit());
 		      application.setLeaseTermMonths(12);    
 		      application.setLandlordPays(true);    
 		      application.setProperty(property);
@@ -275,12 +275,12 @@ public class AnonymousUserForm extends AbstractDataController {
 		    return "redirect:home.htm";
 		}
 		 
-		final AnonymousUser anonymousUserUpd = userService.saveAnonymousUser(au, user);
+		final AnonymousUser anonymousUserUpd = userService.saveAnonymousUser(anonymousUser, user);
 
 	      // send email
       try {
          if (flag) {
-            messageService.sendAnonymousUserMail(au, request);
+            messageService.sendAnonymousUserMail(anonymousUserUpd, request);
          }
       } catch (final Exception ex) {
          // set confirmation message

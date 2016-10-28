@@ -19,45 +19,41 @@
   </tr>
   <tr>
     <td rowspan="7"><img id="template11_09" src="cid:template11_09" width="15" height="569" alt="" /></td>
-
+    <td colspan="4"><div style="color:#fff;display:block;height:5px;text-align:left;padding:4px;padding-left:14px;background:url('images/template11_10.jpg')"><font size="3" face="verdana" color="blue">Dear ${USER}, </font><font size="2" face="verdana" color="blue">${DATE},</font></div></td>
+	
+  </tr>
+  <tr>
+    <td colspan="3">
+     
+        <p style="color:#838181;margin;0;padding:0;">
+        <br>A request for your background information is being requested for consideration in leasing the property at: <br><br>${ADDRESS}
+        <br>
+        </p>
+ 
+    </td>
   </tr>
   
-	<tr>
-	<td>
-	<p> <strong> Hello, </strong></p>
-	<br>
-	<p>A request for your background information is being requested for consideration in leasing the property at:</p>
-	<p>${ADDRESS} </p>
-	<br>
-	<p> To aid in your screening process, the property has requested access to your <strong>credit </strong> and <strong> criminal </strong> history. Please login to your SmartMove account to view the specific details of this request.
-	From there you will be able to either confirm or decline access to your information. No information has been, or will be, shared with the property until you authorize it.</p>
-	<p> SmartMove provides a safe, secure and convenient tool for potential tenants to exchange information with property owners for consideration in the lease process.</p>
-	<p> Your information, as always, will be kept private and secure.</p>
-	
-	<p> Please click <a href="${LINK}">here</a> or visit smtestweb.turss.com to access your account. If you have any questions regarding this request please contact TransUnion Customer Support at 1-866-775-0962</p>
-	
-	</td>
-	</tr>
-	
-	
   <tr>
-    <td colspan="2">
-      <div style="display:block;height:186px;text-align:left;">
+    <td colspan="3">
+      <div style="text-align:left;">
         <p style="color:#838181;margin;0;padding:0;">	
-          Thanks,</p>
-          <p style="color:#838181;margin;0;padding:0;">- Support Team </p>
-          <p style="color:#838181;margin;0;padding:0;">PS: This message has been sent by an auto responder system.</p> 
-          <p style="color:#838181;margin;0;padding:0;">Please do not reply to this message.
-        </p>
+          To aid in your screening process, the property has requested access to your <strong>credit </strong> and 
+          <strong> criminal </strong> history. <br> <br> Please login to your SmartMove account to view the specific details of this request.
+          From there you will be able to either confirm or decline access to your information. No information has been, or will be, shared
+          with the property until you authorize it. <br> <br>
+          SmartMove provides a safe, secure and convenient tool for potential tenants to exchange information with property owners for consideration in the lease process.<br>
+          Your information, as always, will be kept private and secure.<br><br>
+          Please, click <a href="${LINK}"><strong>here</strong></a> or visit smtestweb.turss.com to access your account. </p>
+	<p>If you have any questions regarding this request please contact TransUnion Customer Support at 1-866-775-0962
+          </p>
+          <p style="color:#838181;margin;0;padding:0;"><br> - Support Team </p>
+          <p style="color:#838181;margin;0;padding:0;">PS: This message has been sent by an auto responder system.<br>
+          Please do not reply to this message.</p> 
+         
       </div>
     </td>
   </tr>
-  <tr>
-    <td colspan="4"><img id="template11_18" src="cid:template11_18" width="654" height="34" alt="" /></td>
-  </tr>
-  <tr>
-    <td colspan="4"><img id="template11_19" src="cid:template11_19" width="654" height="29" alt="" /></td>
-  </tr>
+
   <tr>
     <td valign="top"><img src="cid:spacer" width="34" height="1" alt="" /></td>
     <td><img src="cid:spacer" width="15" height="1" alt="" /></td>

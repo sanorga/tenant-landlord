@@ -39,8 +39,8 @@ public class InviteHelperImpl implements InviteHelper {
 		
 		User user = userDao.findUser(p.getUserId());
 		final NumberFormat df = new DecimalFormat("#0.00");
-		final Double rentalAmount = p.getRentalAmount();
-		final Double rentalDeposit = p.getRentalDeposit();
+		final Double rentalAmount = au.getRentalAmount();
+		final Double rentalDeposit = au.getRentalDeposit();
 		
 		propertyInfo.put("RentalAmount", df.format(rentalAmount));
 		propertyInfo.put("RentalDeposit", df.format(rentalDeposit));
