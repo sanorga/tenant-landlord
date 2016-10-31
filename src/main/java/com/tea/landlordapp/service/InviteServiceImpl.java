@@ -300,6 +300,7 @@ public class InviteServiceImpl implements InviteService{
 		String propertyExtIdStr = propertyResponseJson.get("PropertyId").getAsString();
 		String organizationIdStr = propertyResponseJson.get("OrganizationId").getAsString();
 		String organizationName = propertyResponseJson.get("OrganizationName").getAsString();
+		String propertyIdentifier = propertyResponseJson.get("PropertyIdentifier").getAsString();
 		Integer propertyExtId;
 		try {
 			propertyExtId = Integer.valueOf(propertyExtIdStr);
@@ -310,6 +311,7 @@ public class InviteServiceImpl implements InviteService{
 		}
 		responseMap.put("propertyExtIdStr",propertyExtIdStr);	
 		responseMap.put("organizationIdStr",organizationIdStr);
+		responseMap.put("propertyIdentifier",propertyIdentifier);
 		responseMap.put("organizationName",organizationName);
 		return responseMap;
 				
@@ -1155,7 +1157,7 @@ public class InviteServiceImpl implements InviteService{
 			sb.append("\"Applicants\": [ \"");
 			sb.append(entityInfo.get(Globals.TU_APPLICANT_EMAIL));
 			sb.append("\"");
-			if (entityInfo.get(Globals.TU_COAPPLICANT_EMAIL) != null) {
+			if (StringUtils.isNotBlank(entityInfo.get(Globals.TU_COAPPLICANT_EMAIL) )){
 				sb.append(",\"");
 				sb.append(entityInfo.get(Globals.TU_COAPPLICANT_EMAIL));
 				sb.append("\"");

@@ -26,9 +26,9 @@
     <td colspan="3">
      
         <p style="color:#838181;margin;0;padding:0;">
-        <br>A request for your background information is being requested for consideration in leasing the property at: <br><br>${ADDRESS}
-        <br>
-        </p>
+        <br>A request for your background information is being requested for consideration in leasing the property at: <br><br>${ADDRESS}      </p>
+
+  
  
     </td>
   </tr>
