@@ -4,16 +4,20 @@ import java.sql.Timestamp;
 
 public class ApplicationGridItem {
 
-   public ApplicationGridItem(Integer id, 	   Integer propertyExtId, String applicantEmailId, 	String firstName,
-							  String lastName, Timestamp createdDate, Timestamp modifiedDate, 	String status) {
+   public ApplicationGridItem(Integer id, 	   Integer applicationExtId, String applicantEmailId, 	String fullName, String firstName,
+							  String lastName, Timestamp createdDate, Timestamp modifiedDate, 	String status, 
+							  String addressLine1, String city  ) {
       this.setId(id);
-	  this.setPropertyExtId(propertyExtId);
+	  this.setApplicationExtId(applicationExtId);
 	  this.setApplicantEmailId(applicantEmailId);
+	  this.setFullName(fullName);
       this.setFirstName(firstName);
       this.setLastName(lastName);
       this.setCreatedDate(createdDate);
 	  this.setModifiedDate(modifiedDate);
       this.setStatus(status);
+      this.setAddressLine1(addressLine1);
+      this.setCity(city);
    }
 
    public Integer getId() {
@@ -24,12 +28,12 @@ public class ApplicationGridItem {
       this.id = id;
    }
 
-   public Integer getPropertyExtId() {
-      return propertyExtId;
+   public Integer getApplicationExtId() {
+      return applicationExtId;
    }
 
-   public void setPropertyExtId(Integer propertyExtId2) {
-      this.propertyExtId = propertyExtId2;
+   public void setApplicationExtId(Integer applicationExtId) {
+      this.applicationExtId = applicationExtId;
    }
 
      public String getApplicantEmailId() {
@@ -40,6 +44,14 @@ public class ApplicationGridItem {
       this.applicantEmailId = applicantEmailId;
    }
 
+   public String getFullName() {
+	      return fullName;
+	   }
+
+   public void setFullName(String fullName) {
+	     this.fullName = fullName;
+   }
+	   
    public String getFirstName() {
       return firstName;
    }
@@ -79,15 +91,34 @@ public class ApplicationGridItem {
    public void setStatus(String status) {
       this.status = status;
    }
+   
+   public String getAddressLine1() {
+	      return addressLine1;
+	   }
 
+   public void setAddressLine1(String addressLine1) {
+	  this.addressLine1 = addressLine1;
+   }
+	   
+   public String getCity() {
+	      return city;
+	   }
+
+	public void setCity(String city) {
+		  this.city = city;
+	}
+	  
    private Integer id;
-   private Integer propertyExtId;
+   private Integer applicationExtId;
    private String applicantEmailId;
+   private String fullName;
    private String firstName;
    private String lastName;
    private Timestamp createdDate;
    private Timestamp modifiedDate;
    private String status;
+   private String addressLine1;
+   private String city;
 
 
 }

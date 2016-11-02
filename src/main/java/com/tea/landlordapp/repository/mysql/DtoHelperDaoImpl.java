@@ -24,28 +24,28 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tea.domain.CommissionSchedule;
-import com.tea.domain.ManagementCompany;
-import com.tea.domain.Property;
-import com.tea.domain.SalesRep;
-import com.tea.domain.Subscriber;
-import com.tea.domain.User;
-import com.tea.dto.CsrTaskMonitorDto;
-import com.tea.dto.IntegerStringKVDto;
-import com.tea.dto.MgmtCompanyDto;
-import com.tea.dto.CommissionScheduleDto;
-import com.tea.dto.SalesRepDto;
-import com.tea.dto.TemporaryApplicationDto;
-import com.tea.dto.UserGridItem;
-import com.tea.dto.mapper.CommissionScheduleMapper;
-import com.tea.exception.RecordNotFoundException;
+//import com.tea.landlordapp.domain.CommissionSchedule;
+//import com.tea.domain.ManagementCompany;
+import com.tea.landlordapp.domain.Property;
+//import com.tea.landlordapp.domain.SalesRep;
+//import com.tea.landlordapp.domain.Subscriber;
+import com.tea.landlordapp.domain.User;
+//import com.tea.landlordapp.dto.CsrTaskMonitorDto;
+import com.tea.landlordapp.dto.IntegerStringKVDto;
+//import com.tea.landlordapp.dto.MgmtCompanyDto;
+//import com.tea.landlordapp.dto.CommissionScheduleDto;
+//import com.tea.landlordapp.dto.SalesRepDto;
+//import com.tea.landlordapp.dto.TemporaryApplicationDto;
+//import com.tea.landlordapp.dto.UserGridItem;
+//import com.tea.landlordapp.dto.mapper.CommissionScheduleMapper;
+//import com.tea.landlordapp.exception.RecordNotFoundException;
 import com.tea.landlordapp.domain.Application;
 import com.tea.landlordapp.dto.ApplicationGridItem;
-import com.tea.repository.ApplicationDao;
-import com.tea.repository.CommissionScheduleDao;
-import com.tea.repository.DtoHelperDao;
-import com.tea.repository.UserDao;
-import com.tea.utility.Pair;
+import com.tea.landlordapp.repository.ApplicationDao;
+//import com.tea.landlordapp.repository.CommissionScheduleDao;
+import com.tea.landlordapp.repository.DtoHelperDao;
+import com.tea.landlordapp.repository.UserDao;
+//import com.tea.landlordapp.utility.Pair;
 
 @Repository("dtoHelperDao")
 @Transactional(readOnly = true)
@@ -57,8 +57,12 @@ public class DtoHelperDaoImpl implements com.tea.landlordapp.repository.DtoHelpe
 
    private transient EntityManager em;
 
+//   @Autowired
+//   UserDaoImpl userDao;
+//   
    @Autowired
-   UserDaoImpl userDao;
+   ApplicationDao applicationDao;
+   
    
    @Autowired
    private Properties emailProperties;
@@ -433,22 +437,33 @@ public class DtoHelperDaoImpl implements com.tea.landlordapp.repository.DtoHelpe
 //   }
 
    
-   public List<ApplicationGridItem> findApplicationGridList(com.tea.landlordapp.domain.User user) throws DataAccessException {
+   public List<ApplicationGridItem> findApplicationGridList(com.tea.landlordapp.domain.User user, String status,
+		   													String otherStatus) throws DataAccessException {
 	      List<ApplicationGridItem> items = new ArrayList<ApplicationGridItem>();
-	      List<com.tea.landlordapp.domain.Application> applications = applicationDao.findApplicationList(user);
-
+	      List<com.tea.landlordapp.domain.Application> applications = null;
+	      if (status != null) {
+	    	  if (otherStatus != null) 
+	    		  applications = applicationDao.findApplicationList(user, status, otherStatus);
+	    	  else applications = applicationDao.findApplicationList(user, status);
+	      }
+	      else {
+	    	  applications = applicationDao.findApplicationList(user);
+	      }
 	      for (Application application : applications) {
 	         ApplicationGridItem item = new ApplicationGridItem(application.getId(), application.getApplicationExtId(),
 	        		 											application.getApplicants().get(0).getEmailAddress(),
+	        		 											application.getApplicants().get(0).getFullName(),
 	        		 											application.getApplicants().get(0).getFirstName(),
 	        		 											application.getApplicants().get(0).getLastName(),
 	        		 											application.getCreatedDate(), application.getModifiedDate(),
-	        		 											application.getStatus());
+	        		 											application.getStatus(), application.getProperty().getAddressLine1(),
+	        		 											application.getProperty().getCity());
 	         items.add(item);
 	      }
 
 	      return items;
 	   }
+
    
 //   public List<UserGridItem> findUserGridList(Subscriber sub) throws DataAccessException {
 //      List<UserGridItem> items = new ArrayList<UserGridItem>();

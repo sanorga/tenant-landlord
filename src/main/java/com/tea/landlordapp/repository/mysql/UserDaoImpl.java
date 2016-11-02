@@ -522,6 +522,11 @@ public class UserDaoImpl implements UserDao {
 	public User findNullUser() throws DataAccessException {
 		return findUserByUsername(Globals.NULL_USER_EMAIL);
 	}
+	
+	@Override
+	public User findApiUser() throws DataAccessException {
+		return findUserByUsername(Globals.API_USER_EMAIL);
+	}
 
 	@Override
 	public List<Property> findAuthorizedProperties(User user) {

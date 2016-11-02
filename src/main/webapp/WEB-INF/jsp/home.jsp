@@ -21,7 +21,7 @@
          <a class="mn_bx_btn" href="anonymousUser.htm"><img src="img/icon_inviteToApply.png" alt="Invite to Apply" width="120"></a>
 
 <%--          <tea:ifAuthorized capability="show.wrkqueue">   --%>
-				<a class="mn_bx_btn" href="example.htm"><img src="img/icon_applications.png" alt="Applications" width="120"></a>
+				<a class="mn_bx_btn" href="viewapplications.htm?userId=${user.id}"><img src="img/icon_applications.png" alt="Applications" width="120"></a>
 <!-- 				<a class="mn_bx_btn" href="applications.htm"><img src="img/applications.png" alt="Applications" width="120"></a> -->
 <%--          </tea:ifAuthorized> --%>
 <%--          <tea:ifAuthorized capability="show.mailbox"> --%>

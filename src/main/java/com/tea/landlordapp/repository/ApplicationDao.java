@@ -365,6 +365,10 @@ public List<Applicant> findApplicantsForApplication(Application application);
 //public JqgridData getApplicationsForGrid(int page, int recordsPerPage, String sortBy, boolean ascending,
 //		Boolean search, JqgridFilter fltr, Integer userId);
 //public String getServiceListTooltip(Integer applicationId);
+public List<Application> findApplicationList(User user) throws DataAccessException;
+public List<Application> findApplicationList(User user, String status) throws DataAccessException;
+public List<Application> findApplicationList(User user, String status, String otherStatus) throws DataAccessException;
+public Application findApplicationByExtId(Integer appExtId);
 
 
 }

@@ -37,6 +37,7 @@
         <security:intercept-url pattern="/api/*" access="permitAll" />
         <security:intercept-url pattern="/mfaIdByEmail.json" access="permitAll" />
         <security:intercept-url pattern="/clickpayCallback.htm" access="permitAll" />
+        <security:intercept-url pattern="/notificationMgmt.htm" access="permitAll" />
 		<security:intercept-url pattern="/changepwd.htm" access="hasRole('USER') or hasRole('must.change.password')"/>
 		<security:intercept-url pattern="/*" access="hasRole('USER')"/>
   		<security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" /> 

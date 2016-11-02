@@ -1624,11 +1624,16 @@ public class Globals {
 	public final static String PARAM_DELETE = "_delete";
 	public final static String PARAM_REMOVE = "_remove";
 	public final static String PARAM_CANCEL = "_cancel";
+	public final static String PARAM_CANCELLED = "_cancelled";
 	public final static String PARAM_FINISH = "_finish";
 	public final static String PARAM_RESET_EMAIL = "_resetemail";
 	public final static String PARAM_COMPLETE = "_complete";
+	public final static String PARAM_COMPLETED = "_completed";
 	public final static String PARAM_PENDING = "_pending";
+	public final static String PARAM_RENTERRESPONDED = "_rresp";
+	public final static String PARAM_SUBMITTED = "_sub";
 	public final static String PARAM_NEW = "_new";
+	public final static String PARAM_INPROGRESS= "_inprogress";
 	public final static String PARAM_ANONYMOUS = "_anonymous";
 	public final static String PARAM_PRINT = "_print";
 	public final static String PARAM_SAVE = "_save";
@@ -1639,7 +1644,10 @@ public class Globals {
 	public final static String PARAM_INPROCESS = "_inprocess";
 
 	public final static String PARAM_APPROVAL = "_approval";
+	public final static String PARAM_APPROVED = "_approved";
+	public final static String PARAM_ALLSTATUS = "_allstatus";
 	public final static String PARAM_DECLINE = "_decline";
+	public final static String PARAM_DECLINED = "_declined";
 	public final static String PARAM_FURTHER_REVIEW = "_review";
 
 	// Transfirst Central variables
@@ -1774,6 +1782,8 @@ public class Globals {
 	public final String AUTH_PRODUCT = "Product";
 
 	public final static String NULL_USER_EMAIL = "no email";
+	
+	public final static String API_USER_EMAIL = "smartmove";
 
 	// Transfirst gateway Input string values
 	private static Globals instance = new Globals();

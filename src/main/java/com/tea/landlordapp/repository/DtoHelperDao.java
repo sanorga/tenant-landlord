@@ -30,7 +30,7 @@ public interface DtoHelperDao extends Serializable {
 
 //   public List<UserGridItem> findUserGridList(Subscriber sub) throws DataAccessException;
    
-   public List<ApplicationGridItem> findApplicationGridList(User user) throws DataAccessException;
+   public List<ApplicationGridItem> findApplicationGridList(User user, String status, String otherStatus) throws DataAccessException;
    
 //   // Support Temporary Application display controller
 //   public List<TemporaryApplicationDto> getTemporaryApplicationList(Integer page, Integer pageSize);

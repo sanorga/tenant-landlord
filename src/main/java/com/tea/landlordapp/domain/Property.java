@@ -365,7 +365,7 @@ public class Property extends AuditableEntity {
 
    @Transient
    public String getAddressLine1() {
-      return String.format("%s", getStreet());
+      return String.format("%s, %s", getStreet(), getApartmentNo());
    }
 
    @Transient

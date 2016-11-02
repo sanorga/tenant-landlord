@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.google.common.base.Strings;
+//import com.tea.domain.Subscriber;
 //import com.tea.landlordapp.constant.FileStorageBeans;
 import com.tea.landlordapp.constant.Globals;
 import com.tea.landlordapp.domain.Applicant;
@@ -683,6 +684,20 @@ public class ApplicationDaoImpl implements ApplicationDao {
 //			return null;
 //		}
 //	}
+	@Override
+	public Application findApplicationByExtId(Integer appExtId) {
+		final Query query = em
+				.createQuery("SELECT a FROM Application a WHERE a.applicationExtId = :appExtId");
+		query.setParameter("appExtId", appExtId);
+
+		try {
+			final Application aip = (Application) query.getSingleResult();
+			return aip;
+		} catch (Exception e) {
+			// do nothing
+			return null;
+		}
+	}
 //
 //	@Override
 //	public ClientApplication findClientApplicationByEnvelopeId(String envelopeId) {
@@ -2889,4 +2904,33 @@ public class ApplicationDaoImpl implements ApplicationDao {
 //		return null;
 //	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Application> findApplicationList(User user) throws DataAccessException {
+		Query query = em
+				.createQuery("select a from Application a join fetch a.property p  join fetch a.applicants ap where ap.applicantType = 1 and a.createdBy.id = :id");
+		query.setParameter("id", user.getId());
+		return query.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Application> findApplicationList(User user, String status) throws DataAccessException {
+		Query query = em
+				.createQuery("select a from Application a join fetch a.property p join fetch a.applicants ap where ap.applicantType = 1 and a.createdBy.id = :id and a.status = :status");
+		query.setParameter("id", user.getId());
+		query.setParameter("status", status);
+		return query.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Application> findApplicationList(User user, String status, String otherStatus) throws DataAccessException {
+		Query query = em
+				.createQuery("select a from Application a join fetch a.property p join fetch a.applicants ap where ap.applicantType = 1 and a.createdBy.id = :id and (a.status = :status or a.status = :otherStatus)");
+		query.setParameter("id", user.getId());
+		query.setParameter("status", status);
+		query.setParameter("otherStatus", otherStatus);
+		return query.getResultList();
+	}
 }

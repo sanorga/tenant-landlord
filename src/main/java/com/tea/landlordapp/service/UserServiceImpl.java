@@ -309,7 +309,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Override
 	public Application saveNewApplication(Application application, User loginUser) {
 			application.setAuditInfo(loginUser);
-
+			application.setStatus("Submitted");
 		application = simpleDao.merge(application);
 		return application;
 	}

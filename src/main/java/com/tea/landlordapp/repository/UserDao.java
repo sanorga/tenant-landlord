@@ -143,4 +143,6 @@ public interface UserDao extends Serializable {
 	public AnonymousUser saveAnonymousUser(AnonymousUser anonymousUser);
 
 	public Property findPropertyById(int propertyId);
+
+	public User findApiUser() throws DataAccessException;
 }
