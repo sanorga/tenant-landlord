@@ -96,6 +96,7 @@
                     <th>Full Name</th>
                     <th>Address</th>
                     <th>City</th>
+                    <th>Credit Recommendation </th>
                     <th>Report</th>
                     <th>Status</th>
                 </tr>
@@ -116,6 +117,7 @@
                             <td>${app.fullName}</td>
 							<td>${app.addressLine1}</td>
 							<td>${app.city}</td>
+							<td>${app.creditRecommendationLabel}</td>
 							<td><img src="images/docs.jpg"></td>
                             <td>${app.status}</td>
                         </tr>

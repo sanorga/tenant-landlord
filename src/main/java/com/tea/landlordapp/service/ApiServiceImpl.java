@@ -1,5 +1,6 @@
 package com.tea.landlordapp.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,19 +54,28 @@ public class ApiServiceImpl implements ApiService {
 //	}
 	
 	@Override
-	public void updateApplication(Integer applicationId, Integer userId, String status, String eventText) {
-		setUpdateAppStatus(applicationId, userId, status, eventText);
+	public boolean updateAppStatusFlag(Integer applicationId, Integer userId, String status, String eventText) {
+		return setUpdateAppStatus(applicationId, userId, status, eventText);
 	}
 	
-	private void setUpdateAppStatus(Integer appExtId, Integer userId, String status, String eventText) {
+	private boolean setUpdateAppStatus(Integer appExtId, Integer userId, String status, String eventText) {
+		boolean flag = false;
 		Application app = applicationDao.findApplicationByExtId(appExtId);
-		if (app == null) return;
+		if (app == null) return flag;
 		
 		User user = simpleDao.find(User.class, userId);
 		if (app.getStatus() != "Cancelled" || app.getStatus() != "Declined" || app.getStatus() != "Approved") {
+			if (StringUtils.equals(status, "RenterAccept")) 
+					status = "RenterAccepted";
+			else if (StringUtils.equals(status, "RenterDecline")) 
+					status = "RenterDeclined";
+				else if (StringUtils.equals(status, "ApplicationComplete")) 
+						status = "Completed";
 			app.setStatus(status);
-			app = simpleDao.merge(app);
+			app = simpleDao.merge(app,user);
+			flag = true;
 		}
+		return flag;
 	}
 
 //	@Override

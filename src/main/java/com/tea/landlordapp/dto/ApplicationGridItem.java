@@ -6,7 +6,7 @@ public class ApplicationGridItem {
 
    public ApplicationGridItem(Integer id, 	   Integer applicationExtId, String applicantEmailId, 	String fullName, String firstName,
 							  String lastName, Timestamp createdDate, Timestamp modifiedDate, 	String status, 
-							  String addressLine1, String city  ) {
+							  String addressLine1, String city , String creditRecommendationLabel ) {
       this.setId(id);
 	  this.setApplicationExtId(applicationExtId);
 	  this.setApplicantEmailId(applicantEmailId);
@@ -18,6 +18,7 @@ public class ApplicationGridItem {
       this.setStatus(status);
       this.setAddressLine1(addressLine1);
       this.setCity(city);
+      this.setCreditRecommendationLabel(creditRecommendationLabel);
    }
 
    public Integer getId() {
@@ -107,7 +108,15 @@ public class ApplicationGridItem {
 	public void setCity(String city) {
 		  this.city = city;
 	}
-	  
+
+	public String getCreditRecommendationLabel() {
+	      return creditRecommendationLabel;
+	}
+
+	public void setCreditRecommendationLabel(String creditRecommendationLabel) {
+	  this.creditRecommendationLabel = creditRecommendationLabel;
+	}
+	
    private Integer id;
    private Integer applicationExtId;
    private String applicantEmailId;
@@ -119,6 +128,7 @@ public class ApplicationGridItem {
    private String status;
    private String addressLine1;
    private String city;
+   private String creditRecommendationLabel;
 
 
 }

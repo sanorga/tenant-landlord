@@ -29,7 +29,7 @@ public class ViewApplicationsForm extends AbstractDataController{
 	   private ApplicationService applicationService;
 
 	   @RequestMapping(method = RequestMethod.POST)
-	   public String processFormSubmission(@RequestParam(value = "subscriberId", required = false) Integer subscriberId, HttpServletRequest request) {
+	   public String processFormSubmission(@RequestParam(value = "userId", required = false) Integer userId, HttpServletRequest request) {
 	      logger.debug("in POST method of viewapplications.htm...");
 
 	      // get logged in user using the id stored in the session

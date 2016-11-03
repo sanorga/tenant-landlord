@@ -17,4 +17,6 @@ public interface InviteService {
 
 	public Map<String, String> submitProperty(AnonymousUser au) throws Exception;
 
+	public Map<String, String> getReports(Integer applicationExtId) throws Exception;
+
 }

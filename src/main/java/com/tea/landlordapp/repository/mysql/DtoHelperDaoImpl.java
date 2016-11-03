@@ -32,6 +32,7 @@ import com.tea.landlordapp.domain.Property;
 import com.tea.landlordapp.domain.User;
 //import com.tea.landlordapp.dto.CsrTaskMonitorDto;
 import com.tea.landlordapp.dto.IntegerStringKVDto;
+import com.tea.landlordapp.enums.CreditRecommendation;
 //import com.tea.landlordapp.dto.MgmtCompanyDto;
 //import com.tea.landlordapp.dto.CommissionScheduleDto;
 //import com.tea.landlordapp.dto.SalesRepDto;
@@ -457,7 +458,8 @@ public class DtoHelperDaoImpl implements com.tea.landlordapp.repository.DtoHelpe
 	        		 											application.getApplicants().get(0).getLastName(),
 	        		 											application.getCreatedDate(), application.getModifiedDate(),
 	        		 											application.getStatus(), application.getProperty().getAddressLine1(),
-	        		 											application.getProperty().getCity());
+	        		 											application.getProperty().getCity(),
+	        		 											CreditRecommendation.getLabel(application.getCreditRecommendation()));
 	         items.add(item);
 	      }
 

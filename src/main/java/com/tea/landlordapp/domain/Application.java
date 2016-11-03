@@ -167,27 +167,27 @@ public class Application extends AuditableEntity  {
 		this.creditRecommendation = creditRecommendation;
 	}
 
-	@Transient
-	public String getCreditRecommendationLabel(){
-		if(creditRecommendation == null) creditRecommendation = '0';
-		
-		switch (creditRecommendation) {
-		case '1':
-			return "Accept";
-		case '2':
-			return "LowAccept";
-		case '3':
-			return "Conditional";
-		case '4':
-			return "Decline";
-		case '5':
-			return "Refer";
-		case '6':
-			return "Pending";
-		default:
-			return "";
-		}
-	}
+//	@Transient
+//	public String getCreditRecommendationLabel(){
+//		if(creditRecommendation == null) creditRecommendation = '0';
+//		
+//		switch (creditRecommendation) {
+//		case '1':
+//			return "Accept";
+//		case '2':
+//			return "LowAccept";
+//		case '3':
+//			return "Conditional";
+//		case '4':
+//			return "Decline";
+//		case '5':
+//			return "Refer";
+//		case '6':
+//			return "Pending";
+//		default:
+//			return "";
+//		}
+//	}
 	
 	@Column(name = "selected_bundle")
 	public Character getSelectedBundle() {

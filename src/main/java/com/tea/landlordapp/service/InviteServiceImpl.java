@@ -49,8 +49,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import com.tea.landlordapp.domain.AnonymousUser;
+import com.tea.landlordapp.domain.Application;
 import com.tea.landlordapp.domain.Property;
 import com.tea.landlordapp.enums.TransUnionApiParameter;
+import com.tea.landlordapp.repository.ApplicationDao;
 import com.tea.landlordapp.repository.SystemPropertyDao;
 import com.tea.landlordapp.service.helper.InviteHelper;
 //import com.tea.landlordapp.service.helper.RevoPayHelper;
@@ -69,13 +71,19 @@ public class InviteServiceImpl implements InviteService{
 	private InviteHelper inviteHelper;
 
 	private SystemPropertyDao systemPropertyDao;
+	
+	private ApplicationService applicationService;
+	
+	private ApplicationDao applicationDao;
+
 
 		
 	@Autowired
-	public InviteServiceImpl(InviteHelper inviteHelper, SystemPropertyDao systemPropertyDao) {
+	public InviteServiceImpl(InviteHelper inviteHelper, SystemPropertyDao systemPropertyDao, ApplicationDao applicationDao) {
 		
 		this.inviteHelper = inviteHelper;
 		this.systemPropertyDao = systemPropertyDao;
+		this.applicationDao = applicationDao;
 		
 	}
 	
@@ -365,7 +373,7 @@ public class InviteServiceImpl implements InviteService{
 		String apiCall = aurl.toString();
 		
 		// get Server time
-		String response=getRequest(apiCall, null);
+		String response=getRequest(apiCall, null, null);
 		if (response == null) {
 			logger.debug("no server time obtained");
 			return "Error:NoServerTimeObtained";
@@ -445,7 +453,7 @@ public class InviteServiceImpl implements InviteService{
 
 	}
 
-	private String getRequest(String apiCall, String xmlString) {
+	private String getRequest(String apiCall, String xmlString, String credentials) {
 		// TODO Auto-generated method stub
 		
 		String cleanXml=null, sanitizedMsg = null;
@@ -473,7 +481,8 @@ public class InviteServiceImpl implements InviteService{
 			connection.setRequestProperty("Content-Type","application/xml"); 
 			connection.setRequestProperty("Accept","application/xml"); 
 			
-			
+			if (credentials != null) connection.setRequestProperty("Authorization", credentials);
+				
 			int responseCode = connection.getResponseCode();
 			String responseMessage = connection.getResponseMessage();
 			
@@ -616,16 +625,11 @@ public class InviteServiceImpl implements InviteService{
 		else {
 			mapResponse.put("faultcode","");
 			NodeList nList = doc.getElementsByTagName("dateTime");
-//			NodeList nList = doc.getElementsByTagName("RSData");
 	        	        
 	        Node nNode = nList.item(0);
 	            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 		           Element eElement = (Element) nNode;
 		           mapResponse.put("dateTime", eElement.getElementsByTagName("dateTime").item(0).getTextContent());
-//		           mapResponse.put("RefId", eElement.getElementsByTagName("RefId").item(0).getTextContent());
-//		           mapResponse.put("StatusCode", eElement.getElementsByTagName("StatusCode").item(0).getTextContent());
-//		           mapResponse.put("StatusMsg", eElement.getElementsByTagName("StatusMsg").item(0).getTextContent());
-//		           mapResponse.put("ApprovalCode", eElement.getElementsByTagName("ApprovalCode").item(0).getTextContent());
 		        }
 			}
 
@@ -1293,4 +1297,125 @@ public class InviteServiceImpl implements InviteService{
 		// envelopeId, e.getMessage());
 		// }
 	}
+	
+	@Override
+	public Map<String, String> getReports(Integer applicationExtId) throws Exception {
+			
+			Map<String, String> result = new HashMap<String,String>();
+			String applicationExtIdStr = null;
+			String apiUrl = systemPropertyDao.getPropertyValue(TransUnionApiParameter.URL);
+			String partnerId = systemPropertyDao.getPropertyValue(TransUnionApiParameter.PARTNER_ID);
+			String key = systemPropertyDao.getPropertyValue(TransUnionApiParameter.KEY);
+			String live = systemPropertyDao.getPropertyValue(TransUnionApiParameter.IS_LIVE);
+	
+			Application application = applicationDao.findApplicationByExtId(applicationExtId);
+			
+			if (application == null)
+				return null;
+			
+			
+//			Property p = application.getProperty();
+			
+			applicationExtIdStr = applicationExtId.toString();
+			
+				
+			
+			//-----------------------------------------------------------------
+			//Create Application - (POST)/LandlordApi/V1/Application
+			//-----------------------------------------------------------------
+
+			Map<String, String> applicationResultMap = getApplicationInfo(apiUrl, partnerId, key, application, applicationExtIdStr);
+			if (applicationResultMap == null) {
+				logger.debug("no application obtained");
+				return null;
+			}
+//			String applicationExtIdStr = applicationResultMap.get("applicationExtIdStr");
+			String applicantEmail= applicationResultMap.get("applicantEmail");
+			String coapplicantEmail = applicationResultMap.get("coapplicantEmail");
+			if (applicationExtIdStr == "0" || applicationExtIdStr == null){
+				logger.debug("no application id obtained");
+				return null;
+			}
+		
+			result.put("applicationExtIdStr", applicationExtIdStr);
+			result.put("applicantEmail", applicantEmail);
+			result.put("coapplicantEmail",coapplicantEmail);
+			return result;
+	}
+	
+	private Map<String,String> getApplicationInfo (String apiUrl, String partnerId, 
+			   String key, Application application,
+			   String applicationExtIdStr) throws XPathExpressionException, IOException, ParserConfigurationException, SAXException {
+
+		String apiCall = null, response=null;
+		StringBuilder aurl = null;
+		Map<String, String> responseMap =  new HashMap<String,String>();
+		String responseCodeStr = null, responseMessage = null;
+		Integer responseCode = 0;
+		
+		//call
+		aurl = new StringBuilder();
+		aurl.append(apiUrl);
+		aurl.append("Application/");
+		aurl.append(applicationExtIdStr);
+		apiCall = aurl.toString();
+		
+		// get credentials
+		String credentials = getCredentials(apiUrl, partnerId, key);
+		if (credentials == null){
+			logger.debug("no credentials obtained to get application information");
+			return null;
+		}
+		// get applicationInfo
+		response=getRequest(apiCall, null, credentials);
+		if (response == null) {
+			logger.debug("no application info obtained");
+			return null;
+		}
+		
+		Map<String,String> appResponse = getApplicationInformationXml(response);
+		
+		
+		responseMap.put("applicationExtIdStr",applicationExtIdStr);		
+	
+//		return responseMap;
+		return appResponse;
+	
+	}
+	
+	private Map<String, String> getApplicationInformationXml(String resp) throws ParserConfigurationException, SAXException, IOException {
+		
+		String serverTime = null;
+		Map<String, String> mapResponse =  new HashMap<String,String>();
+    	
+		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbfactory.newDocumentBuilder();
+		Document doc = dBuilder.parse(new InputSource(new StringReader(resp)));
+		doc.getDocumentElement().normalize();
+		String nodeNameStr = doc.getDocumentElement().getNodeName();
+		Element root = doc.getDocumentElement();
+		
+		if (nodeNameStr == "ApplicationDetails") {
+			Element eElement = doc.getDocumentElement();
+			mapResponse.put("ApplicationId", eElement.getElementsByTagName("ApplicationId").item(0).getTextContent());
+	        mapResponse.put("LandlordPays", eElement.getElementsByTagName("LandlordPays").item(0).getTextContent());
+	        mapResponse.put("PropertyId", eElement.getElementsByTagName("PropertyId").item(0).getTextContent());
+		}	
+
+			NodeList nList = doc.getElementsByTagName("Applicant");
+			for (int i = 0; i < nList.getLength(); i++) {	        
+				Node nNode = nList.item(i);
+	            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+		           Element eElement = (Element) nNode;
+		           if (i == 0)
+		        	   mapResponse.put("applicantEmail", eElement.getElementsByTagName("EmailAddress").item(0).getTextContent());
+		           else {
+		        	   mapResponse.put("coapplicantEmail", eElement.getElementsByTagName("EmailAddress").item(0).getTextContent());
+		           }
+		        }
+			}
+
+		return mapResponse;
+	}
+	
 }
