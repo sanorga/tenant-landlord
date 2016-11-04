@@ -43,7 +43,7 @@ DROP TABLE IF EXISTS `property`;
 CREATE TABLE `property` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
-  `property_id` int(10) unsigned DEFAULT NULL,
+  `property_ext_id` int(10) unsigned DEFAULT NULL,
   `property_identifier` varchar(50) DEFAULT NULL,
   `organization_id` int(10) unsigned DEFAULT NULL,
   `organization_name` varchar(100) DEFAULT NULL,
@@ -67,14 +67,16 @@ CREATE TABLE `property` (
   `is_fcra_accepted` bit(1) NOT NULL DEFAULT b'0',
   `open_bkr_window` int(10) unsigned DEFAULT 0,
   `phone` varchar(10) DEFAULT NULL,
+  `phone_extension` varchar(6) DEFAULT NULL,
+  `future_use` bit(1) NOT NULL DEFAULT b'0',
   `extension` varchar(6) DEFAULT NULL,
   `created_by` int(10) unsigned NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified_by` int(10) unsigned DEFAULT NULL,
   `modified_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `property_id` (`property_id`),
-  UNIQUE KEY `property_identifier` (`property_identifier`),
+  KEY `property_id` (`property_id`),
+  KEY `property_identifier` (`property_identifier`),
   KEY `user_id` (`user_id`),
   KEY `created_by` (`created_by`),
   KEY `modified_by` (`modified_by`),
@@ -128,6 +130,7 @@ CREATE TABLE `capability` (
 
 
 DROP TABLE IF EXISTS `role2capability`;
+
 CREATE TABLE `role2capability` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `role_id` int(10) unsigned NOT NULL,
@@ -160,6 +163,8 @@ CREATE TABLE `password_policy` (
   UNIQUE KEY `password_policy_description_idx` (`description`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `password_history`;
+
 CREATE TABLE `password_history` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
@@ -170,6 +175,7 @@ CREATE TABLE `password_history` (
   CONSTRAINT `pw_hist_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `anonymous_user`;
 CREATE TABLE `anonymous_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `reference` varchar(10) NOT NULL,
@@ -181,6 +187,8 @@ CREATE TABLE `anonymous_user` (
   `application_type` enum('T','E') NOT NULL DEFAULT 'T',
   `status` enum('A','I') NOT NULL DEFAULT 'A',
   `price` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `rental_amount` decimal(12,2) DEFAULT '0.00',
+  `rental_deposit` decimal(12,2) NOT NULL DEFAULT '0.00' 
   `is_coapplicant` enum('N','Y') NOT NULL DEFAULT 'Y',
   `is_rental_location` enum('N','Y') NOT NULL DEFAULT 'Y',
   `is_residence` enum('N','Y') NOT NULL DEFAULT 'Y',
@@ -228,3 +236,57 @@ INSERT INTO `landlord`.`system_property` (`property_name`, `value`, `property_gr
 INSERT INTO `landlord`.`system_property` (`property_name`, `value`, `property_group`) VALUES ('key', 'SI2o6o78UaXBg1DgQj1ULmGBNJKcUQ1vn+qL0SR9hAX9PiFhQSNgRGJK0M4QZwyK9BULpRbEzkCmx4YSg05kBA==', 'TransUnion');
 INSERT INTO `landlord`.`system_property` (`property_name`, `value`, `property_group`) VALUES ('live', '0', 'TransUnion');
 
+DROP TABLE IF EXISTS `application`;
+CREATE TABLE `application` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `application_ext_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `rental_amount` decimal(12,2) DEFAULT 0,
+  `rental_deposit` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `lease_term_months` int(10) unsigned DEFAULT 0,
+  `landlord_pays` bit(1) DEFAULT NULL,
+  `property_id` int(10) unsigned DEFAULT NULL,
+  `property_ext_id` int(10) unsigned DEFAULT NULL,
+  `unit_no` varchar(10) DEFAULT NULL,
+  `credit_recommendation` enum('1','2','3','4','5','6') DEFAULT '6',
+  `credit_policy` text,
+  `status` varchar(50) DEFAULT NULL,
+  `selected_bundle` enum('1','2') DEFAULT '1',
+  `created_by` int(10) unsigned DEFAULT NULL,
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_by` int(10) unsigned DEFAULT NULL,
+  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `application_ext_id` (`application_ext_id`),
+  KEY `property_id` (`property_id`),
+  KEY `property_ext_id` (`property_ext_id`),
+  KEY `created_by` (`created_by`),
+  KEY `modified_by` (`modified_by`),
+  CONSTRAINT `application_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `property` (`id`),
+  CONSTRAINT `application_ibfk_2` FOREIGN KEY (`property_ext_id`) REFERENCES `property` (`property_ext_id`),
+  CONSTRAINT `application_ibfk_3` FOREIGN KEY (`created_by`) REFERENCES `user` (`id`),
+  CONSTRAINT `application_ibfk_4` FOREIGN KEY (`modified_by`) REFERENCES `user` (`id`)
+  ) ENGINE=InnoDB AUTO_INCREMENT=1647 DEFAULT CHARSET=latin1;
+
+  DROP TABLE IF EXISTS `applicant`;
+  
+  CREATE TABLE `applicant` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `application_id` int(10) unsigned NOT NULL,
+  `application_ext_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `applicant_type` varchar(50) NOT NULL,
+  `first_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(256) DEFAULT NULL,
+  `middle_initial` varchar(10) DEFAULT NULL,
+  `email_address` varchar(50) DEFAULT NULL,
+  `created_by` int(10) unsigned DEFAULT NULL,
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_by` int(10) unsigned DEFAULT NULL,
+  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `applicant_ibfk_1` (`application_id`),
+  KEY `applicant_ibfk_2` (`application_ext_id`),
+  KEY `applicant_ibfk_3` (`created_by`),
+  CONSTRAINT `applicant_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `applicant_ibfk_3` FOREIGN KEY (`created_by`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `applicant_ibfk_4` FOREIGN KEY (`modified_by`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1837 DEFAULT CHARSET=latin1;

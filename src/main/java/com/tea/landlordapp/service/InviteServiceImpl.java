@@ -1321,7 +1321,7 @@ public class InviteServiceImpl implements InviteService{
 				
 			
 			//-----------------------------------------------------------------
-			//Create Application - (POST)/LandlordApi/V1/Application
+			//Get Application Status and Reports - (POST)/LandlordApi/V1/Application
 			//-----------------------------------------------------------------
 
 			Map<String, String> applicationResultMap = getApplicationInfo(apiUrl, partnerId, key, application, applicationExtIdStr);

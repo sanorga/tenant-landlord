@@ -256,14 +256,14 @@
 									<fieldset class="form-group">
 											<label for="">*Rent Amount:</label>
 									
-											<form:input path="property.rentalAmount" size="10" maxlength="10"  />
+											<form:input path="rentalAmount" size="10" maxlength="10"  />
 										
 									</fieldset>
 									
 									<fieldset class="form-group">
 											<label for="">Deposit:</label>
 									
-											<form:input path="property.rentalDeposit" size="10" maxlength="10"  />
+											<form:input path="rentalDeposit" size="10" maxlength="10"  />
 										
 									</fieldset>
 									

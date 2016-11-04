@@ -18,6 +18,8 @@
 			<props>
 				<prop key="tea.url">${TEA_ADMIN_URL}</prop>
 				<prop key="tea-tenant.url">${TEA_TENANT_URL}</prop>
+				<prop key="tea-landlordapp.url">${TEA_LANDLORDAPP_URL}</prop>
+				<prop key="smartmove_newacct.url">${SMARTMOVE_NEW_ACCT_URL}</prop>
 				<prop key="email.from">no-reply@tenantevaluation.com</prop>
 				<prop key="retry.interval.hours">24</prop>
 				<prop key="max.retries">2</prop>
