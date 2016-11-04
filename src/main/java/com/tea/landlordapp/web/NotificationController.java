@@ -166,8 +166,8 @@ public class NotificationController {
 			if (StringUtils.equals(externalStatus,"ApplicationComplete")){
 				Map<String, String> result = inviteService.getReports(applicationExtId);
 				if (result == null) 
-					log.info("Notification received and reports obtained for application  {}", applicationExtId);
-				else log.info("Notification received and no reports obtained for application  {}", applicationExtId);
+					log.info("Notification received and no reports obtained for application  {}", applicationExtId);
+				else log.info("Notification received and reports obtained for application  {}", applicationExtId);
 			}
 			
 		}

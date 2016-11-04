@@ -118,7 +118,12 @@
 							<td>${app.addressLine1}</td>
 							<td>${app.city}</td>
 							<td>${app.creditRecommendationLabel}</td>
-							<td><img src="images/docs.jpg"></td>
+							<c:if test="${app.canRequestReport}"> 
+								<td><img src="images/docs.jpg"></td>
+							</c:if>
+							<c:if test="${!app.canRequestReport}"> 
+								<td>&nbsp;</td>
+							</c:if>
                             <td>${app.status}</td>
                         </tr>
                     </c:forEach>

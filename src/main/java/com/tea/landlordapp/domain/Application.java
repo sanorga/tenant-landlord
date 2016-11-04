@@ -54,6 +54,8 @@ public class Application extends AuditableEntity  {
     private int applicationExtId;
 
 	private boolean landlordPays = true;
+	
+	private boolean canRequestReport = false;
 
 	private Date submissionDate;
 
@@ -462,6 +464,15 @@ public class Application extends AuditableEntity  {
 
 	public void setLandlordPays(boolean landlordPays) {
 		this.landlordPays = landlordPays;
+	}
+
+	@Column(name = "can_request_report")
+	public boolean canRequestReport() {
+		return canRequestReport;
+	}
+
+	public void setCanRequestReport(boolean canRequestReport) {
+		this.canRequestReport = canRequestReport;
 	}
 
 	

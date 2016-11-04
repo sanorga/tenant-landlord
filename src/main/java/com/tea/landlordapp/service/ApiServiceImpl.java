@@ -69,8 +69,10 @@ public class ApiServiceImpl implements ApiService {
 					status = "RenterAccepted";
 			else if (StringUtils.equals(status, "RenterDecline")) 
 					status = "RenterDeclined";
-				else if (StringUtils.equals(status, "ApplicationComplete")) 
+				else if (StringUtils.equals(status, "ApplicationComplete")) {
 						status = "Completed";
+						app.setCanRequestReport(true);
+					 }
 			app.setStatus(status);
 			app = simpleDao.merge(app,user);
 			flag = true;
