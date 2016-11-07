@@ -249,6 +249,11 @@ public class AnonymousUserForm extends AbstractDataController {
 		      application.setApartmentNo(property.getApartmentNo());
 		      application.setCreditRecommendation('6'); 
 		      application.setSelectedBundle('1');
+		      if ( application.getApplicants().size() == 2) {
+					application.setCoApplicantAvailable(Globals.YES);
+			  } else {
+					application.setCoApplicantAvailable(Globals.NO);
+			  }
 		      Application app = userService.saveNewApplication(application, user);
     	      application.setId(application.getId());
 		      

@@ -467,7 +467,7 @@ public class Application extends AuditableEntity  {
 	}
 
 	@Column(name = "can_request_report")
-	public boolean canRequestReport() {
+	public boolean isCanRequestReport() {
 		return canRequestReport;
 	}
 

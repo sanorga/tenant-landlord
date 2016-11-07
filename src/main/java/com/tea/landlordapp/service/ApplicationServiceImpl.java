@@ -35,5 +35,13 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationDao.findApplicationList(user);
 	}
 	
+	@Override
+	public Application updateApplication(Application application, User loginUser) {
+			application.setAuditInfo(loginUser);
+
+		return applicationDao.saveApplication(application);
+
+	}
+
 	
 }

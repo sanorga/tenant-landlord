@@ -460,7 +460,7 @@ public class DtoHelperDaoImpl implements com.tea.landlordapp.repository.DtoHelpe
 	        		 											application.getStatus(), application.getProperty().getAddressLine1(),
 	        		 											application.getProperty().getCity(),
 	        		 											CreditRecommendation.getLabel(application.getCreditRecommendation()),
-	        		 											application.canRequestReport());
+	        		 											application.isCanRequestReport());
 	         items.add(item);
 	      }
 

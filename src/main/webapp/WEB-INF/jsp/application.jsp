@@ -6,7 +6,7 @@
 
 <%@ include file="/WEB-INF/jsp/headernew.jsp" %>
 
-<form:form method="post" modelAttribute="application">
+<form:form method="post" modelAttribute="application" name="application">
 <ol class="breadcrumb">
   <li><a href="home.htm">Home</a></li>
   <li><a href="viewapplications.htm">Applications</a></li>
@@ -40,7 +40,7 @@
         <div class="control-box mailbox_area">
             <div class="row">
                 <div class="section_icon_head">
-                    <img src="img/icon_applications.png" alt="Users">
+                    <img src="img/icon_applications.png" alt="Applications">
                 </div>
             </div>
         <!-- <div class="control_box row"> -->
@@ -52,68 +52,110 @@
 
 										<fieldset class="form-group">
 											<label for="">*Application External Id</label>
-											<form:input path="applicationExtId" size="40" maxlength="50" />
+											<form:input path="applicationExtId" size="20" maxlength="20" readonly="true" />
 										</fieldset>
 
-										<fieldset class="form-group">
-											<label for="">*Property External Id</label>
-											<form:input path="application.property.propertyExtId" size="40" maxlength="128" />
-										</fieldset>
+ 										<fieldset class="form-group"> 
+ 											<label for="">Property External Id</label> 
+ 											<form:input path="property.propertyExtId" size="20" maxlength="20" readonly="true"  /> 
+ 										</fieldset> 
 										
+ 										<fieldset class="form-group"> 
+ 											<label for="">*Property Address</label> 
+ 											<form:input path="property.AddressLine1" size="40" maxlength="128" readonly="true" /> 
+ 										</fieldset> 
+ 										<table>
+										<tr>
+										<td>
+ 										
 										<fieldset class="form-group">
-											<label for="">*Property Address</label>
-											<form:input path="application.property.AddressLine1" size="40" maxlength="128" />
+											<label for="">City</label>
+											<form:input path="property.city" maxlength="50" readonly="true"/> 
+										</fieldset>
+										</td>
+										<td>
+										<fieldset class="form-group">
+											<label for="">Zip Code</label>
+											<form:input path="property.zipcode" maxlength="10" onblur="getStateCityScript('zipcode','city','state')" readonly="true"/>
+ 										</fieldset> 
+										</td>
+										</tr>
+										</table>
+										<fieldset class="form-group">
+											<label for="">State</label>
+											<form:select disabled="true" path="property.state" items="${globals.usStateListOptions}"  />
+										</fieldset>
+																
+										<fieldset class="form-group">
+											<label for="">Landlord Pays</label>
+<%-- 											<form:select path="landlordPays" items="${globals.getTrueFalseOptions}"  /> --%>
 										</fieldset>
 
 										<fieldset class="form-group">
-											<label for="">*Landlord Pays</label>
-											<form:input path="application.landlordPays" size="40" maxlength="50" />
-										</fieldset>
-
-										<fieldset class="form-group">
-											<label for="">*Credit Recommendation</label>
-											<form:input path="application.creditRecommendation" size="40" maxlength="50" />
-										</fieldset>
-
-										<fieldset class="form-group">
-											<label for="">Status</label>
-											<form:input path="jobTitle" size="40" maxlength="50" />
+											<label for="">Credit Recommendation</label>
+ 											${creditRecommendationLabel}
 										</fieldset>
 
 										<fieldset class="form-group">
 											<label for="">Rent Amount</label>
-											<form:input path="application.rentalAmount" size="12" maxlength="13" />
+											<form:input path="rentalAmount" size="12" maxlength="12" readonly="true"/>
 										</fieldset>
 										
 										<fieldset class="form-group">
 											<label for="">Rent Deposit</label>
-											<form:input path="application.rentalDeposit" size="40" maxlength="120" />
+											<form:input path="rentalDeposit" size="12" maxlength="12"  readonly="true"/>
 										</fieldset>
 
-										<fieldset class="form-group">
-											<label for="">Can Request Reports</label>
-											<form:input path="application.canRequestReport" size="40" maxlength="50" />
-										</fieldset>
+<!-- 										<fieldset class="form-group"> -->
+<!-- 											<label for="">Can Request Reports</label> -->
+<%-- 											<form:input path="canRequestReport" size="40" maxlength="50" readonly="true"/> --%>
+<!-- 										</fieldset> -->
 						</div>
+						<br> <br> <br> <br>
 						<div class="col-xs-6">
 
-										<fieldset class="form-group">
-											<label for="">Zip Code</label>
-											<form:input path="application.property.zipcode" maxlength="10" onblur="getStateCityScript('zipcode','city','state')"/>
-										</fieldset>
 
+					 <c:forEach items="${applicants}" varStatus="row">
+						<c:if test="${row.index == 0 }">
+					  
+					
 										<fieldset class="form-group">
-											<label for="">City</label>
-											<form:input path="application.property.city" maxlength="50" />
+											<label for="">Applicant</label>
+												${applicants[row.index].emailAddress } &nbsp; ${applicants[row.index].fullName } 
 										</fieldset>
-
+						</c:if>
+						
+						<c:if test="${row.index == 1 }">
+					  
+					
 										<fieldset class="form-group">
-											<label for="">State</label>
-											<form:select path="application.property.state" items="${globals.usStateListOptions}" />
+											<label for="">Coapplicant</label>
+											${applicants[row.index].emailAddress } &nbsp; ${applicants[row.index].fullName } 
 										</fieldset>
-
-										
+						</c:if>
+					  </c:forEach>		
+		
+									<c:if test="${application.canRequestReport}">
 										<fieldset class="form-group">
+											<label for="">Can Request Report</label>
+											<a href="<c:url value="getReports.htm"/>"><img src="images/docs.jpg" alt="Request Reports" /></a>
+										</fieldset>
+									</c:if>
+									<c:if test="${!application.canRequestReport}">
+										<fieldset class="form-group">
+											<label for="">Reports are not available</label>
+											
+										</fieldset>
+									</c:if>
+						
+						<fieldset class="form-group">
+							<label for="">Application Status</label>
+								${application.status}			
+														
+						</fieldset>
+						
+						<c:if test="${application.status != 'Approved' && application.status != 'Declined' && application.status != 'Cancelled' }">
+									<fieldset class="form-group">
 											<label for="">Action</label>
 						               <div class="radio-inline-combo">
 											<select name="action" id="action">
@@ -124,13 +166,19 @@
 											</select>
 											</div>
 										</fieldset>
-						
-
-									<c:if test="${loginUser.hasRole('view.my.application')}">
+										<br><br><br><br><br><br><br><br><br><br><br><br>
+										<c:if test="${loginUser.hasRole('view.my.applications')}">
 						 				<input type="submit" value="Save Application"  name="_btn" class="btn by_cr" /> 
 										<input type="submit" value="Cancel" name="_cancel" class="btn by_cr"/>
 									</c:if>
+						</c:if> 
+<c:if test="${application.status == 'Approved' || application.status == 'Declined' || application.status == 'Cancelled' }">
 									
+									<c:if test="${loginUser.hasRole('view.my.applications')}">
+						 			<br><br><br><br><br><br><br><br><br><br><br><br><br> <br>	
+										<input type="submit" value="Go Back" name="_cancel" class="btn by_cr"/>
+									</c:if>
+										</c:if> 
 									
 					</div>
 			</div>
@@ -143,7 +191,7 @@
 <%@ include file="/WEB-INF/jsp/includenew/scripts.jsp" %>
 
 <!--  Custom JavaScript Functions for Password Confirmation -->
-<script src="js/passwordconfirmation.js" type="text/javascript"></script>
+
 
 <script type="text/javascript">
 			jQuery(function($){
