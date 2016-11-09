@@ -35,6 +35,8 @@
       </c:if>
     </spring:bind>  
   
+  <!-- hidden field starts -->
+	<input type="hidden" name="newStatus" id="newStatus" >
 
     <div id="main" class="container">
         <div class="control-box mailbox_area">
@@ -137,32 +139,32 @@
 		
 									<c:if test="${application.canRequestReport}">
 										<fieldset class="form-group">
-											<label for="">Can Request Report</label>
+											<label for="">Reports are available </label>
 											<a href="<c:url value="getReports.htm"/>"><img src="images/docs.jpg" alt="Request Reports" /></a>
 										</fieldset>
 									</c:if>
 									<c:if test="${!application.canRequestReport}">
 										<fieldset class="form-group">
-											<label for="">Reports are not available</label>
+											<label for="">Reports are not available at this time</label>
 											
 										</fieldset>
 									</c:if>
 						
 						<fieldset class="form-group">
 							<label for="">Application Status</label>
-								${application.status}			
-														
+<%-- 								${application.status}			 --%>
+									<form:input path="status" size="12" maxlength="12"  readonly="true"/>									
 						</fieldset>
 						
 						<c:if test="${application.status != 'Approved' && application.status != 'Declined' && application.status != 'Cancelled' }">
 									<fieldset class="form-group">
 											<label for="">Action</label>
 						               <div class="radio-inline-combo">
-											<select name="action" id="action">
+											<select name="action" id="action" onchange="changeFunc();">
 											  <option value="None">Select one</option>
-											  <option value="Approve">Approve Application</option>
-											  <option value="Decline">Decline Application</option>
-											  <option value="Cancel">Cancel Application</option>
+											  <option value="Approved">Approve Application</option>
+											  <option value="Declined">Decline Application</option>
+											  <option value="Cancelled">Cancel Application</option>
 											</select>
 											</div>
 										</fieldset>
@@ -217,6 +219,14 @@
 					}
   		
 	     	}
+	     	
+	     	function changeFunc() {
+	     		var selectBox = document.getElementById("action");
+	     	    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+
+	     	    document.getElementById("status").value = selectedValue;
+	     	}
+	     	
 </script>
 
 <%@ include file="/WEB-INF/jsp/footernew.jsp"%>

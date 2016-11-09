@@ -177,10 +177,14 @@ public class ServiceUtils {
 			@SuppressWarnings("unchecked")
 			public int compare(Object o1, Object o2) {
 				return -1
-						* ((Map.Entry<Integer, String>) o2).getValue()
-								.compareToIgnoreCase(
-										((Map.Entry<Integer, String>) o1)
-												.getValue());
+						* ((Map.Entry<Integer, String>) o2).getKey().compareTo(
+								((Map.Entry<Integer, String>) o1)
+										.getKey());	
+						
+//						* ((Map.Entry<Integer, String>) o2).getValue()
+//								.compareToIgnoreCase(
+//										((Map.Entry<Integer, String>) o1)
+//												.getValue());
 			}
 		});
 

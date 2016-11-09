@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,7 +52,8 @@ public class ApplicationForm extends AbstractDataController {
 //	   MessageService messageService;
 
 	   @RequestMapping(method = RequestMethod.POST)
-	   public String processSubmit(@ModelAttribute Application application, BindingResult result, HttpServletRequest request, SessionStatus status, Model model) {
+	   public String processSubmit(@ModelAttribute Application application, 
+			 BindingResult result, HttpServletRequest request, SessionStatus status, Model model) {
 	      logger.debug("in POST method of application.htm with applicationId as.." + application.getId());
 
 
@@ -67,7 +69,7 @@ public class ApplicationForm extends AbstractDataController {
 //	      userValidator.validate(user, result);
 //	      if (result.hasErrors()) {
 	     setValuesInModel(model); 
-	     model.addAttribute("application", application);
+
 //	         model.addAttribute("userRoleOptions", getRoleOptions(user.getSubscriber(), loginUser));
 //	         model.addAttribute("application", application);
 //	         return "application";
@@ -93,6 +95,7 @@ public class ApplicationForm extends AbstractDataController {
 //	user.setAuthorizedProperties(null);  
 //	}
 //	      userService.saveUser(user, loginUser);
+	      
 	      applicationService.updateApplication(application, loginUser);
 	      
 //	      status.setComplete();
@@ -110,7 +113,7 @@ public class ApplicationForm extends AbstractDataController {
 	      
 
 	      
-	      return "redirect:viewusers.htm?subscriberId=" + loginUser.getId();
+	      return "redirect:viewapplications.htm?userId=" + loginUser.getId();
 	   
 }
 
@@ -165,6 +168,7 @@ public class ApplicationForm extends AbstractDataController {
 	      // set data in the model
 	      setPreviousActionMessage(request, model);
 	      model.addAttribute("application", application);
+	      model.addAttribute("newStatus", "");
 	      model.addAttribute("user", loginUser);
 	      model.addAttribute("applicants",applicants);
 	      model.addAttribute("creditRecommendationLabel", creditRecommendationLabel);

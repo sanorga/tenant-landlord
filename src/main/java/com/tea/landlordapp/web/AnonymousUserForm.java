@@ -227,8 +227,8 @@ public class AnonymousUserForm extends AbstractDataController {
 		}
       
       applicationExtIdStr = applicationResultMap.get("applicationExtIdStr");
-      applicantEmail = applicationResultMap.get("applicantEmailAddress");
-      coapplicantEmail = applicationResultMap.get("coapplicantEmailAddress");
+      applicantEmail = applicationResultMap.get("applicantEmail");
+      coapplicantEmail = applicationResultMap.get("coapplicantEmail");
       // set message and return
     }
     else {
