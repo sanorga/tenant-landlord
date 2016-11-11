@@ -17,6 +17,7 @@ import com.tea.landlordapp.constant.Globals;
 //import com.tea.landlordapp.domain.Subscriber;
 import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.dto.ApplicationGridItem;
+import com.tea.landlordapp.enums.ApplicationState;
 import com.tea.landlordapp.dto.ApplicationGridItem;
 import com.tea.landlordapp.service.UserService;
 import com.tea.landlordapp.service.ApplicationService;
@@ -42,34 +43,25 @@ public class ViewApplicationsForm extends AbstractDataController{
 //	         subscriber = userService.findSubscriber(subscriberId);
 //	      }
 
+
 	      // on new user
-	      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_RENTERRESPONDED)) {
-	         return "redirect:viewapplications.htm?userId=" + user.getId() + "&status=" + "RenterAccepted" + "&otherStatus=" + "RenterDeclined";
-	      }
-	      
-	      // on new user
-	      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_SUBMITTED)) {
-		         return "redirect:viewapplications.htm?userId=" + user.getId() + "&status=" + "New";
-		      }
-		  
-		   // on new user
-	      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_CANCELLED)) {
-		         return "redirect:viewapplications.htm?userId=" + user.getId() + "&status=" + "Cancelled";
+	      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_INPROGRESS)) {
+		         return "redirect:viewapplications.htm?userId=" + user.getId() + "&state=" + ApplicationState.INPROGRESS.getCode();
 		      }
 	      
 	      // on new user
 	      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_COMPLETED)) {
-	         return "redirect:viewapplications.htm?userId=" + user.getId() + "&status=" + "Completed";
+	         return "redirect:viewapplications.htm?userId=" + user.getId() + "&state="  + ApplicationState.COMPLETED.getCode();
 	      }
 	      
 	      // on new user
 	      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_DECLINED)) {
-	         return "redirect:viewapplications.htm?userId=" + user.getId() + "&status=" + "Denied";
+	         return "redirect:viewapplications.htm?userId=" + user.getId() + "&state="  + ApplicationState.DECLINED.getCode();
 	      }
 	      
 	      // on new user
 	      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_APPROVED)) {
-	         return "redirect:viewapplications.htm?userId=" + user.getId() + "&status=" + "Approved";
+	         return "redirect:viewapplications.htm?userId=" + user.getId() + "&state="  + ApplicationState.APPROVED.getCode();
 	      }
 	      
 	      // on new user
@@ -83,6 +75,7 @@ public class ViewApplicationsForm extends AbstractDataController{
 
 	   @RequestMapping(method = RequestMethod.GET)
 	   public String setupForm(@RequestParam(value = "userId", required = false) Integer userId, 
+			   @RequestParam(value = "state", required = false) Character state, 
 			   @RequestParam(value = "status", required = false) String status, 
 			   @RequestParam(value = "otherStatus", required = false) String otherStatus, 
 			   					Model model, HttpServletRequest request) {
@@ -109,7 +102,7 @@ public class ViewApplicationsForm extends AbstractDataController{
 //	         subscriber = user.getSubscriber();
 //	      }
 	     
-	      final List<ApplicationGridItem> userApplications = applicationService.findApplicationGridList(user, status, otherStatus);
+	      final List<ApplicationGridItem> userApplications = applicationService.findApplicationGridList(user, state);
 	     
 	      // set the user in the model
 	      model.addAttribute("user", user);

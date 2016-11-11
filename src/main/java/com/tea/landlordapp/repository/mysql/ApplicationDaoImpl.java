@@ -39,6 +39,8 @@ import com.tea.landlordapp.domain.Applicant;
 import com.tea.landlordapp.domain.Application;
 import com.tea.landlordapp.domain.SearchTerm;
 import com.tea.landlordapp.domain.User;
+import com.tea.landlordapp.enums.ApplicationState;
+import com.tea.landlordapp.enums.ApplicationStatus;
 //import com.tea.landlordapp.domain.Application2BoardMembers;
 //import com.tea.landlordapp.domain.ApplicationCharge;
 //import com.tea.landlordapp.domain.ApplicationInProcess;
@@ -2925,12 +2927,53 @@ public class ApplicationDaoImpl implements ApplicationDao {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Application> findApplicationList(User user, String status, String otherStatus) throws DataAccessException {
-		Query query = em
-				.createQuery("select a from Application a join fetch a.property p join fetch a.applicants ap where ap.applicantType = 1 and a.createdBy.id = :id and (a.status = :status or a.status = :otherStatus)");
+	public List<Application> findApplicationList(User user, String status, String otherStatus, String anotherStatus) throws DataAccessException {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("select a from Application a join fetch a.property p join fetch a.applicants ap where ap.applicantType = 1 and a.createdBy.id = :id ");
+		if (StringUtils.isNotBlank(status)){
+			sb.append("and (a.status = :status ");
+			if (StringUtils.isNotBlank(otherStatus)){
+				sb.append("or a.status = :otherStatus ");
+				if (StringUtils.isNotBlank(anotherStatus)){
+					sb.append(" or a.status = :anotherStatus ");
+				}
+			}
+			sb.append(")");
+		}
+		String queryString = sb.toString();
+		
+//		Query query = em
+//				.createQuery("select a from Application a join fetch a.property p join fetch a.applicants ap where ap.applicantType = 1 and a.createdBy.id = :id and (a.status = :status or a.status = :otherStatus)");
+
+		Query query = em.createQuery(queryString);
+				
 		query.setParameter("id", user.getId());
-		query.setParameter("status", status);
-		query.setParameter("otherStatus", otherStatus);
+		
+		if (StringUtils.isNotBlank(status)) query.setParameter("status", status);
+		if (StringUtils.isNotBlank(otherStatus)) query.setParameter("otherStatus", otherStatus);
+		if (StringUtils.isNotBlank(anotherStatus)) query.setParameter("anotherStatus", otherStatus);
+		
 		return query.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Application> findApplicationListByState(User user, ApplicationState state) throws DataAccessException {
+		
+		if (state == ApplicationState.COMPLETED ){
+			return findApplicationList(user,ApplicationStatus.COMPLETED.getLabel(), null, null);
+		}
+		else if (state == ApplicationState.DECLINED){
+				return findApplicationList(user,ApplicationStatus.DECLINED.getLabel(), null, null);
+			 }
+		else if (state == ApplicationState.APPROVED){
+				return findApplicationList(user,ApplicationStatus.APPROVED.getLabel(), ApplicationStatus.APPROVEDWITHCONDITION.getLabel(), null);
+			}
+		else if (state == ApplicationState.INPROGRESS){
+				return findApplicationList(user,ApplicationStatus.SUBMITTED.getLabel(), ApplicationStatus.RENTERACCEPTED.getLabel(), ApplicationStatus.RENTERDECLINED.getLabel());
+			}
+			else return findApplicationList(user);
 	}
 }

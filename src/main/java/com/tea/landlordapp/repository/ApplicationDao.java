@@ -12,6 +12,7 @@ import com.tea.landlordapp.domain.Applicant;
 import com.tea.landlordapp.domain.Application;
 import com.tea.landlordapp.domain.SearchTerm;
 import com.tea.landlordapp.domain.User;
+import com.tea.landlordapp.enums.ApplicationState;
 //import com.tea.landlordapp.domain.Application2BoardMembers;
 //import com.tea.landlordapp.domain.ApplicationInProcess;
 //import com.tea.landlordapp.domain.ApplicationPriceChange;
@@ -367,7 +368,8 @@ public List<Applicant> findApplicantsForApplication(Application application);
 //public String getServiceListTooltip(Integer applicationId);
 public List<Application> findApplicationList(User user) throws DataAccessException;
 public List<Application> findApplicationList(User user, String status) throws DataAccessException;
-public List<Application> findApplicationList(User user, String status, String otherStatus) throws DataAccessException;
+public List<Application> findApplicationListByState(User user, ApplicationState state) throws DataAccessException;
+public List<Application> findApplicationList(User user, String status, String otherStatus, String anotherStatus) throws DataAccessException;
 public Application findApplicationByExtId(Integer appExtId);
 
 

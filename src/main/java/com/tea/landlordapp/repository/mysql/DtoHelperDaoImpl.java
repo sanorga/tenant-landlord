@@ -32,6 +32,7 @@ import com.tea.landlordapp.domain.Property;
 import com.tea.landlordapp.domain.User;
 //import com.tea.landlordapp.dto.CsrTaskMonitorDto;
 import com.tea.landlordapp.dto.IntegerStringKVDto;
+import com.tea.landlordapp.enums.ApplicationState;
 import com.tea.landlordapp.enums.CreditRecommendation;
 //import com.tea.landlordapp.dto.MgmtCompanyDto;
 //import com.tea.landlordapp.dto.CommissionScheduleDto;
@@ -438,14 +439,11 @@ public class DtoHelperDaoImpl implements com.tea.landlordapp.repository.DtoHelpe
 //   }
 
    
-   public List<ApplicationGridItem> findApplicationGridList(com.tea.landlordapp.domain.User user, String status,
-		   													String otherStatus) throws DataAccessException {
+   public List<ApplicationGridItem> findApplicationGridList(com.tea.landlordapp.domain.User user, ApplicationState state) throws DataAccessException {
 	      List<ApplicationGridItem> items = new ArrayList<ApplicationGridItem>();
 	      List<com.tea.landlordapp.domain.Application> applications = null;
-	      if (status != null) {
-	    	  if (otherStatus != null) 
-	    		  applications = applicationDao.findApplicationList(user, status, otherStatus);
-	    	  else applications = applicationDao.findApplicationList(user, status);
+	      if (state != ApplicationState.UNKNOWN) {
+	    		 applications = applicationDao.findApplicationListByState(user, state);
 	      }
 	      else {
 	    	  applications = applicationDao.findApplicationList(user);
@@ -457,7 +455,8 @@ public class DtoHelperDaoImpl implements com.tea.landlordapp.repository.DtoHelpe
 	        		 											application.getApplicants().get(0).getFirstName(),
 	        		 											application.getApplicants().get(0).getLastName(),
 	        		 											application.getCreatedDate(), application.getModifiedDate(),
-	        		 											application.getStatus(), application.getProperty().getAddressLine1(),
+	        		 											application.getStatus(),
+	        		 											application.getState().getLabel(), application.getProperty().getAddressLine1(),
 	        		 											application.getProperty().getCity(),
 	        		 											CreditRecommendation.getLabel(application.getCreditRecommendation()),
 	        		 											application.isCanRequestReport());

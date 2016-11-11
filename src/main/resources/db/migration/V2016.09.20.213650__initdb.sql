@@ -250,6 +250,7 @@ CREATE TABLE `application` (
   `credit_recommendation` enum('1','2','3','4','5','6') DEFAULT '6',
   `credit_policy` text,
   `status` varchar(50) DEFAULT NULL,
+  `state` enum('P','C','A','D','T') NOT NULL DEFAULT 'P',
   `selected_bundle` enum('1','2') DEFAULT '1',
   `can_request_report` bit(1) DEFAULT b'0',
   `created_by` int(10) unsigned DEFAULT NULL,

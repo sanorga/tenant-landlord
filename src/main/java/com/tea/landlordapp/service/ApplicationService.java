@@ -10,7 +10,7 @@ import com.tea.landlordapp.dto.ApplicationGridItem;
 
 public interface ApplicationService {
 
-	public List<ApplicationGridItem> findApplicationGridList(User user, String status, String otherStatus)
+	public List<ApplicationGridItem> findApplicationGridList(User user,  Character state)
 			throws DataAccessException;
 
 	public List<Application> findApplicationList(User user) throws DataAccessException;

@@ -64,7 +64,7 @@ public class ApiServiceImpl implements ApiService {
 		if (app == null) return flag;
 		
 		User user = simpleDao.find(User.class, userId);
-		if (app.getStatus() != "Cancelled" || app.getStatus() != "Declined" || app.getStatus() != "Approved") {
+		if (app.getStatus() != "Declined" || app.getStatus() != "Approved") {
 			if (StringUtils.equals(status, "RenterAccept")) 
 					status = "RenterAccepted";
 			else if (StringUtils.equals(status, "RenterDecline")) 

@@ -163,8 +163,9 @@
 											<select name="action" id="action" onchange="changeFunc();">
 											  <option value="None">Select one</option>
 											  <option value="Approved">Approve Application</option>
+											  <option value="ApprovedWithCondition">Approve Application with Condition</option>
 											  <option value="Declined">Decline Application</option>
-											  <option value="Cancelled">Cancel Application</option>
+<!-- 											  <option value="Cancelled">Cancel Application</option> -->
 											</select>
 											</div>
 										</fieldset>

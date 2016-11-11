@@ -11,6 +11,7 @@ import org.springframework.dao.DataAccessException;
 import com.tea.landlordapp.domain.User;
 //import com.tea.landlordapp.dto.CsrTaskMonitorDto;
 import com.tea.landlordapp.dto.IntegerStringKVDto;
+import com.tea.landlordapp.enums.ApplicationState;
 //import com.tea.landlordapp.landlordapp.dto.MgmtCompanyDto;
 //import com.tea.landlordapp.dto.CommissionScheduleDto;
 //import com.tea.landlordapp.dto.SalesRepDto;
@@ -30,7 +31,7 @@ public interface DtoHelperDao extends Serializable {
 
 //   public List<UserGridItem> findUserGridList(Subscriber sub) throws DataAccessException;
    
-   public List<ApplicationGridItem> findApplicationGridList(User user, String status, String otherStatus) throws DataAccessException;
+   public List<ApplicationGridItem> findApplicationGridList(User user, ApplicationState state) throws DataAccessException;
    
 //   // Support Temporary Application display controller
 //   public List<TemporaryApplicationDto> getTemporaryApplicationList(Integer page, Integer pageSize);

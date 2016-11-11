@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 public class ApplicationGridItem {
 
    public ApplicationGridItem(Integer id, 	   Integer applicationExtId, String applicantEmailId, 	String fullName, String firstName,
-							  String lastName, Timestamp createdDate, Timestamp modifiedDate, 	String status, 
+							  String lastName, Timestamp createdDate, Timestamp modifiedDate, 	String status, String stateLabel,
 							  String addressLine1, String city , String creditRecommendationLabel, boolean canRequestReport ) {
       this.setId(id);
 	  this.setApplicationExtId(applicationExtId);
@@ -15,7 +15,8 @@ public class ApplicationGridItem {
       this.setLastName(lastName);
       this.setCreatedDate(createdDate);
 	  this.setModifiedDate(modifiedDate);
-      this.setStatus(status);
+	  this.setStatus(status);
+      this.setStateLabel(stateLabel);
       this.setAddressLine1(addressLine1);
       this.setCity(city);
       this.setCreditRecommendationLabel(creditRecommendationLabel);
@@ -94,6 +95,14 @@ public class ApplicationGridItem {
       this.status = status;
    }
    
+   public String getStateLabel() {
+	      return stateLabel;
+   }
+
+   public void setStateLabel(String stateLabel) {
+	      this.stateLabel = stateLabel;
+   }
+	   
    public String getAddressLine1() {
 	      return addressLine1;
 	   }
@@ -135,6 +144,7 @@ public class ApplicationGridItem {
    private Timestamp createdDate;
    private Timestamp modifiedDate;
    private String status;
+   private String stateLabel;
    private String addressLine1;
    private String city;
    private String creditRecommendationLabel;

@@ -27,6 +27,10 @@ import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.tea.landlordapp.enums.ApplicationStatus;
+
+import com.tea.landlordapp.enums.ApplicationState;
+
 //import com.tea.enums.ApplicationStatus;
 
 
@@ -44,6 +48,8 @@ public class Application extends AuditableEntity  {
 	private Character selectedBundle;
 
 	private Character hasWarnings;
+	
+	private Character stateCode;
 
 	private Double rentalAmount;
 
@@ -85,7 +91,86 @@ public class Application extends AuditableEntity  {
 		this.property = property;
 	}
 
+	@Column(name = "state")
+	public Character getStateCode() {
+		return stateCode;
+	}
 
+	private void setStateCode(Character state) {
+		this.stateCode = state;
+	}
+
+	@Transient
+	public String getStateLabel(){
+		return com.tea.landlordapp.enums.ApplicationState.getLabel(getStateCode());
+	}
+
+	@Transient
+	public ApplicationState getState() {
+		return ApplicationState.getEnum(getStateCode());
+	}
+	
+	public void setState(com.tea.landlordapp.enums.ApplicationState state){
+		if (Objects.equals(this.stateCode, new Character(state.getCode()))) return;
+		
+		boolean wasComplete = Objects.equals(this.stateCode, ApplicationState.COMPLETED.getCode());
+		
+		setStateCode(state.getCode());
+		
+//		if (state == ApplicationState.INPROGRESS && this.signingStatusCode == SigningStatus.Sent.getCode()){
+//			setSigningStatus(SigningStatus.Ignore);
+//		}
+//		
+//		switch (state) {
+//		case COMPLETED:
+//			Date now = new Date(System.currentTimeMillis());
+//			setCompletionDate(now);
+//			if (!isFinal) {
+//				SimpleDateFormat sdf = new SimpleDateFormat("MM-yyyy");
+//				String period = sdf.format(now);
+//				setQboPostingMonth(period);
+//			}
+//			break;
+//		case LOCKED:
+//			sanitizeApplicants();
+//			break;
+//		default:
+//			if (wasComplete && this.abandoned) setAbandoned(false);
+//			if (!isFinal) setQboPostingMonth(null);
+//			break;
+//		}
+	}
+
+	
+	private void setState(com.tea.landlordapp.enums.ApplicationStatus status){
+		
+		if (status == ApplicationStatus.COMPLETED || 
+			status == ApplicationStatus.DECLINED)
+				setStateCode(status.getCode());
+		
+		if (status == ApplicationStatus.RENTERACCEPTED ||
+			status == ApplicationStatus.RENTERDECLINED ||
+			status == ApplicationStatus.SUBMITTED ) 
+				setStateCode(ApplicationState.INPROGRESS.getCode());
+		
+		if (status == ApplicationStatus.APPROVED ||
+			status == ApplicationStatus.APPROVEDWITHCONDITION)
+				setStateCode(ApplicationState.APPROVED.getCode());
+		
+	}
+	
+	
+	@Transient
+	@Deprecated
+	public String getStatusString() {
+		return ApplicationState.getLabel(getStateCode());
+	}
+	
+	
+	
+	
+	
+	
 //	@Column(name = "rental_address")
 //	public String getRentalAddress() {
 //		return rentalAddress;
@@ -287,6 +372,10 @@ public class Application extends AuditableEntity  {
 
 	public void setStatus(String status) {
 		this.status = status;
+		Character statCode = ApplicationStatus.getCode(status);
+		
+		setState(ApplicationStatus.getEnum(statCode));
+		
 	}
 	
 //	private void sanitizeApplicants(){

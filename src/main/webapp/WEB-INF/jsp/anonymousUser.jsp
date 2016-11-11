@@ -19,29 +19,35 @@
 	window.onload = function() {
 
 		<c:if test = "${empty clients}">document.getElementById("SendEMailBtn").disabled=true;</c:if>
-
+		if(document.getElementById("propertyid").value == -1){
+			
+			$("#hideandshowpropertyinfo").hide();
+		}
 	};
 	
-	 $(document).ready(function() {
-	  
-		// auto complete
-		    var data = [<c:forEach var="c" items="${clients}">'${c.value}',</c:forEach>''];
-		    $("#clientIDS").autocomplete(data).result(function(event, item) {
-				item = item +"";
-				item = item.replace(/&amp;/g, "&");
-
-			});
+ 	 $(document).ready(function() {
+	  		if(document.getElementById("propertyid").value == -1){
 			
-			$("#clientIDS").unbind("keypress");
-			$("#clientIDS").keypress(function(e) {
-				if (e.which==13) {
+				$("#hideandshowpropertyinfo").hide();
+			}
+// 		// auto complete
+// 		    var data = [<c:forEach var="c" items="${clients}">'${c.value}',</c:forEach>''];
+// 		    $("#clientIDS").autocomplete(data).result(function(event, item) {
+// 				item = item +"";
+// 				item = item.replace(/&amp;/g, "&");
 
-					return false;
-				}
-				return true;
-			}); 
+// 			});
+			
+// 			$("#clientIDS").unbind("keypress");
+// 			$("#clientIDS").keypress(function(e) {
+// 				if (e.which==13) {
+
+// 					return false;
+// 				}
+// 				return true;
+// 			}); 
 		   
-	 });
+ 	 });
 	
 	function showAndHideQuestions() {
 		if (document.getElementById("applicationType1").checked) {
@@ -70,16 +76,16 @@
  		var testvar = 1;
  	}
 	
-	function doAjax(url){
-		var jqxhr = $.ajax({
-			url: url,
-			dataType: "json",
-			timeout: 5000
-		})
-		.done(function(po){
-			getPropertyMapCallBack(po);
-		})
-	}
+// 	function doAjax(url){
+// 		var jqxhr = $.ajax({
+// 			url: url,
+// 			dataType: "json",
+// 			timeout: 5000
+// 		})
+// 		.done(function(po){
+// 			getPropertyMapCallBack(po);
+// 		})
+// 	}
 	
 	var getPropertyMapCallBack = function(properties) {
 		var propertyOptions = properties;
@@ -113,6 +119,109 @@
 		})
 		
 	}
+	
+
+	function openNewPropertyFields() {	
+// // 		document.getElementById('propertyid').style.visibility = 'visible';
+// 		document.getElementById('propertyid').removeAttribute('readonly');
+		document.getElementById('propertyid').value = -1;
+		document.getElementById('propertyid').setAttribute('checked','true');
+
+
+		document.getElementById('propname').removeAttribute('readonly');
+		document.getElementById('propname').value = '';
+		document.getElementById('propstreet').removeAttribute('readonly');
+		document.getElementById('propstreet').value = '';
+		document.getElementById('propapartmentno').removeAttribute('readonly');
+		document.getElementById('propapartmentno').value = '';
+		document.getElementById('propcity').removeAttribute('readonly');
+		document.getElementById('propcity').value = '';
+		document.getElementById('propstate').removeAttribute('readonly');
+		document.getElementById('propstate').value = '';
+		document.getElementById('propzipcode').removeAttribute('readonly');
+		document.getElementById('propzipcode').value = '';
+		if(document.getElementById("propertyid").value == -1){
+			
+			$("#hideandshowpropertyinfo").hide();
+		}
+	
+	}
+	
+	function enterNewPropertyFields() {	
+		// // 		document.getElementById('propertyid').style.visibility = 'visible';
+//		 		document.getElementById('propertyid').removeAttribute('readonly');
+				document.getElementById('propertyid').value = -1;
+				document.getElementById('propertyid').checked = true;
+
+
+				document.getElementById('propname').removeAttribute('readonly');
+				document.getElementById('propname').value = '';
+				document.getElementById('propstreet').removeAttribute('readonly');
+				document.getElementById('propstreet').value = '';
+				document.getElementById('propapartmentno').removeAttribute('readonly');
+				document.getElementById('propapartmentno').value = '';
+				document.getElementById('propcity').removeAttribute('readonly');
+				document.getElementById('propcity').value = '';
+				document.getElementById('propstate').removeAttribute('readonly');
+				document.getElementById('propstate').value = '';
+				document.getElementById('propzipcode').removeAttribute('readonly');
+				document.getElementById('propzipcode').value = '';
+				if(document.getElementById("propertyid").value == -1){
+					
+					$("#hideandshowpropertyinfo").show();
+				}
+			
+			}
+	
+	function getPropInfo() {
+// 		lastSearchVal = $('#property.id').val();
+		lastSearchVal = document.getElementById('propertyid').value;
+		if (lastSearchVal == -1){
+			openNewPropertyFields();
+			
+		}
+		else {
+		var jqxhr = $.ajax({
+			
+			url: "lookup/"+lastSearchVal+"/propertyById.json",
+			dataType: "json",
+			timeout: 50000
+		})
+		
+		.done(function(result) {
+				if (result != null) {
+					found = true;
+// 					$('#propertyid').val(result.id);
+					$("#hideandshowpropertyinfo").show()
+					document.getElementById('propname').value = result.name;
+					document.getElementById('propname').setAttribute('readonly','true');
+					document.getElementById('propstreet').value = result.street;
+					document.getElementById('propstreet').setAttribute('readonly','true');
+					document.getElementById('propapartmentno').value = result.apartmentNo;
+					document.getElementById('propapartmentno').setAttribute('readonly','true');
+					document.getElementById('propcity').value = result.city;
+					document.getElementById('propcity').setAttribute('readonly','true');
+					document.getElementById('propstate').value = result.state;
+					document.getElementById('propstate').setAttribute('readonly','true');
+					document.getElementById('propzipcode').value = result.zipcode;
+					document.getElementById('propzipcode').setAttribute('readonly','true');
+// 					document.getElementById('propertyid').style.visibility = 'hidden';
+					
+				}
+		})
+		.fail(function(){
+			
+// 			$('#pop_heading').text("Sorry, we couldn't find a property with that code");
+
+			openNewPropertyFields();
+			
+			alert ("Sorry, we couldn't find a property with that code. Please select another one or contact technical support");
+		});
+		}
+	return false;
+					
+	}
+	
 </script>
 
 <form:form method="post" modelAttribute="anonymousUser">
@@ -185,14 +294,19 @@
 									<fieldset class="form-group">
 											<label for="">*Select Existing Property or Enter New Property Details:</label>
 											<br>
-											<form:select path="property.id" items="${clients}"  />
+											<form:select path="property.id" id="propertyid" items="${clients}"  onchange="getPropInfo()" />
+											<input type="button"  name="enterNewProperty" id="enterNewProperty" value="New Property" class="button"
+										    onclick="enterNewPropertyFields()"/>
+										    
 											 <br>
 											
 									</fieldset>
+									
+								<div id="hideandshowpropertyinfo">
 								<fieldset class="form-group">
 											<label for="">*Name:</label>
 											
-											<form:input path="property.name" size="50" maxlength="50"  />
+											<form:input path="property.name" id="propname"  size="50" maxlength="50"  />
 											
 									</fieldset>
 	           					<table>
@@ -202,7 +316,7 @@
 									<fieldset class="form-group">
 											<label for="">*Address:</label>
 											
-											<form:input path="property.street" size="40" maxlength="50"  />
+											<form:input path="property.street" id="propstreet"  size="40" maxlength="50"  />
 											
 									</fieldset>
 								</td>
@@ -210,22 +324,17 @@
 									<fieldset class="form-group">
 											<label for="">*Unit:</label>
 											
-											<form:input path="property.apartmentNo" size="10" maxlength="10"  />
+											<form:input path="property.apartmentNo" id="propapartmentno" size="10" maxlength="10"  />
 											
 									</fieldset>
 								</td>
 								</tr>
+								
 								</table>
-					</div>
-        
-           
-					<div class="col-xs-6">
-								
-								
-									<fieldset class="form-group">
+								<fieldset class="form-group">
 											<label for="">*City:</label>
 									
-											<form:input path="property.city" size="30" maxlength="30"  />
+											<form:input path="property.city" id="propcity" size="30" maxlength="30"  />
 									
 									</fieldset>
 								
@@ -237,7 +346,7 @@
 									<fieldset class="form-group">
 											<label for="">*State:</label>
 									
-											<form:input path="property.state" size="2" maxlength="2"  />
+											<form:input path="property.state" id="propstate" size="2" maxlength="2"  />
 										
 									</fieldset>
 								</td>
@@ -246,12 +355,20 @@
 									<fieldset class="form-group">
 											<label for="">*Zipcode:</label>
 									
-											<form:input path="property.zipcode" size="5" maxlength="5"  />
+											<form:input path="property.zipcode" id="propzipcode" size="5" maxlength="5"  />
 										
 									</fieldset>
 								</td>
 								</tr>
 								</table>
+								</div>
+					</div>
+        
+           
+					<div class="col-xs-6">
+								
+								
+								
 								<br>
 									<fieldset class="form-group">
 											<label for="">*Rent Amount:</label>
@@ -364,10 +481,12 @@
 <!--          </div> -->
        
 	</div>
-            </div>    
+            </div>  
+            <br>
+              <p> <strong>As a Landlord we offer No setup fees, No minimums, No hassle, the applicant pays for the screening.</strong> </p>  
             </div>
             </div>    	  
-         
+      
      
 
   <!--  submit starts -->

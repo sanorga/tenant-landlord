@@ -10,6 +10,7 @@ import com.tea.landlordapp.domain.Application;
 //import com.tea.domain.Subscriber;
 import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.dto.ApplicationGridItem;
+import com.tea.landlordapp.enums.ApplicationState;
 import com.tea.landlordapp.repository.ApplicationDao;
 import com.tea.landlordapp.repository.DtoHelperDao;
 import com.tea.landlordapp.repository.mysql.DtoHelperDaoImpl;
@@ -25,9 +26,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 	
 	
 	@Override
-	public List<ApplicationGridItem> findApplicationGridList(User user, String status, String otherStatus)
+	public List<ApplicationGridItem> findApplicationGridList(User user, Character state)
 			throws DataAccessException {
-		return dtoHelperDao.findApplicationGridList(user, status, otherStatus);
+		return dtoHelperDao.findApplicationGridList(user, ApplicationState.getEnum(state));
 	}
 
 	@Override

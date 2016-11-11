@@ -1,8 +1,11 @@
 package com.tea.landlordapp.enums;
 
+import org.apache.commons.lang.StringUtils;
+
 public enum ApplicationStatus {
 	UNKNOWN("Unknown", '-'), RENTERACCEPTED("RenterAccepted", 'Y'), RENTERDECLINED("RenterDeclined", 'N'), COMPLETED("Completed", 'C'),
-	SUBMITTED("Submitted", 'S'), CANCELLED("Cancelled", 'E'), APPROVED("Approved", 'A'), DECLINED("Declined", 'D');
+	SUBMITTED("Submitted", 'S'), CANCELLED("Cancelled", 'E'), APPROVED("Approved", 'A'), APPROVEDWITHCONDITION("ApprovedWithCondition",'W'),
+	DECLINED("Declined", 'D');
 	
 	private final char code;
 	private final String label;
@@ -35,6 +38,8 @@ public enum ApplicationStatus {
 			return ApplicationStatus.CANCELLED;
 		case 'A':
 			return ApplicationStatus.APPROVED;
+		case 'W':
+			return ApplicationStatus.APPROVEDWITHCONDITION;
 		case 'D':
 			return ApplicationStatus.DECLINED;
 		default:
@@ -45,4 +50,32 @@ public enum ApplicationStatus {
 	public static String getLabel(Character code){
 		return getEnum(code).getLabel();
 	}
+	
+	public static char getCode(String label) {
+		
+		if (StringUtils.equals(label, ApplicationStatus.APPROVED.getLabel()))
+			return ApplicationStatus.APPROVED.getCode();
+		
+		if (StringUtils.equals(label, ApplicationStatus.COMPLETED.getLabel()))
+			return ApplicationStatus.COMPLETED.getCode();
+		
+		if (StringUtils.equals(label, ApplicationStatus.DECLINED.getLabel()))
+			return ApplicationStatus.DECLINED.getCode();
+		
+		if (StringUtils.equals(label, ApplicationStatus.SUBMITTED.getLabel()))
+			return ApplicationStatus.SUBMITTED.getCode();
+		
+		if (StringUtils.equals(label, ApplicationStatus.APPROVEDWITHCONDITION.getLabel()))
+			return ApplicationStatus.APPROVEDWITHCONDITION.getCode();
+		
+		if (StringUtils.equals(label, ApplicationStatus.RENTERACCEPTED.getLabel()))
+			return ApplicationStatus.RENTERACCEPTED.getCode();
+		
+		if (StringUtils.equals(label, ApplicationStatus.RENTERDECLINED.getLabel()))
+			return ApplicationStatus.RENTERDECLINED.getCode();
+
+		else return '-';
+		
+	}
+	
 }

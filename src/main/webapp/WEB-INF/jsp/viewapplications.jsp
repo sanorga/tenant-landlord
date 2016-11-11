@@ -62,17 +62,13 @@
        <c:if test="${loginUser.hasRole('view.my.applications') }"> 
        <table>
        <tr>
-       <td>&nbsp</td>
-        <td>           <button type="submit" name="_sub" class="btn by_cr">Submitted</button> </td>
-           <td>&nbsp</td>
-           <td>           <button type="submit" name="_rresp" class="btn by_cr">Renter Responded</button> </td>
+       		<td>&nbsp</td>
+        	<td>           <button type="submit" name="_inprogress" class="btn by_cr">In Progress</button> </td>
            <td>&nbsp</td>
            
            <td> 			<button type="submit" name="_completed" class="btn by_cr">Completed</button> </td>
            <td>&nbsp</td>
-           
-           <td> 			<button type="submit" name="_cancelled" class="btn by_cr">Cancelled</button> </td>
-           <td>&nbsp</td>
+
            <td> 			<button type="submit" name="_declined" class="btn by_cr">Denied</button> </td>
            <td>&nbsp</td>
            <td> 			<button type="submit" name="_approved" class="btn by_cr">Approved</button> </td>
@@ -89,42 +85,41 @@
         <table id="teaSortableTable" class="table table-sm sortableTable">
             <thead>
                 <tr>
-                    <th></th>
+
                     <th>SmartMove</th>
                     <th>Date Submitted</th>
-                    <th>Username</th>
+                    <th>Email</th>
                     <th>Full Name</th>
                     <th>Address</th>
-                    <th>City</th>
-                    <th>Credit Recommendation </th>
+
                     <th>Report</th>
                     <th>Status</th>
                 </tr>
                 <tbody>
                     <c:forEach var="app" items="${userApplications}">
                         <tr>
-                            <th scope="${app.id}">
-                                <c:if test="${loginUser.hasRole('view.my.applications') }">
-                                    <a href="application.htm?applicationId=${app.id}">View/Edit</a>
-                                </c:if>
-                                <%-- <tea:ifAuthorized capability="view.user">
-                                      <a href="user.htm?userId=${usr.id}">View/Edit</a>
-                                    </tea:ifAuthorized> --%>
-                            </th>
+<%--                             <th scope="${app.id}"> --%>
+<%--                                 <c:if test="${loginUser.hasRole('view.my.applications') }"> --%>
+<%--                                     <a href="application.htm?applicationId=${app.id}"><img src="images/docs.jpg" alt="Check Report"></a> --%>
+<%--                                 </c:if> --%>
+<%--                                 <tea:ifAuthorized capability="view.user">
+<%--                                       <a href="user.htm?userId=${usr.id}">View/Edit</a> --%>
+<%--                                     </tea:ifAuthorized> --%> 
+<!--                             </th> -->
                             <td>${app.applicationExtId}</td>
                             <td>${app.createdDate}</td>
                             <td class="ellipsis">${app.applicantEmailId}</td>
                             <td>${app.fullName}</td>
 							<td>${app.addressLine1}</td>
-							<td>${app.city}</td>
-							<td>${app.creditRecommendationLabel}</td>
+<%-- 							<td>${app.city}</td> --%>
+<%-- 							<td>${app.creditRecommendationLabel}</td> --%>
 							<c:if test="${app.canRequestReport}"> 
-								<td><img src="images/docs.jpg"></td>
+								<td><a href="application.htm?applicationId=${app.id}"><img src="images/docs.jpg" alt="Check Report"></a></td>
 							</c:if>
 							<c:if test="${!app.canRequestReport}"> 
 								<td>&nbsp;</td>
 							</c:if>
-                            <td>${app.status}</td>
+                            <td>${app.stateLabel}</td>
                         </tr>
                     </c:forEach>
                 </tbody>
