@@ -28,7 +28,10 @@ import com.tea.landlordapp.domain.Role;
 import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.repository.SimpleDao;
 import com.tea.landlordapp.service.ApplicationService;
+import com.tea.landlordapp.service.InviteService;
 import com.tea.landlordapp.service.UserService;
+import com.tea.landlordapp.utility.ServiceUtils;
+import com.tea.landlordapp.utility.StringHelper;
 import com.tea.landlordapp.web.AbstractDataController;
 
 @Controller
@@ -47,6 +50,9 @@ public class ApplicationForm extends AbstractDataController {
 //	   
 	   @Autowired
 	   SimpleDao simpleDao;
+	   
+	   @Autowired
+	   InviteService inviteService;
 	   
 //	   @Autowired
 //	   MessageService messageService;
@@ -121,12 +127,12 @@ public class ApplicationForm extends AbstractDataController {
 	   public String setupForm(@RequestParam(value = "applicationId", required = false) Integer applicationId,
 			   				   @RequestParam(value = "userId", required = false) Integer userId, 
 			   					Model model,
-	                            HttpServletRequest request) {
+	                            HttpServletRequest request) throws Exception {
 	      logger.debug("in GET method of application.htm with applicationId as.." + applicationId );
 	      
 
 	      final User loginUser = getAuthenticatedUser();
-
+	      String creditRecommendationLabel = null;
 	      // check authorization
 	      if (!hasAnyAuthority(new String[]{"view.my.applications"})) {
 	          return unAuthorized(request);
@@ -136,7 +142,9 @@ public class ApplicationForm extends AbstractDataController {
 	      Application application;
 	      Applicant applicant;
 	      List<Applicant> applicants;
-	      int numOfApplicants = 0;
+	      boolean noHit = false;
+	      
+	      int numOfApplicants = 0, applicationExtId = 0;
 	      
 
 	      
@@ -152,16 +160,84 @@ public class ApplicationForm extends AbstractDataController {
 	                return unAuthorized(request);
 	             
 	          }
+	         applicationExtId = application.getApplicationExtId();
 	         property = application.getProperty();
 	         applicants = application.getApplicants();
 	         numOfApplicants = applicants.size();
+	         
 	         
 	      }
 	      if (application.getCreatedBy().getId() != loginUser.getId()) {
 	    	  return unAuthorized(request);
 	      }
 	      
-	      String creditRecommendationLabel = com.tea.landlordapp.enums.CreditRecommendation.getLabel(application.getCreditRecommendation()); 
+	      if (application.isCanRequestReport() == true) {
+
+	      // Call getReport
+	    	  
+	    	  
+	    		Map<String, String> reportMap = inviteService.getReports(applicationExtId);
+				if (reportMap == null) 
+					logger.info("Notification received and no reports obtained for application  {}", applicationExtId);
+				else logger.info("Notification received and reports obtained for application  {}", applicationExtId);
+			
+		  // Transform report from XML to HTML
+
+					String transReport = null;
+	    		  	String creditReport = reportMap.get("creditReport");
+	    		  	if (StringUtils.isBlank(creditReport))	{
+	    		  		logger.debug("no report found...");
+	    		  	}
+	    		  	else {		 
+	    		  		try {
+				    		  	String xslFilePath = StringHelper.concatWithSingleSlash(request.getSession().getServletContext().getRealPath("/"), Globals.XSL_PATH);
+				    		    xslFilePath = StringHelper.concatWithSingleSlash(xslFilePath, "TUCredit.xslt");
+				    		             	
+			//	    		    final String xslFilePath = request.getSession().getServletContext().getRealPath("/" + Globals.XSL_PATH) + "/" + report.getService().getXslUrl();
+				    		    transReport = ServiceUtils.transformXmlToHtml(creditReport, xslFilePath);
+				    		    StringBuilder sb = new StringBuilder();
+				    		   
+//				    		    sb.append("<pre xmlns:t=");
+//	    		                
+//	    		                sb.append("\"");
+//	    		                sb.append("http:");
+//	    		                sb.append("//xml.equifax.com/XMLSchema\">");
+//	    		                sb.append("\r\n\r\n</pre>\r\n");
+//	    		                
+//	    		                ////xml.equifax.com//XMLSchema/">")
+//	    		                String equifaxError = sb.toString();
+//	    		                if (StringUtils.isBlank(transReport)) {
+//	    		                   logger.error("Transformer returned an empty result.. Setting the result to \"No Hits\".. ");
+//	    		                   transReport = "<br><br><strong>No Hit</strong>";
+//	    		                   noHit = true;
+//	    		                }
+//	    		                if (StringUtils.equals(transReport,equifaxError)) {
+//	    		                    logger.error("Transformer returned an equifax error ");
+//	    		                    transReport = "<br><br><strong>-----Error Requesting Report------</strong>";
+//	    		                 }
+	    		                
+//	    		                report.setTransformedReport(transReport);
+	    		             } catch (final Exception e) {
+	    		                e.printStackTrace();
+
+	    		                logger.error("Unable to do xml/xsl conversion for...");
+	    		                logger.error("XML:\n" + creditReport);
+	    		                logger.error("XSL File:\n" + "TUCredit.xslt");
+	    		                // report.setTransformedReport(report.getReport());
+//	    		                report.setTransformedReport("<br><br><strong>Please contact Administrator</strong>");
+	    		                transReport = "<br><br><strong>Please contact Administrator</strong>";
+	    		             }
+	    		  	}
+	    	  
+	     	      
+	      //getCreditRecommendation
+	      
+	      
+	      }
+	      else creditRecommendationLabel = com.tea.landlordapp.enums.CreditRecommendation.UNKNOWN.getLabel();
+	      
+//	      String creditRecommendationLabel = com.tea.landlordapp.enums.CreditRecommendation.getLabel(application.getCreditRecommendation()); 
+	      
 	      setValuesInModel(model);
 
 	      
