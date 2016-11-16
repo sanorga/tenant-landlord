@@ -112,7 +112,14 @@
 <!-- 											<label for="">Can Request Reports</label> -->
 <%-- 											<form:input path="canRequestReport" size="40" maxlength="50" readonly="true"/> --%>
 <!-- 										</fieldset> -->
+										<fieldset class="form-group">
+											<label for="">Report</label>
+											<div>${creditReport1}</div>
+        								</fieldset>
+										<!-- Report ends-->
+						
 						</div>
+						
 						<br> <br> <br> <br>
 						<div class="col-xs-6">
 

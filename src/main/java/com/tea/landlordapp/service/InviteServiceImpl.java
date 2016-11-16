@@ -1,7 +1,9 @@
 package com.tea.landlordapp.service;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -30,6 +32,10 @@ import javax.net.ssl.SSLSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
@@ -1330,23 +1336,27 @@ public class InviteServiceImpl implements InviteService{
 			//Get Application Status and Reports - (POST)/LandlordApi/V1/Application
 			//-----------------------------------------------------------------
 
+			if (applicationExtIdStr == "0" || applicationExtIdStr == null){
+				logger.debug("no application id obtained");
+				return null;
+			}
+		
+			
 			Map<String, String> applicationResultMap = getApplicationInfo(apiUrl, partnerId, key, application, applicationExtIdStr);
 			if (applicationResultMap == null) {
 				logger.debug("no application obtained");
 				return null;
 			}
 //			String applicationExtIdStr = applicationResultMap.get("applicationExtIdStr");
-			String applicantEmail= applicationResultMap.get("applicantEmail");
-			String coapplicantEmail = applicationResultMap.get("coapplicantEmail");
-			if (applicationExtIdStr == "0" || applicationExtIdStr == null){
-				logger.debug("no application id obtained");
-				return null;
-			}
-		
-			result.put("applicationExtIdStr", applicationExtIdStr);
-			result.put("applicantEmail", applicantEmail);
-			result.put("coapplicantEmail",coapplicantEmail);
-			return result;
+//			String applicantEmail= applicationResultMap.get("applicantEmail");
+//			String coapplicantEmail = applicationResultMap.get("coapplicantEmail");
+//			String creditReport = applicationResultMap.get("creditReport");
+//
+//			result.put("applicationExtIdStr", applicationExtIdStr);
+//			result.put("applicantEmail", applicantEmail);
+//			result.put("coapplicantEmail",coapplicantEmail);
+//			result.put("creditReport", creditReport);
+			return applicationResultMap;
 	}
 	
 	private Map<String,String> getApplicationInfo (String apiUrl, String partnerId, 
@@ -1382,7 +1392,7 @@ public class InviteServiceImpl implements InviteService{
 		Map<String,String> appResponse = getApplicationInformationXml(response);
 		
 		
-		responseMap.put("applicationExtIdStr",applicationExtIdStr);	
+//		responseMap.put("applicationExtIdStr",applicationExtIdStr);	
 
 	
 //		return responseMap;
@@ -1399,6 +1409,9 @@ public class InviteServiceImpl implements InviteService{
 		DocumentBuilder dBuilder = dbfactory.newDocumentBuilder();
 		
 		Document doc = dBuilder.parse(new InputSource(new StringReader(resp)));
+		
+
+	
 		doc.getDocumentElement().normalize();
 		String nodeNameStr = doc.getDocumentElement().getNodeName();
 		Element root = doc.getDocumentElement();
@@ -1424,7 +1437,43 @@ public class InviteServiceImpl implements InviteService{
 		        	   	Node nEmailAddress = applicant.item(i);
 		        	   	Element eEmailAddress = (Element) nEmailAddress;
 		        	   	Element eCreditReport = (Element) eElement.getElementsByTagName("CreditReport").item(0);
+		        		
+		        	   	Document docNew = dBuilder.newDocument();
+		        	   	Node nImportedCreditReport = docNew.importNode((Node) eCreditReport, true);
+		        	   	Element eImportedCreditReport = (Element) nImportedCreditReport;
+		        	   
+//		        	   	docNew.appendChild(eImportedCreditReport);
+		        		docNew.appendChild(nImportedCreditReport);
+		        	   
+		        	 // write the content into xml file
+		        		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		        		Transformer transformer = null;
+						try {
+							transformer = transformerFactory.newTransformer();
+						} catch (TransformerConfigurationException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		        		DOMSource source = new DOMSource(docNew);
+//		        		StreamResult result = new StreamResult(new File("C:\\Documentsfile.xml"));
+		        		String newDocument = null;
+//		        		 Output to console for testing
+//		        		 StreamResult result = new StreamResult(System.out);
+		        		 StreamResult result = new StreamResult(new ByteArrayOutputStream());
+
+		        		try {
+							transformer.transform(source, result);
+						} catch (TransformerException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 		        	   	
+		        		StringBuffer resultString = new StringBuffer(result.getOutputStream().toString());
+		        		String creditReportXML = resultString.toString();
+		        		mapResponse.put("creditReport1",creditReportXML);
+		        		
+//		        		mapResponse.put("CreditReport",eElement.getElementsByTagName("CreditReport").item(0).getTextContent());
+		        		
 		        	   	Document docTest = eCreditReport.getOwnerDocument();
 		        	   	DocumentFragment a = docTest.createDocumentFragment();
 
@@ -1439,14 +1488,14 @@ public class InviteServiceImpl implements InviteService{
 //		        	   	StreamResult result = new StreamResult(System.out);
 //		        	   	Transformer.transform(source,result);
 		        	   
-		           		mapResponse.put("CreditReport2",eElement.getElementsByTagName("CreditReport").item(0).getTextContent());
-		           		mapResponse.put("CriminalReport1",eElement.getElementsByTagName("CriminalRecord").item(0).getTextContent());
+		           		
+		           		mapResponse.put("criminalReport1",eElement.getElementsByTagName("CriminalRecord").item(0).getTextContent());
 //		           		mapResponse.put("EvictionReport1",eElement.getElementsByTagName("EvictionRecord").item(0).getTextContent());
 		           }
 		           else {
 		        	   mapResponse.put("coapplicantEmail", eElement.getElementsByTagName("EmailAddress").item(0).getTextContent());
-		        	   mapResponse.put("CreditReport2",eElement.getElementsByTagName("CreditReport").item(0).getTextContent());
-			           mapResponse.put("CriminalReport2",eElement.getElementsByTagName("CriminalRecord").item(0).getTextContent());
+		        	   mapResponse.put("creditReport2",eElement.getElementsByTagName("CreditReport").item(0).getTextContent());
+			           mapResponse.put("criminalReport2",eElement.getElementsByTagName("CriminalRecord").item(0).getTextContent());
 //			           mapResponse.put("EvictionReport2",eElement.getElementsByTagName("EvictionRecord").item(0).getTextContent());
 		           }
 		           
