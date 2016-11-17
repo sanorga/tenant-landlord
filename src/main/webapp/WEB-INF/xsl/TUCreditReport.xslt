@@ -15,34 +15,27 @@
 
 <!--   <xsl:output  method="html"/> -->
   
-  <xsl:template match="/">
-  <html>
-  <body>
-  				<table border="1">
-					<tr>
-						<th>Report Date</th>
-						<th>Record Found</th>
-						<th>Frozen File</th>
-						
-					</tr>
-					
-						<tr>
-							<td>
-								<xsl:value-of select="cred:status/cred:reportDate"/>
-							</td>
-							<td>
-								<xsl:value-of select="cred:status/cred:recordFound"/>
-							</td>
-							<td>
-								<xsl:value-of select="cred:status/cred:frozenFile"/>
-							</td>
-					</tr>				
-				</table>
-  
-  
+ <xsl:template match="/CreditReport">
+ <html>
+ <body>
+ <h2> Credit Report</h2>
+  <xsl:apply-templates select="cred:status"/>
+   <xsl:value-of select="cred:reportDate" />
+ 
+  <xsl:value-of select="firstName" />
 
-</body>	
-</html>	
-</xsl:template>
+
+ 
+				
+				
+				
+				
+				</body>
+				</html>
+  
+ </xsl:template> 
+
+
+
 
 </xsl:stylesheet>
