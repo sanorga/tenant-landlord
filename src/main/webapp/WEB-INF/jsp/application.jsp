@@ -54,17 +54,20 @@
 
 										<fieldset class="form-group">
 											<label for="">*Application External Id</label>
-											<form:input path="applicationExtId" size="20" maxlength="20" readonly="true" />
+<%-- 											<form:input path="applicationExtId" size="20" maxlength="20" readonly="true" /> --%>
+												<span> ${application.applicationExtId}</span>
 										</fieldset>
 
  										<fieldset class="form-group"> 
  											<label for="">Property External Id</label> 
- 											<form:input path="property.propertyExtId" size="20" maxlength="20" readonly="true"  /> 
+<%-- 										<form:input path="property.propertyExtId" size="20" maxlength="20" readonly="true"  />  --%>
+ 											<span>${application.getProperty().getPropertyExtId()}</span>
  										</fieldset> 
 										
  										<fieldset class="form-group"> 
  											<label for="">*Property Address</label> 
- 											<form:input path="property.AddressLine1" size="40" maxlength="128" readonly="true" /> 
+<%--  											<form:input path="property.AddressLine1" size="40" maxlength="128" readonly="true" />  --%>
+ 												<span>${application.getProperty().getAddressLine1()}</span>
  										</fieldset> 
  										<table>
 										<tr>
@@ -72,58 +75,79 @@
  										
 										<fieldset class="form-group">
 											<label for="">City</label>
-											<form:input path="property.city" maxlength="50" readonly="true"/> 
+<%-- 											<form:input path="property.city" maxlength="50" readonly="true"/>  --%>
+												<span>${application.getProperty().getCity()}</span>
 										</fieldset>
+										</td>
+										<td>&nbsp;
 										</td>
 										<td>
 										<fieldset class="form-group">
 											<label for="">Zip Code</label>
-											<form:input path="property.zipcode" maxlength="10" onblur="getStateCityScript('zipcode','city','state')" readonly="true"/>
+<%-- 											<form:input path="property.zipcode" maxlength="10" onblur="getStateCityScript('zipcode','city','state')" readonly="true"/> --%>
+												<span>${application.getProperty().getZipcode()}</span>
  										</fieldset> 
 										</td>
-										</tr>
-										</table>
+										<td>&nbsp;
+										</td>
+										<td>
 										<fieldset class="form-group">
 											<label for="">State</label>
-											<form:select disabled="true" path="property.state" items="${globals.usStateListOptions}"  />
+<%-- 											<form:select disabled="true" path="property.state" items="${globals.usStateListOptions}"  /> --%>
+												<span>${application.getProperty().getState()}</span>
 										</fieldset>
-																
+										</td>	
+										</tr>
+										</table>
+										
+															
 										<fieldset class="form-group">
 											<label for="">Landlord Pays</label>
 <%-- 											<form:select path="landlordPays" items="${globals.getTrueFalseOptions}"  /> --%>
 										</fieldset>
 
-										<fieldset class="form-group">
-											<label for="">Credit Recommendation</label>
- 											${creditRecommendationLabel}
-										</fieldset>
 
-										<fieldset class="form-group">
-											<label for="">Rent Amount</label>
-											<form:input path="rentalAmount" size="12" maxlength="12" readonly="true"/>
-										</fieldset>
 										
-										<fieldset class="form-group">
-											<label for="">Rent Deposit</label>
-											<form:input path="rentalDeposit" size="12" maxlength="12"  readonly="true"/>
-										</fieldset>
 
 <!-- 										<fieldset class="form-group"> -->
 <!-- 											<label for="">Can Request Reports</label> -->
 <%-- 											<form:input path="canRequestReport" size="40" maxlength="50" readonly="true"/> --%>
 <!-- 										</fieldset> -->
-										<fieldset class="form-group">
-											<label for="">Report</label>
-											<div>${creditReport1}</div>
-        								</fieldset>
-										<!-- Report ends-->
+
 						
 						</div>
 						
 						<br> <br> <br> <br>
 						<div class="col-xs-6">
-
-
+						<table>
+										<tr>
+										<td>
+										<fieldset class="form-group">
+											<label for="">Rent Amount</label>
+<%-- 											<form:input path="rentalAmount" size="12" maxlength="12" readonly="true"/> --%>
+												<scan> ${application.rentalAmount} </scan>
+										</fieldset>
+										</td>
+										<td>&nbsp;
+										</td>
+										<td>
+										<fieldset class="form-group">
+											<label for="">Rent Deposit</label>
+<%-- 											<form:input path="rentalDeposit" size="12" maxlength="12"  readonly="true"/> --%>
+												<scan> ${application.rentalDeposit} </scan>
+										</fieldset>
+										</td>
+										</tr>
+										</table>
+						
+										<fieldset class="form-group">
+											<label for="">Credit Recommendation</label>
+ 											${creditRecommendationLabel}
+										</fieldset>
+						</div>
+						</div>				
+				<div class="row">
+					<div class="col-xs-12">
 					 <c:forEach items="${applicants}" varStatus="row">
 						<c:if test="${row.index == 0 }">
 					  
@@ -132,6 +156,13 @@
 											<label for="">Applicant</label>
 												${applicants[row.index].emailAddress } &nbsp; ${applicants[row.index].fullName } 
 										</fieldset>
+																					<!-- Report starts-->
+										<fieldset class="form-group"  style="background-color: white; color:black;">
+											<label for=""><h5>Credit Report for ${applicants[row.index].getFullName()}</h5></label>
+											<br> 
+											<div>${creditReport1}</div>
+										</fieldset>
+										<!-- Report ends-->
 						</c:if>
 						
 						<c:if test="${row.index == 1 }">
@@ -165,7 +196,7 @@
 						
 						<c:if test="${application.status != 'Approved' && application.status != 'Declined' && application.status != 'Cancelled' }">
 									<fieldset class="form-group">
-											<label for="">Action</label>
+											<label for="">Decision</label>
 						               <div class="radio-inline-combo">
 											<select name="action" id="action" onchange="changeFunc();">
 											  <option value="None">Select one</option>

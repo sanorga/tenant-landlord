@@ -1434,8 +1434,7 @@ public class InviteServiceImpl implements InviteService{
 		           if (i == 0) {
 		        	   	mapResponse.put("applicantEmail", eElement.getElementsByTagName("EmailAddress").item(0).getTextContent());
 		        	   	NodeList applicant =eElement.getChildNodes();
-		        	   	Node nEmailAddress = applicant.item(i);
-		        	   	Element eEmailAddress = (Element) nEmailAddress;
+		        	   	
 		        	   	Element eCreditReport = (Element) eElement.getElementsByTagName("CreditReport").item(0);
 		        		
 		        	   	Document docNew = dBuilder.newDocument();
@@ -1456,9 +1455,7 @@ public class InviteServiceImpl implements InviteService{
 						}
 		        		DOMSource source = new DOMSource(docNew);
 //		        		StreamResult result = new StreamResult(new File("C:\\Documentsfile.xml"));
-		        		String newDocument = null;
-//		        		 Output to console for testing
-//		        		 StreamResult result = new StreamResult(System.out);
+		        		
 		        		 StreamResult result = new StreamResult(new ByteArrayOutputStream());
 
 		        		try {
@@ -1475,20 +1472,10 @@ public class InviteServiceImpl implements InviteService{
 //		        		mapResponse.put("CreditReport",eElement.getElementsByTagName("CreditReport").item(0).getTextContent());
 		        		
 		        	   	Document docTest = eCreditReport.getOwnerDocument();
-		        	   	DocumentFragment a = docTest.createDocumentFragment();
+		        	   	
+		        	   	String nameSpaces = docTest.getNamespaceURI();
 
-		        	   	String docElement = eCreditReport.getTextContent();
-		        	   	String creditXML = docTest.getXmlVersion();
 
-//		        	   	String abc = eApplicant.getElementsByTagName("CreditReport").item(0).getNodeValue();
-//		        	   	NodeList cde = eApplicant.getElementsByTagName("CreditReport");
-//		        	   	Node cdef = cde.item(0);
-//		        	   	Element ecdef = (Element) cdef;
-//		        	   	DOMSource source = new DOMSource(docTest);
-//		        	   	StreamResult result = new StreamResult(System.out);
-//		        	   	Transformer.transform(source,result);
-		        	   
-		           		
 		           		mapResponse.put("criminalReport1",eElement.getElementsByTagName("CriminalRecord").item(0).getTextContent());
 //		           		mapResponse.put("EvictionReport1",eElement.getElementsByTagName("EvictionRecord").item(0).getTextContent());
 		           }
