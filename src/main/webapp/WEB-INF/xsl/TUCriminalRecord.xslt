@@ -14,7 +14,7 @@
 
  <xsl:output  method="html"/>
   
- <xsl:template match="/*">
+ <xsl:template match="/CriminalRecords/CriminalRecord/*">
  <html>
  <body>
 

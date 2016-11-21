@@ -1409,8 +1409,8 @@ public class InviteServiceImpl implements InviteService{
 		DocumentBuilder dBuilder = dbfactory.newDocumentBuilder();
 		
 		Document doc = dBuilder.parse(new InputSource(new StringReader(resp)));
+		String nameSpaces = doc.getNamespaceURI();
 		
-
 	
 		doc.getDocumentElement().normalize();
 		String nodeNameStr = doc.getDocumentElement().getNodeName();
@@ -1436,6 +1436,10 @@ public class InviteServiceImpl implements InviteService{
 		        	   	NodeList applicant =eElement.getChildNodes();
 		        	   	
 		        	   	Element eCreditReport = (Element) eElement.getElementsByTagName("CreditReport").item(0);
+		        	   	Element eCriminalRecord = (Element) eElement.getElementsByTagName("CriminalRecord").item(0);
+		        	   	
+		        	   	
+		        	   	Element eEvictionRecord = (eElement.getElementsByTagName("EvictionRecord").item(0) == null) ? null : (Element) eElement.getElementsByTagName("EvictionRecord").item(0);
 		        		
 		        	   	Document docNew = dBuilder.newDocument();
 		        	   	Node nImportedCreditReport = docNew.importNode((Node) eCreditReport, true);
@@ -1473,16 +1477,14 @@ public class InviteServiceImpl implements InviteService{
 		        		
 		        	   	Document docTest = eCreditReport.getOwnerDocument();
 		        	   	
-		        	   	String nameSpaces = docTest.getNamespaceURI();
 
-
-		           		mapResponse.put("criminalReport1",eElement.getElementsByTagName("CriminalRecord").item(0).getTextContent());
+		           		mapResponse.put("criminalRecord1",resp);
 //		           		mapResponse.put("EvictionReport1",eElement.getElementsByTagName("EvictionRecord").item(0).getTextContent());
 		           }
 		           else {
 		        	   mapResponse.put("coapplicantEmail", eElement.getElementsByTagName("EmailAddress").item(0).getTextContent());
 		        	   mapResponse.put("creditReport2",eElement.getElementsByTagName("CreditReport").item(0).getTextContent());
-			           mapResponse.put("criminalReport2",eElement.getElementsByTagName("CriminalRecord").item(0).getTextContent());
+			           mapResponse.put("criminalRecord2",eElement.getElementsByTagName("CriminalRecord").item(0).getTextContent());
 //			           mapResponse.put("EvictionReport2",eElement.getElementsByTagName("EvictionRecord").item(0).getTextContent());
 		           }
 		           

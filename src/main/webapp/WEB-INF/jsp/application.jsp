@@ -107,12 +107,6 @@
 										</fieldset>
 
 
-										
-
-<!-- 										<fieldset class="form-group"> -->
-<!-- 											<label for="">Can Request Reports</label> -->
-<%-- 											<form:input path="canRequestReport" size="40" maxlength="50" readonly="true"/> --%>
-<!-- 										</fieldset> -->
 
 						
 						</div>
@@ -148,6 +142,20 @@
 						</div>				
 				<div class="row">
 					<div class="col-xs-12">
+					
+					<c:if test="${application.canRequestReport}">
+										<fieldset class="form-group">
+											<label for="">Reports are available </label>
+<%-- 											<a href="<c:url value="getReports.htm"/>"><img src="images/docs.jpg" alt="Request Reports" /></a> --%>
+										</fieldset>
+									</c:if>
+									<c:if test="${!application.canRequestReport}">
+										<fieldset class="form-group">
+											<label for="">Reports are not available at this time</label>
+											
+										</fieldset>
+									</c:if>
+									
 					 <c:forEach items="${applicants}" varStatus="row">
 						<c:if test="${row.index == 0 }">
 					  
@@ -162,6 +170,12 @@
 											<br> 
 											<div>${creditReport1}</div>
 										</fieldset>
+										
+										<fieldset class="form-group"  style="background-color: white; color:black;">
+											<label for=""><h5>Criminal Report for ${applicants[row.index].getFullName()}</h5></label>
+											<br> 
+											<div>${criminalReport1}</div>
+										</fieldset>
 										<!-- Report ends-->
 						</c:if>
 						
@@ -175,18 +189,7 @@
 						</c:if>
 					  </c:forEach>		
 		
-									<c:if test="${application.canRequestReport}">
-										<fieldset class="form-group">
-											<label for="">Reports are available </label>
-											<a href="<c:url value="getReports.htm"/>"><img src="images/docs.jpg" alt="Request Reports" /></a>
-										</fieldset>
-									</c:if>
-									<c:if test="${!application.canRequestReport}">
-										<fieldset class="form-group">
-											<label for="">Reports are not available at this time</label>
-											
-										</fieldset>
-									</c:if>
+									
 						
 						<fieldset class="form-group">
 							<label for="">Application Status</label>
