@@ -1408,6 +1408,8 @@ public class InviteServiceImpl implements InviteService{
 		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbfactory.newDocumentBuilder();
 		
+		String creditReportXML=null, criminalRecordsXML=null, evictionRecordsXML=null;
+		
 		Document doc = dBuilder.parse(new InputSource(new StringReader(resp)));
 		String nameSpaces = doc.getNamespaceURI();
 		
@@ -1431,61 +1433,45 @@ public class InviteServiceImpl implements InviteService{
 				Node nNode = nList.item(i);
 	            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 		           Element eElement = (Element) nNode;
-		           if (i == 0) {
+		           if (i == 0) 
 		        	   	mapResponse.put("applicantEmail", eElement.getElementsByTagName("EmailAddress").item(0).getTextContent());
-		        	   	NodeList applicant =eElement.getChildNodes();
+		           else mapResponse.put("coapplicantEmail", eElement.getElementsByTagName("EmailAddress").item(0).getTextContent());
 		        	   	
-		        	   	Element eCreditReport = (Element) eElement.getElementsByTagName("CreditReport").item(0);
-		        	   	Element eCriminalRecord = (Element) eElement.getElementsByTagName("CriminalRecord").item(0);
+		           NodeList applicant =eElement.getChildNodes();
+  	
+//		        	   	Element eCreditReport = (Element) eElement.getElementsByTagName("CreditReport").item(0);
+//		        	   	Element eCriminalRecord = (Element) eElement.getElementsByTagName("CriminalRecord").item(0);
+		           Element eCreditReport = (eElement.getElementsByTagName("CreditReport").item(0) == null) ? null : (Element) eElement.getElementsByTagName("CreditReport").item(0);
+		           Element eCriminalRecords= (eElement.getElementsByTagName("CriminalRecords").item(0) == null) ? null : (Element) eElement.getElementsByTagName("CriminalRecords").item(0);
 		        	   	
-		        	   	
-		        	   	Element eEvictionRecord = (eElement.getElementsByTagName("EvictionRecord").item(0) == null) ? null : (Element) eElement.getElementsByTagName("EvictionRecord").item(0);
+		           Element eEvictionRecords = (eElement.getElementsByTagName("EvictionRecords").item(0) == null) ? null : (Element) eElement.getElementsByTagName("EvictionRecords").item(0);
 		        		
-		        	   	Document docNew = dBuilder.newDocument();
-		        	   	Node nImportedCreditReport = docNew.importNode((Node) eCreditReport, true);
-		        	   	Element eImportedCreditReport = (Element) nImportedCreditReport;
-		        	   
-//		        	   	docNew.appendChild(eImportedCreditReport);
-		        		docNew.appendChild(nImportedCreditReport);
-		        	   
-		        	 // write the content into xml file
-		        		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		        		Transformer transformer = null;
-						try {
-							transformer = transformerFactory.newTransformer();
-						} catch (TransformerConfigurationException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		        		DOMSource source = new DOMSource(docNew);
-//		        		StreamResult result = new StreamResult(new File("C:\\Documentsfile.xml"));
-		        		
-		        		 StreamResult result = new StreamResult(new ByteArrayOutputStream());
-
-		        		try {
-							transformer.transform(source, result);
-						} catch (TransformerException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+		        	   	//Import new documents
 		        	   	
-		        		StringBuffer resultString = new StringBuffer(result.getOutputStream().toString());
-		        		String creditReportXML = resultString.toString();
-		        		mapResponse.put("creditReport1",creditReportXML);
+		           creditReportXML = importReport(eCreditReport, dBuilder, "Credit");
+		           criminalRecordsXML = importReport(eCriminalRecords, dBuilder, "Criminal");
+		           evictionRecordsXML = importReport(eEvictionRecords, dBuilder, "Eviction");
+		        	if (i == 0) {
+		        		if (creditReportXML != null)
+		        			mapResponse.put("creditReport1",creditReportXML);
+		        			
+		        		if (criminalRecordsXML != null)
+		        			mapResponse.put("criminalRecord1",criminalRecordsXML);
 		        		
-//		        		mapResponse.put("CreditReport",eElement.getElementsByTagName("CreditReport").item(0).getTextContent());
-		        		
-		        	   	Document docTest = eCreditReport.getOwnerDocument();
-		        	   	
-
-		           		mapResponse.put("criminalRecord1",resp);
-//		           		mapResponse.put("EvictionReport1",eElement.getElementsByTagName("EvictionRecord").item(0).getTextContent());
-		           }
+		        		if (evictionRecordsXML != null)
+		        			mapResponse.put("evictionRecord1",evictionRecordsXML);	
+		        		}
 		           else {
-		        	   mapResponse.put("coapplicantEmail", eElement.getElementsByTagName("EmailAddress").item(0).getTextContent());
-		        	   mapResponse.put("creditReport2",eElement.getElementsByTagName("CreditReport").item(0).getTextContent());
-			           mapResponse.put("criminalRecord2",eElement.getElementsByTagName("CriminalRecord").item(0).getTextContent());
-//			           mapResponse.put("EvictionReport2",eElement.getElementsByTagName("EvictionRecord").item(0).getTextContent());
+		        	   if (creditReportXML != null)
+		        			mapResponse.put("creditReport2",creditReportXML);
+		        		
+		        		Document docTest = eCreditReport.getOwnerDocument();
+		        	   	
+		        		if (criminalRecordsXML != null)
+		        			mapResponse.put("criminalRecord2",criminalRecordsXML);
+		        		
+		        		if (evictionRecordsXML != null)
+		        			mapResponse.put("evictionRecord2",evictionRecordsXML);
 		           }
 		           
 		        }
@@ -1493,6 +1479,86 @@ public class InviteServiceImpl implements InviteService{
 
 		return mapResponse;
 		
+	}
+	
+	private String importReport(Element eReport, DocumentBuilder dBuilder, String type) {
+	
+	String report = null;
+	if (eReport == null) return report;
+	
+	Document docNew = dBuilder.newDocument();
+   	Node nImportedReport = docNew.importNode((Node) eReport, true);
+   	Element eImportedReport = (Element) nImportedReport;
+   
+//   	docNew.appendChild(eImportedCreditReport);
+	docNew.appendChild(nImportedReport);
+   
+ // write the content into xml file
+	TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	Transformer transformer = null;
+	try {
+		transformer = transformerFactory.newTransformer();
+	} catch (TransformerConfigurationException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	DOMSource source = new DOMSource(docNew);
+//	StreamResult result = new StreamResult(new File("C:\\Documentsfile.xml"));
+	
+	 StreamResult result = new StreamResult(new ByteArrayOutputStream());
+
+	try {
+		transformer.transform(source, result);
+	} catch (TransformerException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+   	
+	StringBuffer resultString = new StringBuffer(result.getOutputStream().toString());
+	String reportWithoutNameSpaces = resultString.toString();
+	StringBuilder builder = new StringBuilder(reportWithoutNameSpaces);
+	
+	
+	if (StringUtils.equals(type, "Credit")) {
+		int pos = builder.indexOf("<CreditReport>");
+		String nameSpaces = " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:rap=\"http://www.nlets.org/rapsheet/3.0\" xmlns:turss=\"http://schemas.turss.com/1.0.0/\" xmlns:crim=\"http://schemas.turss.com/criminal/1.0.0/\" xmlns:cred=\"http://schemas.turss.com/credit/1.0.0/\" xmlns:j=\"http://www.it.ojp.gov/jxdm/3.0.2\" xmlns:rap-code=\"http://www.nlets.org/rapsheet/proxy/codes/1.0\" xmlns:evic=\"http://schemas.turss.com/eviction/1.0.0/\" xmlns=\"http://schemas.turss.com/SmartMove/1.0.0/\"";
+		int len = nameSpaces.length();
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(reportWithoutNameSpaces.substring(0,pos + 13));
+		sb.append(nameSpaces);
+		sb.append(reportWithoutNameSpaces.substring(pos + 13 , reportWithoutNameSpaces.length()));
+		report = sb.toString();
+		logger.debug(report);
+	}
+	
+	if (StringUtils.equals(type, "Criminal")) {
+		int pos = builder.indexOf("<CriminalRecords>");
+		String nameSpaces = " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:rap=\"http://www.nlets.org/rapsheet/3.0\" xmlns:turss=\"http://schemas.turss.com/1.0.0/\" xmlns:crim=\"http://schemas.turss.com/criminal/1.0.0/\" xmlns:j=\"http://www.it.ojp.gov/jxdm/3.0.2\" ";
+		int len = nameSpaces.length();
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(reportWithoutNameSpaces.substring(0,pos + 13));
+		sb.append(nameSpaces);
+		sb.append(reportWithoutNameSpaces.substring(16 + len, reportWithoutNameSpaces.length() - 1));
+		report = sb.toString();
+	}	
+	
+	if (StringUtils.equals(type, "Eviction")) {
+		int pos = builder.indexOf("<EvictionRecords>");
+		String nameSpaces = " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:rap=\"http://www.nlets.org/rapsheet/3.0\" xmlns:turss=\"http://schemas.turss.com/1.0.0/\" xmlns:crim=\"http://schemas.turss.com/criminal/1.0.0/\" xmlns:j=\"http://www.it.ojp.gov/jxdm/3.0.2\" ";
+		int len = nameSpaces.length();
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(reportWithoutNameSpaces.substring(0,pos + 13));
+		sb.append(nameSpaces);
+		sb.append(reportWithoutNameSpaces.substring(16 + len, reportWithoutNameSpaces.length() - 1));
+		report = sb.toString();
+	}	
+	
+	
+	return report;
+	
 	}
 	
 }

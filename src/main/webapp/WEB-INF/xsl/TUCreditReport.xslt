@@ -1,22 +1,16 @@
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:rap="http://www.nlets.org/rapsheet/3.0" 
-	xmlns:turss="http://schemas.turss.com/1.0.0/" 
-	xmlns:crim="http://schemas.turss.com/criminal/1.0.0/" 
-	xmlns:cred="http://schemas.turss.com/credit/1.0.0/" 
-	xmlns:j="http://www.it.ojp.gov/jxdm/3.0.2" 
-	xmlns:rap-code="http://www.nlets.org/rapsheet/proxy/codes/1.0" 
-	xmlns:evic="http://schemas.turss.com/eviction/1.0.0/" 
-	xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rap="http://www.nlets.org/rapsheet/3.0" 
+xmlns:turss="http://schemas.turss.com/1.0.0/" xmlns:crim="http://schemas.turss.com/criminal/1.0.0/" xmlns:cred="http://schemas.turss.com/credit/1.0.0/" 
+xmlns:j="http://www.it.ojp.gov/jxdm/3.0.2" xmlns:rap-code="http://www.nlets.org/rapsheet/proxy/codes/1.0" xmlns:evic="http://schemas.turss.com/eviction/1.0.0/" 
+xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
 
  <xsl:output  method="html"/>
   
  <xsl:template match="/*">
  <html>
  <body>
-
+<h1> Credit Report </h1>
 <fieldset class="form-group">
 	<label for="">Status</label>
 	<span> <xsl:value-of select="cred:status/cred:reportDate"/> </span>
@@ -45,11 +39,11 @@
   <fieldset class="form-group">
   <label for=""> Fraud Indicators </label>
   <table border="1">
-  <xsl:for-each select="cred:fraudIndicators">
+  <xsl:for-each select="cred:fraudIndicators/cred:fraudIndicator">
 	<tr>
 	<td>
   	<!-- No Matching record found then choose following check box-->
-	 <xsl:value-of select="cred:fraudIndicator"/> 
+	 <xsl:value-of select="."/> 
 	</td>
 	</tr>
    </xsl:for-each>	
