@@ -1484,8 +1484,8 @@ public class InviteServiceImpl implements InviteService{
 	private String importReport(Element eReport, DocumentBuilder dBuilder, String type) {
 	
 	String report = null;
-	if (eReport == null) return report;
-	
+	if (eReport == null || !eReport.hasChildNodes()) return report;
+
 	Document docNew = dBuilder.newDocument();
    	Node nImportedReport = docNew.importNode((Node) eReport, true);
    	Element eImportedReport = (Element) nImportedReport;

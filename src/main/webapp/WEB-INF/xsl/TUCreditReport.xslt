@@ -10,7 +10,7 @@ xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
  <xsl:template match="/*">
  <html>
  <body>
-<h1> Credit Report </h1>
+
 <fieldset class="form-group">
 	<label for="">Status</label>
 	<span> <xsl:value-of select="cred:status/cred:reportDate"/> </span>

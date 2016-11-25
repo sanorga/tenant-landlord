@@ -1,5 +1,6 @@
 package com.tea.landlordapp.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -190,7 +191,8 @@ public class ApplicationForm extends AbstractDataController {
 
 					if (StringUtils.isNotBlank(reportMap.get("CreditRecommendation"))) { 							
 						creditRecommendation = reportMap.get("CreditRecommendation");
-						creditRecommendationLabel = com.tea.landlordapp.enums.CreditRecommendation.getLabel(creditRecommendation.charAt(0));
+//						creditRecommendationLabel = com.tea.landlordapp.enums.CreditRecommendation.getLabel(creditRecommendation.charAt(0));
+						creditRecommendationLabel = creditRecommendation;
 					}
 					else 
 						creditRecommendationLabel = com.tea.landlordapp.enums.CreditRecommendation.UNKNOWN.getLabel();
@@ -263,13 +265,14 @@ public class ApplicationForm extends AbstractDataController {
 	  
 	   private Map<String, String> processReports(HttpServletRequest request, Map<String, String> reportMap) {
 		   
-		   Map<String, String> htmlReport = null;
+		   Map<String, String> htmlReport = new HashMap<String, String>();
 		   
 		   if (reportMap.get("creditReport1") == null)
 				logger.debug("no creditReport1 found...");
 			else {
 				String creditReport1 = reportMap.get("creditReport1");
-				htmlReport.put("creditReport1", transformToHtml(request, creditReport1,"TUCreditReport.xslt"));
+				String transformOutput = transformToHtml(request, creditReport1,"TUCreditReport.xslt");
+				htmlReport.put("creditReport1", transformOutput);
 			}
 			if (reportMap.get("creditReport2") == null)
 				logger.debug("no creditReport2 found...");
@@ -328,6 +331,7 @@ public class ApplicationForm extends AbstractDataController {
 		                transReport = "<br><br><strong>Please contact Administrator</strong>";
 		             }
 		  	}
+		  	// check this
 		  	return transReport;
 	   }
 }
