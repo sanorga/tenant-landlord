@@ -8,10 +8,12 @@
  <xsl:template match="/*">
  <html>
  <body>
-
+   <div id="main" class="container">
+<div class="row">
+					<div class="col-xs-6">
    <xsl:for-each select="CriminalRecord">
    
-   <h2> Criminal Record </h2>
+   <h5>Criminal Record </h5>
      <fieldset class="form-group">
   <label for="">  </label>
     <table border="1">
@@ -30,7 +32,7 @@
 	
 	   
 	  <xsl:for-each select="Rapsheet/CriminalEntity">
-	     <h3> Criminal Entity</h3>
+	    <p><strong> Criminal Entity </strong></p>
 		<fieldset class="form-group">
 		<label for="">Purpose Code:</label>
 		<span><xsl:value-of select="rap:Introduction/rap:RapSheetRequest/rap:PurposeCode" /></span>
@@ -105,8 +107,10 @@
 	
    </xsl:for-each>	
 
+</div>
+</div>
 
- 
+ </div>
  </body>
 </html>
  </xsl:template> 

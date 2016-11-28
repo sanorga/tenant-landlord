@@ -9,8 +9,11 @@ xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
   
  <xsl:template match="/*">
  <html>
- <body>
+ <body  >
+    <div id="main" class="container">
 
+<div class="row">
+<div class="col-xs-12">
 <fieldset class="form-group">
 	<label for="">Status</label>
 	<span> <xsl:value-of select="cred:status/cred:reportDate"/> </span>
@@ -35,6 +38,48 @@ xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
 	<label for="">Last Name</label>
 	<xsl:value-of select="cred:lastName"/> 
 </fieldset>
+ 
+  
+  <fieldset class="form-group">
+  <label for=""> akas </label>
+
+	  <xsl:for-each select="cred:akas/cred:aka">
+		  <p>Last Name: <xsl:value-of select="turss:lastName"/></p> 
+		  <p>Birth Date: <xsl:value-of select="turss:birthDate"/></p> 
+		  </xsl:for-each>	
+
+ </fieldset>   
+ 
+  <fieldset class="form-group">
+  <label for=""> Scores </label>
+
+  <xsl:for-each select="cred:scores/cred:score">
+ 	 <p><strong>Score: </strong><xsl:value-of select="cred:score"/></p> 
+ 	 <p>Model Type Indicator: <xsl:value-of select="cred:modelTypeIndicator"/></p> 
+    <table border="0">
+   	<tr>
+   	<td>  	Score Factor 1:	</td>
+	<td> <xsl:value-of select="cred:scoreFactor1"/> </td>
+	</tr>
+	<tr>
+   	<td>  	Score Factor 2:	</td>
+	<td> <xsl:value-of select="cred:scoreFactor2"/> </td>
+	</tr>
+	<tr>
+   	<td>  	Score Factor 3:	</td>
+	<td> <xsl:value-of select="cred:scoreFactor3"/> </td>
+	</tr>
+	<tr>
+   	<td>  	Score Factor 4:	</td>
+	<td> <xsl:value-of select="cred:scoreFactor4"/> </td>
+	</tr>
+	</table>
+	<p>Derogatory Alert Code: <xsl:value-of select="cred:derogAlertCode"/></p> 
+   </xsl:for-each>	
+
+ </fieldset>   
+ 
+ 
  
   <fieldset class="form-group">
   <label for=""> Fraud Indicators </label>
@@ -291,6 +336,9 @@ xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
 					</table> 
 				</fieldset>
 
+</div>
+</div>
+</div>
 </body>
 </html>
   

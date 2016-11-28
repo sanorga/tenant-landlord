@@ -78,7 +78,7 @@ public class AnonymousUserForm extends AbstractDataController {
       String propertyExtIdStr = null, organizationIdStr = null, propertyIdentifier = null,
     		  organizationName = null, applicationExtIdStr = null;
       Integer pId = 0, propertyExtId = -1, organizationId = 0, applicationExtId = 0;
-      
+	  String applicantEmail=null, coapplicantEmail=null;
       
       // login User
       final User user = getAuthenticatedUser();
@@ -208,7 +208,7 @@ public class AnonymousUserForm extends AbstractDataController {
      // Submit Application
      //-------------------
    
-	  String applicantEmail=null, coapplicantEmail=null;
+
 	  boolean isNotTest = true;
 	  if (isNotTest){
     	

@@ -1538,21 +1538,21 @@ public class InviteServiceImpl implements InviteService{
 		int len = nameSpaces.length();
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(reportWithoutNameSpaces.substring(0,pos + 13));
+		sb.append(reportWithoutNameSpaces.substring(0,pos + 16));
 		sb.append(nameSpaces);
-		sb.append(reportWithoutNameSpaces.substring(16 + len, reportWithoutNameSpaces.length() - 1));
+		sb.append(reportWithoutNameSpaces.substring(pos + 16, reportWithoutNameSpaces.length()));
 		report = sb.toString();
 	}	
 	
 	if (StringUtils.equals(type, "Eviction")) {
 		int pos = builder.indexOf("<EvictionRecords>");
-		String nameSpaces = " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:rap=\"http://www.nlets.org/rapsheet/3.0\" xmlns:turss=\"http://schemas.turss.com/1.0.0/\" xmlns:crim=\"http://schemas.turss.com/criminal/1.0.0/\" xmlns:j=\"http://www.it.ojp.gov/jxdm/3.0.2\" ";
+		String nameSpaces = " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:rap=\"http://www.nlets.org/rapsheet/3.0\" xmlns:turss=\"http://schemas.turss.com/1.0.0/\" xmlns:crim=\"http://schemas.turss.com/criminal/1.0.0/\" xmlns:cred=\"http://schemas.turss.com/credit/1.0.0/\" xmlns:j=\"http://www.it.ojp.gov/jxdm/3.0.2\" xmlns:rap-code=\"http://www.nlets.org/rapsheet/proxy/codes/1.0\" xmlns:evic=\"http://schemas.turss.com/eviction/1.0.0/\" xmlns=\"http://schemas.turss.com/SmartMove/1.0.0/\"";
 		int len = nameSpaces.length();
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(reportWithoutNameSpaces.substring(0,pos + 13));
+		sb.append(reportWithoutNameSpaces.substring(0,pos + 16));
 		sb.append(nameSpaces);
-		sb.append(reportWithoutNameSpaces.substring(16 + len, reportWithoutNameSpaces.length() - 1));
+		sb.append(reportWithoutNameSpaces.substring(pos + 16, reportWithoutNameSpaces.length() - 1));
 		report = sb.toString();
 	}	
 	

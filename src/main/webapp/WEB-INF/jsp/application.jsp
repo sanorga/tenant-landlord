@@ -138,6 +138,11 @@
 											<label for="">Credit Recommendation</label>
  											${creditRecommendationLabel}
 										</fieldset>
+										
+										<fieldset class="form-group">
+											<label for="">Credit Recommendation Policy</label>
+ 											${creditRecommendationPolicyText}
+										</fieldset>
 						</div>
 						</div>				
 				<div class="row">
@@ -174,7 +179,12 @@
 										<fieldset class="form-group"  style="background-color: white; color:black;">
 											<label for=""><h5>Criminal Report for ${applicants[row.index].getFullName()}</h5></label>
 											<br> 
-											<div>${criminalReport1}</div>
+											<div>${criminalRecord1}</div> 
+										</fieldset>
+										<fieldset class="form-group"  style="background-color: white; color:black;">
+											<label for=""><h5>Eviction Report for ${applicants[row.index].getFullName()}</h5></label>
+											<br> 
+											<div>${evictionRecord1}</div>
 										</fieldset>
 										<!-- Report ends-->
 						</c:if>
@@ -186,6 +196,25 @@
 											<label for="">Coapplicant</label>
 											${applicants[row.index].emailAddress } &nbsp; ${applicants[row.index].fullName } 
 										</fieldset>
+																															<!-- Report starts-->
+										<fieldset class="form-group"  style="background-color: white; color:black;">
+											<label for=""><h5>Credit Report for ${applicants[row.index].getFullName()}</h5></label>
+											<br> 
+											<div>${creditReport2}</div>
+										</fieldset>
+										
+										<fieldset class="form-group"  style="background-color: white; color:black;">
+											<label for=""><h5>Criminal Report for ${applicants[row.index].getFullName()}</h5></label>
+											<br> 
+											<div>${criminalRecord2}</div>
+										</fieldset>
+										
+										<fieldset class="form-group"  style="background-color: white; color:black;">
+											<label for=""><h5>Eviction Report for ${applicants[row.index].getFullName()}</h5></label>
+											<br> 
+											<div>${evictionRecord2}</div>
+										</fieldset>
+										<!-- Report ends-->
 						</c:if>
 					  </c:forEach>		
 		
