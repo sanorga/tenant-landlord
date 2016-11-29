@@ -8,12 +8,12 @@ xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
  <xsl:output  method="html"/>
   
  <xsl:template match="/*">
- <html>
- <body  >
-    <div id="main" class="container">
 
+<div id="main" class="container">
 <div class="row">
 <div class="col-xs-12">
+
+
 <fieldset class="form-group">
 	<label for="">Status</label>
 	<span> <xsl:value-of select="cred:status/cred:reportDate"/> </span>
@@ -83,11 +83,12 @@ xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
  
   <fieldset class="form-group">
   <label for=""> Fraud Indicators </label>
+  <br>-----------------------------------------------------------------------------------</br>	
+ 			
   <table border="1">
   <xsl:for-each select="cred:fraudIndicators/cred:fraudIndicator">
 	<tr>
 	<td>
-  	<!-- No Matching record found then choose following check box-->
 	 <xsl:value-of select="."/> 
 	</td>
 	</tr>
@@ -233,114 +234,51 @@ xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
 
   <fieldset class="form-group">
   <label for=""> Trade lines</label>
-
- 				<table border="1">
-					<tr>
-						<th>Subscriber Id</th>
-						<th>Subscriber Name</th>
-						<th>Date Reported</th>
-						<th>Account Type</th>
-						<th>Account Number</th>
-						<th>Industry Code</th>
-						<th>High Credit</th>
-						<th>Credit Limit</th>
-						<th>Loan Type</th>
-						<th>Amount Past Due</th>
-						<th>Balance Amount</th>
-					</tr>
-					<xsl:for-each select="cred:tradeLines/cred:tradeLine">
-						<tr>
-							<td>
-								<xsl:value-of select="cred:subscriberId"/>
-							</td>
-							<td>
-								<xsl:value-of select="cred:subscriberName"/>
-							</td>
-							<td>
-								<xsl:value-of select="cred:dateReported"/>
-							</td>
-							<td>
-								<xsl:value-of select="cred:accountType"/>
-							</td>
-							<td>
-								<xsl:value-of select="cred:accountNumber"/>
-							</td>
-							<td>
-								<xsl:value-of select="cred:industryCode"/>
-							</td>
-							<td>
-								<xsl:value-of select="cred:highCredit"/>
-							</td>
-							<td>
-								<xsl:value-of select="cred:creditLimit"/>
-							</td>
-							<td>
-								<xsl:value-of select="cred:loanType"/>
-							</td>
-							<td>
-								<xsl:value-of select="cred:amountPastDue"/>
-							</td>
-							<td>
-								<xsl:value-of select="cred:balanceAmount"/>
-							</td>
-					</tr>	
-					</xsl:for-each>					
-				</table> 
-				</fieldset>
+<br>-----------------------------------------------------------------------------------</br>	
+ 			
+ 				<xsl:for-each select="cred:tradeLines/cred:tradeLine">
+ 					<table border="0">
+						<tr><td><strong>Subscriber Id:</strong></td><td><xsl:value-of select="cred:subscriberId"/></td></tr>
+						<tr><td><strong>Subscriber Name:</strong></td><td><xsl:value-of select="cred:subscriberName"/></td></tr>
+						<tr><td><strong>Date Reported:</strong></td><td><xsl:value-of select="cred:dateReported"/></td></tr>
+						<tr><td><strong>Account Type:</strong></td><td><xsl:value-of select="cred:accountType"/></td></tr>
+						<tr><td><strong>Account Number:</strong></td><td><xsl:value-of select="cred:accountNumber"/></td></tr>
+						<tr><td><strong>Industry Code:</strong></td><td><xsl:value-of select="cred:industryCode"/></td></tr>
+						<tr><td><strong>High Credit:</strong></td><td><xsl:value-of select="cred:highCredit"/></td></tr>
+						<tr><td><strong>Credit Limit:</strong></td><td><xsl:value-of select="cred:creditLimit"/></td></tr>
+						<tr><td><strong>Loan Type:</strong></td><td><xsl:value-of select="cred:loanType"/></td></tr>
+						<tr><td><strong>Amount Past Due:</strong></td><td><xsl:value-of select="cred:amountPastDue"/></td></tr>
+						<tr><td><strong>Balance Amount:</strong></td><td><xsl:value-of select="cred:balanceAmount"/></td></tr>
+					</table> 
+					<br>-----------------------------------------------------------------------------------</br>
+				</xsl:for-each>					
+				
+</fieldset>
 				
 				<fieldset class="form-group">
  				 	<label for=""> Collections</label>
-	 				<table border="1">
-						<tr>
-							<th>Type</th>
-							<th>Customer Number</th>
-							<th>AgencyName</th>
-							<th>Creditors Name</th>
-							<th>Industry Code</th>
-							<th>Account Designator</th>
-							<th>Current Balance</th>
-							<th>Remarks Code</th>
-							<th>High Credit</th>
-						</tr>
+	 				<br>-----------------------------------------------------------------------------------</br>	
 						<xsl:for-each select="cred:collections/cred:collection">
-							<tr>
-								<td>
-									<xsl:value-of select="cred:accountType"/>
-								</td>
-								<td>
-									<xsl:value-of select="cred:customerNumber"/>
-								</td>
-								<td>
-									<xsl:value-of select="cred:collectionAgencyName"/>
-								</td>
-								<td>
-									<xsl:value-of select="cred:creditorsName"/>
-								</td>
-								<td>
-									<xsl:value-of select="cred:industryCode"/>
-								</td>
-								<td>
-									<xsl:value-of select="cred:accountDesignator"/>
-								</td>
-								<td>
-									<xsl:value-of select="cred:currentBalance"/>
-								</td>
-								<td>
-									<xsl:value-of select="cred:remarksCode"/>
-								</td>
-								<td>
-									<xsl:value-of select="cred:highCredit"/>
-								</td>
-						</tr>	
+						<table border="0">
+						<tr><td><strong>Type:</strong></td><td><xsl:value-of select="cred:accountType"/></td></tr>
+						<tr><td><strong>Customer Number:</strong></td><td><xsl:value-of select="cred:customerNumber"/></td></tr>
+						<tr><td><strong>AgencyName:</strong></td><td><xsl:value-of select="cred:collectionAgencyName"/></td></tr>
+						<tr><td><strong>Creditors Name:</strong></td><td><xsl:value-of select="cred:creditorsName"/></td></tr>
+						<tr><td><strong>Industry Code:</strong></td><td><xsl:value-of select="cred:industryCode"/></td></tr>
+						<tr><td><strong>Account Designator:</strong></td><td><xsl:value-of select="cred:accountDesignator"/></td></tr>
+						<tr><td><strong>Current Balance:</strong></td><td><xsl:value-of select="cred:currentBalance"/></td></tr>
+						<tr><td><strong>Remarks Code:</strong></td><td><xsl:value-of select="cred:remarksCode"/></td></tr>
+						<tr><td><strong>High Credit:</strong></td><td><xsl:value-of select="cred:highCredit"/></td></tr>
+						</table> 
+						<br>-----------------------------------------------------------------------------------</br>		
 						</xsl:for-each>					
-					</table> 
+					
 				</fieldset>
 
 </div>
 </div>
+
 </div>
-</body>
-</html>
   
  </xsl:template> 
 

@@ -99,11 +99,11 @@ public class InviteHelperImpl implements InviteHelper {
 		applicationInfo.put("Deposit", df.format(deposit));
 		applicationInfo.put("ApplicationId", "0");
 		applicationInfo.put("LeaseTermInMonths", "12");
-		applicationInfo.put("LandlordPays", "True");
+		applicationInfo.put("LandlordPays", "False");
 		applicationInfo.put("PropertyId", propertyIdStr);
 		applicationInfo.put("Rent", df.format(rent));
 		applicationInfo.put("UnitNumber", p.getApartmentNo());
-		applicationInfo.put("ProductBundle", "PackageCore");
+		applicationInfo.put("ProductBundle", "PackageCorePlusEviction");
 		
 		applicationInfo.put("applicantEmail", au.getEmailId());
 		applicationInfo.put("coapplicantEmail",  au.getCoappEmailId());

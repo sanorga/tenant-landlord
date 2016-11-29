@@ -51,9 +51,9 @@
 					<div class="col-xs-6">
 					
 					<h4>Application Information</h4>
-
+					<br>
 										<fieldset class="form-group">
-											<label for="">*Application External Id</label>
+											<label for="">Application External Id</label>
 <%-- 											<form:input path="applicationExtId" size="20" maxlength="20" readonly="true" /> --%>
 												<span> ${application.applicationExtId}</span>
 										</fieldset>
@@ -65,7 +65,7 @@
  										</fieldset> 
 										
  										<fieldset class="form-group"> 
- 											<label for="">*Property Address</label> 
+ 											<label for="">Property Address</label> 
 <%--  											<form:input path="property.AddressLine1" size="40" maxlength="128" readonly="true" />  --%>
  												<span>${application.getProperty().getAddressLine1()}</span>
  										</fieldset> 
@@ -99,7 +99,7 @@
 										</td>	
 										</tr>
 										</table>
-										
+										<br>
 															
 										<fieldset class="form-group">
 											<label for="">Landlord Pays</label>
@@ -113,6 +113,11 @@
 						
 						<br> <br> <br> <br>
 						<div class="col-xs-6">
+						
+										<fieldset class="form-group">
+											<label for=""></label>
+ 											&nbsp;
+										</fieldset>
 						<table>
 										<tr>
 										<td>
@@ -146,7 +151,7 @@
 						</div>
 						</div>				
 				<div class="row">
-					<div class="col-xs-12">
+					<div class="col-xs-6">
 					
 					<c:if test="${application.canRequestReport}">
 										<fieldset class="form-group">
@@ -169,20 +174,20 @@
 											<label for="">Applicant</label>
 												${applicants[row.index].emailAddress } &nbsp; ${applicants[row.index].fullName } 
 										</fieldset>
-																					<!-- Report starts-->
-										<fieldset class="form-group"  style="background-color: white; color:black;">
-											<label for=""><h5>Credit Report for ${applicants[row.index].getFullName()}</h5></label>
+<!-- 																					Report starts -->
+										<fieldset class="form-group"  style="background-color: white; color:black;width: 700px;">
+											<label for=""><h5>Credit Report for ${fullName1}</h5></label>
 											<br> 
 											<div>${creditReport1}</div>
 										</fieldset>
-										
-										<fieldset class="form-group"  style="background-color: white; color:black;">
-											<label for=""><h5>Criminal Report for ${applicants[row.index].getFullName()}</h5></label>
+									
+										<fieldset class="form-group"  style="background-color: white; color:black;width: 700px;">
+											<label for=""><h5>Criminal Report for ${fullName1}</h5></label>
 											<br> 
 											<div>${criminalRecord1}</div> 
 										</fieldset>
-										<fieldset class="form-group"  style="background-color: white; color:black;">
-											<label for=""><h5>Eviction Report for ${applicants[row.index].getFullName()}</h5></label>
+										<fieldset class="form-group"  style="background-color: white; color:black;width: 700px;">
+											<label for=""><h5>Eviction Report for ${fullName1}</h5></label>
 											<br> 
 											<div>${evictionRecord1}</div>
 										</fieldset>
@@ -198,19 +203,19 @@
 										</fieldset>
 																															<!-- Report starts-->
 										<fieldset class="form-group"  style="background-color: white; color:black;">
-											<label for=""><h5>Credit Report for ${applicants[row.index].getFullName()}</h5></label>
+											<label for=""><h5>Credit Report for ${fullName2}</h5></label>
 											<br> 
 											<div>${creditReport2}</div>
 										</fieldset>
 										
 										<fieldset class="form-group"  style="background-color: white; color:black;">
-											<label for=""><h5>Criminal Report for ${applicants[row.index].getFullName()}</h5></label>
+											<label for=""><h5>Criminal Report for ${fullName2}</h5></label>
 											<br> 
 											<div>${criminalRecord2}</div>
 										</fieldset>
 										
 										<fieldset class="form-group"  style="background-color: white; color:black;">
-											<label for=""><h5>Eviction Report for ${applicants[row.index].getFullName()}</h5></label>
+											<label for=""><h5>Eviction Report for ${fullName2}</h5></label>
 											<br> 
 											<div>${evictionRecord2}</div>
 										</fieldset>
@@ -239,7 +244,7 @@
 											</select>
 											</div>
 										</fieldset>
-										<br><br><br><br><br><br><br><br><br><br><br><br>
+										<br><br><br><br>
 										<c:if test="${loginUser.hasRole('view.my.applications')}">
 						 				<input type="submit" value="Save Application"  name="_btn" class="btn by_cr" /> 
 										<input type="submit" value="Cancel" name="_cancel" class="btn by_cr"/>

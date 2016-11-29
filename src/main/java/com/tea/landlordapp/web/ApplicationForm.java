@@ -171,8 +171,12 @@ public class ApplicationForm extends AbstractDataController {
 	    		  transEviction1 = null, transEviction2 = null, 
 	    		  creditReport1 = null, creditReport2=null, 
 	    		  criminalRecord1 = null, criminalRecord2 = null,
-	    		  evictionRecord1 = null, evictionRecord2 = null;
-	      
+	    		  evictionRecord1 = null, evictionRecord2 = null,
+	    		  firstName1 = null, firstName2 = null,
+	    		  lastName1 = null, lastName2 = null,
+	    		  middleName1 = null, middleName2 = null,
+	    		  fullName1 = null, fullName2 = null;
+	      	
 	      if (application.isCanRequestReport() == true) {
 
 	      // Call getReport
@@ -202,6 +206,38 @@ public class ApplicationForm extends AbstractDataController {
 						creditRecommendationPolicyText = reportMap.get("CreditRecommendationPolicyText");
 					}
 					
+					StringBuilder Name1 = new StringBuilder();
+					if (StringUtils.isNotBlank(reportMap.get("firstName1"))) {
+						firstName1 = reportMap.get("firstName1");
+						Name1.append(firstName1 + " ");
+					}
+					if (StringUtils.isNotBlank(reportMap.get("middleName1"))) {
+						middleName1 = reportMap.get("middleName1");
+						Name1.append(middleName1 + " ");
+					}
+					if (StringUtils.isNotBlank(reportMap.get("lastName1"))) {
+						lastName1 = reportMap.get("lastName1");
+						Name1.append(lastName1 );
+					}
+					if (StringUtils.isNotBlank(Name1.toString()))
+						fullName1 = Name1.toString();
+					
+					StringBuilder Name2 = new StringBuilder();
+					if (StringUtils.isNotBlank(reportMap.get("firstName2"))) {
+						firstName2 = reportMap.get("firstName2");
+						Name2.append(firstName2 + " ");
+					}
+					if (StringUtils.isNotBlank(reportMap.get("middleName2"))) {
+						middleName2 = reportMap.get("middleName2");
+						Name2.append(middleName2 + " ");
+					}
+					if (StringUtils.isNotBlank(reportMap.get("lastName2"))) {
+						lastName2 = reportMap.get("lastName2");
+						Name2.append(lastName2 );
+					}
+					if (StringUtils.isNotBlank(Name2.toString()))
+						fullName2 = Name2.toString();
+					
 					Map <String, String> htmlReports = processReports(request, reportMap);
 					transCredit1 = StringUtils.isNotBlank(htmlReports.get("creditReport1"))?htmlReports.get("creditReport1"):null;
 //					transCredit1 = null;
@@ -220,6 +256,7 @@ public class ApplicationForm extends AbstractDataController {
 	    setValuesInModel(model);
 
 	      // set data in the model
+	    
 	    setPreviousActionMessage(request, model);
 	    model.addAttribute("application", application);
 	    model.addAttribute("newStatus", "");
@@ -233,6 +270,8 @@ public class ApplicationForm extends AbstractDataController {
 	    model.addAttribute("criminalRecord2", transCriminal2);
 	    model.addAttribute("evictionRecord1", transEviction1);
 	    model.addAttribute("evictionRecord2", transEviction2);
+	    model.addAttribute("fullName1", fullName1);
+	    model.addAttribute("fullName2", fullName2);
 	    
 	    logger.debug("leaving GET method of application.htm with userId as.." + loginUser.getId() );
 	      

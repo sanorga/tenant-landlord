@@ -10,10 +10,10 @@
  <body>
    <div id="main" class="container">
 <div class="row">
-					<div class="col-xs-6">
+					<div class="col-xs-12">
    <xsl:for-each select="CriminalRecord">
    
-   <h5>Criminal Record </h5>
+   <p><strong>Criminal Record </strong></p>
      <fieldset class="form-group">
   <label for="">  </label>
     <table border="1">

@@ -12,7 +12,7 @@ public class CsrfRequestMatcher implements RequestMatcher {
 	private AntPathRequestMatcher duoLoginMatcher = new AntPathRequestMatcher("/duologin", "POST");
 	private AntPathRequestMatcher apiMatcher = new AntPathRequestMatcher("/api/**", null);
 	private AntPathRequestMatcher dataMatcher = new AntPathRequestMatcher("/data/**", "POST");
-	private AntPathRequestMatcher notificationMatcher = new AntPathRequestMatcher("/notificationMgmt.htm/**", "POST");
+	private AntPathRequestMatcher notificationMatcher = new AntPathRequestMatcher("/notificationMgmt.htm", "POST");
 	private AntPathRequestMatcher getMatcher = new AntPathRequestMatcher("/**", "GET");
 	private AntPathRequestMatcher headMatcher = new AntPathRequestMatcher("/**", "HEAD");
 

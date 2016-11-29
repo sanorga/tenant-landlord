@@ -152,8 +152,8 @@ public class MessageServiceImpl implements MessageService {
 //		map.put("LINK", emailProperties.getProperty(Globals.TEA_LANDLORDAPP_URL)
 //				+ "/submitApplication.htm?" + Globals.ANONYMOUS_USER_URL_ID
 //				+ "=" + anonymousUser.getId());
-		map.put("LINK", emailProperties.getProperty(Globals.SMARTMOVE_NEW_ACCT_URL)
-				+ "/Create-Account.page?SubDomainId=1&UserType=1&Email=" + anonymousUser.getEmailId());
+		map.put("LINK", emailProperties.getProperty(Globals.SMARTMOVE_NEW_ACCT_URL));
+//				+ "/Create-Account.page?SubDomainId=1&UserType=1&Email=" + anonymousUser.getEmailId());
 
 		map.put("REFERENCEKEY", anonymousUser.getReference());
 		map.put("ADDRESS", anonymousUser.getProperty().getAddressLine());

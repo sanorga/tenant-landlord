@@ -15,12 +15,13 @@ xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
  <xsl:template match="/*">
  <html>
  <body>
+
    <div id="main" class="container">
 <div class="row">
 					<div class="col-xs-12">
    <xsl:for-each select="EvictionRecord">
    
-   <h5>Eviction Record </h5>
+   <p><strong>Eviction Record </strong></p>
      <fieldset class="form-group">
   <label for="">  </label>
     <table border="1">
@@ -79,10 +80,7 @@ xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
 					<th>Last Name</th>	
 					<th>Middle Name</th>	
 					<th>Age</th>
-					<th>Street Address</th>
-					<th>City</th>
-					<th>State</th>
-					<th>Zip Code</th>					
+							
 				</tr>
 				<tr>
 				<td>
