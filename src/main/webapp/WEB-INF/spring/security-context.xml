@@ -14,11 +14,11 @@
 		<security:intercept-url pattern="/styles/**" access="permitAll" />           
 		<security:intercept-url pattern="/lib/**" access="permitAll" />       
 		<security:intercept-url pattern="/login" access="permitAll" />
+		<security:intercept-url pattern="/newuser.htm" access="permitAll" />
 		<security:intercept-url pattern="/googlelogin.htm" access="permitAll" />
         <security:intercept-url pattern="/accessdenied" access="permitAll" />
         <security:intercept-url pattern="/forgotpwd.htm" access="permitAll" />      
 		<security:intercept-url pattern="/logout.htm" access="permitAll" />
-        <security:intercept-url pattern="/printtermsandconditions.pdf" access="permitAll" />
         <security:intercept-url pattern="/ssnTrack.htm" access="permitAll" />
         <security:intercept-url pattern="/makepayment.htm" access="permitAll" />
         <security:intercept-url pattern="/transfirstpayment.htm" access="permitAll" />

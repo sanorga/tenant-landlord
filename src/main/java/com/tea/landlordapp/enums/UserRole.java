@@ -19,7 +19,10 @@ public enum UserRole {
 	Compliance("CM"), 
 	Automation("AI"), 
 	Accountant("AC"), 
-	AccountingSupervisor("AS");
+	AccountingSupervisor("AS"),
+	Landlord("LA"),
+	Renter("TE"),
+	Realtor("RE");
 
 	private String code;
 

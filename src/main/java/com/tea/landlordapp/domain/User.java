@@ -45,7 +45,14 @@ import com.tea.landlordapp.utility.EncryptionService;
 	    private SocialAcctService socialAcctType;
 		private String firstName;
 		private String lastName;
-
+		private String address;
+		private String address2;
+		private String city;
+		private String state;
+		private String zipcode;
+		private String country;
+		private String phone;
+		private String fax;
 		private String oldPassword;
 		private String newPassword;
 
@@ -166,6 +173,77 @@ import com.tea.landlordapp.utility.EncryptionService;
 					(StringUtils.isBlank(this.lastName) ? "": this.lastName)).trim();
 		}
 
+		@Column(name = "address")
+		public String getAddress() {
+			return address;
+		}
+
+		public void setAddress(String address) {
+			this.address = address;
+		}
+
+		@Column(name = "address2")
+		public String getAddress2() {
+			return address2;
+		}
+
+		public void setAddress2(String address2) {
+			this.address2 = address2;
+		}
+
+		@Column(name = "city")
+		public String getCity() {
+			return city;
+		}
+
+		public void setCity(String city) {
+			this.city = city;
+		}
+
+		@Column(name = "state")
+		public String getState() {
+			return state;
+		}
+
+		public void setState(String state) {
+			this.state = state;
+		}
+
+		@Column(name = "zipcode")
+		public String getZipcode() {
+			return zipcode;
+		}
+
+		public void setZipcode(String zipcode) {
+			this.zipcode = zipcode;
+		}
+
+		@Column(name = "country")
+		public String getCountry() {
+			return country;
+		}
+
+		public void setCountry(String country) {
+			this.country = country;
+		}
+
+		@Column(name = "phone")
+		public String getPhone() {
+			return phone;
+		}
+
+		public void setPhone(String phone) {
+			this.phone = phone;
+		}
+
+		@Column(name = "fax")
+		public String getFax() {
+			return fax;
+		}
+
+		public void setFax(String fax) {
+			this.fax = fax;
+		}
 
 		@Column(name = "status")
 		public char getStatus() {

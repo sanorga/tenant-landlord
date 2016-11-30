@@ -111,6 +111,10 @@ public class Globals {
 		return clientUserRoleOptions;
 	}
 
+	public Map<String, String> getClientRoleOptions() {
+		return clientRoleOptions;
+	}
+	
 	public Map<String, String> getSubscriberStatusOptions() {
 		return subscriberStatusOptions;
 	}
@@ -438,11 +442,21 @@ public class Globals {
 		clientUserRoleOptions.put(
 				UserRole.PropertyManager.getCode(),
 				"Property Manager");
-		// clientUserRoleOptions.put("5", "Client Administrator");
-		// clientUserRoleOptions.put("6", "Client User");
-		// clientUserRoleOptions.put("7", "Board Director");
-		// clientUserRoleOptions.put("7", "Anonymous User");
-
+		// Client Role Options
+		clientRoleOptions = new TreeMap<String, String>();
+		clientRoleOptions.put(
+				UserRole.CustomerServiceRep.getCode(),
+				"Customer Service Representative");
+		clientRoleOptions.put(
+				UserRole.Landlord.getCode(),
+				"Landlord");
+		clientRoleOptions.put(
+				UserRole.Renter.getCode(),
+				"Renter");
+		clientRoleOptions.put(
+				UserRole.Realtor.getCode(),
+				"Realtor");
+		
 		// Subscriber Status Options
 		subscriberStatusOptions = new TreeMap<String, String>();
 		subscriberStatusOptions.put("A", "Active");
@@ -1562,6 +1576,7 @@ public class Globals {
 	// private TreeMap<String, String> systemUserRoleOptions;
 	// private TreeMap<String, String> workerUserRoleOptions;
 	private TreeMap<String, String> clientUserRoleOptions;
+	private TreeMap<String, String> clientRoleOptions;
 	private TreeMap<String, String> coapplicantTypeOptions;
 	private TreeMap<String, String> coapplicantTypeOptionsForTenant;
 	private TreeMap<String, String> subscriberStatusOptions;
