@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.gson.Gson;
+import com.tea.landlordapp.dto.LookupZipcodeDto;
 import com.tea.landlordapp.dto.LookupPropertyDto;
 import com.tea.landlordapp.service.LookupService;
 
@@ -43,5 +44,18 @@ public class LookupController {
 		
 		return null;
 	}
+	
+	@RequestMapping(value = "/lookup/{zip}/cityStateByZip.json", method = RequestMethod.GET)
+	@ResponseBody
+	public String getCityStateByZip(
+			@PathVariable(value = "zip") String zip,
+			HttpServletRequest request) throws JsonGenerationException,
+			JsonMappingException, IOException {
+		
+		com.tea.landlordapp.dto.LookupZipcodeDto dto = lookupService.getCityStateByZip(zip);
+		
+		return convert2Json(dto);
+	}
+
 	
 }

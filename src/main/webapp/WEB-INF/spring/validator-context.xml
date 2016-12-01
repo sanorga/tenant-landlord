@@ -11,7 +11,7 @@
 <!-- 	<bean id="preferenceValidator" class="com.tea.validation.PreferenceValidator" /> -->
 <!-- 	<bean id="propertyValidator" class="com.tea.validation.PropertyValidator" /> -->
 <!-- 	<bean id="roleValidator" class="com.tea.validation.RoleValidator" /> -->
-<!-- 	<bean id="userValidator" class="com.tea.validation.UserValidator" /> -->
+	 	<bean id="userValidator" class="com.tea.landlordapp.validation.UserValidator" /> 
 <!-- 	<bean id="tenantVerificationValidator" class="com.tea.validation.TenantVerificationValidator" /> -->
 <!-- 	<bean id="employmentVerificationValidator" class="com.tea.validation.EmploymentVerificationValidator" /> -->
 <!-- 	<bean id="bankReferenceVerificationValidator" class="com.tea.validation.BankReferenceVerificationValidator" /> -->
@@ -27,7 +27,7 @@
 <!-- 	<bean id="StandardTaskValidator" class="com.tea.validation.StandardTaskValidator" /> -->
 <!-- 	<bean id="TaskListDtoValidator" class="com.tea.validation.TaskListDtoValidator" /> -->
 <!-- 	<bean id="ApplicationTaskValidator" class="com.tea.validation.ApplicationTaskValidator" />  -->
-<!-- 	<bean id="passwordChangeValidator" class="com.tea.validation.PasswordChangeValidator" />  -->
+	<bean id="passwordChangeValidator" class="com.tea.landlordapp.validation.PasswordChangeValidator" /> 
 <!-- 	<bean id="propertyCollectionItemValidator" class="com.tea.validation.PropertyCollectionItemValidator" />  -->
 <!-- 	<bean id="managementCompanyChangeValidator" class="com.tea.validation.ManagementCompanyChangeValidator" />  -->
 </beans>

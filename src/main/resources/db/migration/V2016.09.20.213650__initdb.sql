@@ -300,3 +300,31 @@ CREATE TABLE `application` (
   CONSTRAINT `applicant_ibfk_3` FOREIGN KEY (`created_by`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `applicant_ibfk_4` FOREIGN KEY (`modified_by`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1837 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `zipcode`;
+
+CREATE TABLE `zipcode` (
+
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+
+  `zipcode` varchar(20) NOT NULL,
+
+  `city` varchar(50) NOT NULL DEFAULT '',
+
+  `county` varchar(50) NOT NULL DEFAULT '',
+
+  `state` char(3) NOT NULL DEFAULT '',
+
+  `status` char(1) NOT NULL DEFAULT 'I',
+
+  `created_by` int(10) unsigned DEFAULT NULL,
+
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  `modified_by` varchar(50) DEFAULT NULL,
+
+  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB AUTO_INCREMENT=41856 DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 11264 kB';

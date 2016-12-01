@@ -438,6 +438,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		user.setState("FL");
 		user.setCountry("US");
 		user.setStatus(Globals.ACTIVE);
+		user.setOpenIdIdentifier("0");
 		Role initialRole = new Role();
 		initialRole = findRole(UserRole.CustomerServiceRep.getCode());
 //		if (parent.isPartner()){

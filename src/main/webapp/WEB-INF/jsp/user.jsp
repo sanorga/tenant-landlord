@@ -1,12 +1,13 @@
 <%@ include file="/WEB-INF/jsp/includenew.jsp" %>
-<c:set var="thePageTitle" value="User details" />
+<c:set var="thePageTitle" value="Create New User" />
 <c:set var="theBodyID" value="admin" />
 <c:set var="zipChecker" value="true" />
 <c:set var="numerFormat" value="true" />
 
 <%@ include file="/WEB-INF/jsp/headernew.jsp" %>
 
-<form:form method="post" modelAttribute="user">
+<form:form method="post" modelAttribute="user" onsubmit="alert('You will need to log in with your new password.');">
+
 <ol class="breadcrumb">
   	<li><a href="login.htm">Login</a></li>
 <%-- 	<c:choose> --%>
@@ -46,6 +47,10 @@
       </c:if>
     </spring:bind>  
   
+<form:hidden path="role.role"/>
+<form:hidden path="country"/>
+<form:hidden path="openIdIdentifier"/>
+<form:hidden path="status"/>
 
     <div id="main" class="container">
         <div class="control-box mailbox_area">
@@ -58,8 +63,9 @@
 
 				<div class="row">
 					<div class="col-xs-6">
-					
-					<h4>User Information</h4>
+					<br>
+					<h4>Settings</h4>
+					<br>
 
 										<fieldset class="form-group">
 											<label for="">*Username</label>
@@ -69,11 +75,7 @@
 											</c:if>				
 										</fieldset>
 
-										<fieldset class="form-group">
-											<label for="">*Contact Email</label>
-											<form:input path="contactEmail" size="40" maxlength="128" />
-										</fieldset>
-
+										
 										<fieldset class="form-group">
 											<label for="">*First Name</label>
 											<form:input path="firstName" size="40" maxlength="50" />
@@ -85,11 +87,6 @@
 										</fieldset>
 
 										<fieldset class="form-group">
-											<label for="">Job Title</label>
-											<form:input path="jobTitle" size="40" maxlength="50" />
-										</fieldset>
-
-										<fieldset class="form-group">
 											<label for="">Address</label>
 											<form:input path="address" size="40" maxlength="120" />
 										</fieldset>
@@ -98,9 +95,7 @@
 											<label for="">Additional Address</label>
 											<form:input path="address2" size="40" maxlength="50" />
 										</fieldset>
-						</div>
-						<div class="col-xs-6">
-
+										
 										<fieldset class="form-group">
 											<label for="">Zip Code</label>
 											<form:input path="zipcode" maxlength="10" onblur="getStateCityScript('zipcode','city','state')"/>
@@ -113,51 +108,64 @@
 
 										<fieldset class="form-group">
 											<label for="">State</label>
-											<form:select path="state" items="${globals.usStateListOptions}" />
+											<form:select path="state" items="${usStateOptions}" />
 										</fieldset>
+						</div>
+						<div class="col-xs-6">
+
+<br><br><br>
 
 										<fieldset class="form-group">
 											<label for="">Phone</label>
 											<form:input path="phone" maxlength="20" />
 										</fieldset>
 
-										<fieldset class="form-group">
-											<label for="">Fax</label>
-											<form:input path="fax" maxlength="20" />
-										</fieldset>
 										<%-- COMMENT BY FBOZO (this code broke the page) --%>
 										<c:if test="${userRoleOptions != null}">
 											<fieldset class="form-group">
-												<label for="">Role</label>
-												<form:select path="role.role" items="${userRoleOptions}" onchange="setPropertyBlockVisibility(this.selectedIndex, this.options[this.selectedIndex].text)"/>
+												<label for="">Role: ${user.getRole().getRole()}</label>
+													
+<%-- 												<form:select path="role.role" items="${userRoleOptions}" onchange="setPropertyBlockVisibility(this.selectedIndex, this.options[this.selectedIndex].text)"/> --%>
 											</fieldset>
 										</c:if>
 										
 										<fieldset class="form-group">
-											<label for="">Status</label>
-						               <div class="radio-inline-combo">
-												<form:radiobuttons path="status" items="${globals.userStatusOptions}" />
-											</div>
+											<label for="">Enter Password</label>
+											<form:password path="newPassword" size="30"/>
 										</fieldset>
+										
+										<fieldset class="form-group">
+											<label for="">Repeat Password</label>
+											<form:password path="rePassword" size="30"/>
+										</fieldset>
+										
+<!-- 										<fieldset class="form-group"> -->
+<!-- 											<label for="">Status</label> -->
+<!-- 						               <div class="radio-inline-combo"> -->
+<%-- 												<form:radiobuttons path="status" items="${userStatusOptions}" /> --%>
+<!-- 											</div> -->
+<!-- 										</fieldset> -->
 							
-<!-- 							<div id="propertyBlock" > -->
-<!-- 								<h4>Authorized Properties</h4> -->
-<!-- 									<fieldset class="form-group"> -->
-<!-- 										<label for="">Properties</label> -->
-<!-- 					               <div class="radio-inline-combo"> -->
-<%-- 											<form:checkboxes path="authorizedPropertyIds" items="${propertyList}" /> --%>
-<!-- 										</div> -->
-<!-- 									</fieldset>   					 -->
-<!-- 							</div> -->
+							    <br>
+							    <p><strong>We strongly recommend the use of complex passwords.</strong></p>
+							    <p>A good password should have the following minimum characteristics</p>
+							    <ul>
+							    	<li>At least 8 characters</li>
+							    	<li>Contain upper case letters</li>
+							    	<li>Contain lower case letters</li>
+							    	<li>Contain numeric characters</li>
+							    	<li>Contain special characters such as @ and $</li>
+							    	<li>Do not contain personal information such as names or birthdays</li>
+							    	
+							    	
+							    </ul>
+								<br>
 
-									<c:if test="${loginUser.hasRole('save.client.user') || loginUser.hasRole('save.system.user')}">
+
+<%-- 								<c:if test="${loginUser.hasRole('save.client.user') || loginUser.hasRole('save.system.user')}"> --%>
 						 				<input type="submit" value="Save User"  name="_btn" class="btn by_cr" onclick="return confirmPassword('password', 'rePassword')"/> 
-									</c:if>
-									<%-- 
-									<tea:ifAuthorized capability="save.user">
-										<input type="submit" value="Save User" name="_btn"  class="btn by_cr" onclick="return confirmPassword('password', 'rePassword')"/>
-									</tea:ifAuthorized> 
-									--%>
+<%-- 								</c:if> --%>
+
 									<input type="submit" value="Cancel" name="_cancel" class="btn by_cr"/>
 					</div>
 			</div>

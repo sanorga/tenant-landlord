@@ -683,7 +683,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public List<String> getUsernamesForEmail(String email) {
-		String q = "select u.username from User u where u.contactEmail = :email";
+		String q = "select u.username from User u where u.username = :email";
 		Query query = em.createQuery(q);
 		query.setParameter("email", email);
 		

@@ -3,21 +3,34 @@ package com.tea.landlordapp.web;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.util.WebUtils;
 
 import com.tea.landlordapp.constant.Globals;
+import com.tea.landlordapp.domain.Role;
 import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.repository.SimpleDao;
+import com.tea.landlordapp.service.SecurityService;
 import com.tea.landlordapp.service.UserService;
+import com.tea.landlordapp.validation.UserValidator;
+
+import com.tea.landlordapp.validation.PasswordChangeValidator;
 
 @Controller
 @RequestMapping("/newuser.htm")
@@ -27,7 +40,16 @@ public class NewUserForm {
 	   UserService userService;
 	   
 	   @Autowired
+	   UserValidator userValidator;
+	   
+	   @Autowired
 	   SimpleDao simpleDao;
+	   
+	   @Autowired
+	   PasswordChangeValidator passwordChangeValidator;
+	   
+	   @Autowired
+	   SecurityService securityService;
 	   
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -96,5 +118,97 @@ public class NewUserForm {
 		    	 
 		   
 		   return statusOptions;
+	   }
+	   
+	   @RequestMapping(method = RequestMethod.POST)
+	   public String processSubmit(@ModelAttribute User user, BindingResult result, HttpServletRequest request, SessionStatus status, ModelMap model) {
+	      logger.debug("in POST method of user.htm with userId as.." + user.getId());
+
+	      // onCancel
+	      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_CANCEL)) {
+//	         Integer sId = user.getSubscriber().getId();
+	    	  status.setComplete();
+	         return String.format("redirect:login.htm?");
+	      }
+
+	      // onResetPassword
+//	      if (WebUtils.hasSubmitParameter(request, "_resetPassword")) {
+//	    	  if (user.isNew()){
+//	    		  setActionMessage(request,"confirm.save_user_before_reset");
+//	    		  return "user";
+//	    	  }
+//	    	  try {
+//				if (messageService.sendPasswordResetEmail(user.getUsername())){
+//					  setActionMessage(request, "confirm.user_passw_reset_email_sent");
+//				  } else {
+//					  setActionMessage(request, "confirm.failed_email");
+//				  }
+//			} catch (Exception e) {
+//				  setActionMessage(request, "confirm.failed_email");
+//			}
+//	    	  setValuesInModel(model, user.getSubscriber());
+//	    	  model.addAttribute("user", user);
+//	         return "user";
+//	      }
+
+//	     final User loginUser = getAuthenticatedUser();
+	      final User loginUser = userService.findNullUser();
+//	      boolean sendReset = false;
+//	      if (user.isNew()){
+//	    	 final String newPassword = RandomStringUtils.randomAlphanumeric(8);
+//	    	 user.setPassword(newPassword);
+//	    	 sendReset = true;
+//	    	 
+//	      }
+	     
+	      if (StringUtils.isBlank(user.getNewPassword()) && StringUtils.isEmpty(user.getNewPassword())) result.rejectValue("newPassword", "error.invalid-newpassword-blank", "Value required.");
+
+	      passwordChangeValidator.validate(user, result);
+	      if (result.hasErrors()) {
+	    	  setValuesInModel(model); 
+//	         model.addAttribute("userRoleOptions", getRoleOptions(user.getSubscriber(), loginUser));
+	         model.addAttribute("user", user);
+	         return "newuser";
+	      }
+	      user.setPassword(user.getNewPassword());
+	      
+	      userValidator.validate(user, result);
+	      if (result.hasErrors()) {
+	    	  setValuesInModel(model); 
+//	         model.addAttribute("userRoleOptions", getRoleOptions(user.getSubscriber(), loginUser));
+	         model.addAttribute("user", user);
+	         return "newuser";
+	      }
+
+	      // persist user
+//	      user.setStatus(Globals.ACTIVE);
+//	      if (StringUtils.isNotBlank(user.getNewPassword())) {
+//	    	  securityService.updatePassword(user, user.getNewPassword());
+//	      }
+
+	       final Role role = userService.findRole(user.getRole().getRole());
+
+	      // save user
+	      user.setRole(role);
+	      String roleStr = user.getRole().getRole();
+	    	   
+	      userService.saveUser(user, loginUser);
+	      status.setComplete();
+//	      if (sendReset){
+//	    	  try {
+//				messageService.sendPasswordResetEmail(user.getUsername());
+//				WebUtils.setSessionAttribute(request, "message", "confirm.user_save_passw_reset_email_sent");
+//			} catch (Exception e) {
+//				// do nothing
+//			}
+//	      } else {
+//	    	  // set confirmation message
+//	    	  setActionMessage(request, "confirm.user_save_success");
+//	      }
+	      
+
+	      // force logout
+//	      return "redirect:/logout.htm?message=PC";
+	      return "redirect:login";
 	   }
 }

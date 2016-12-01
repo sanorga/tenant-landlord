@@ -6,7 +6,8 @@
 
 <%@ include file="/WEB-INF/jsp/headernew.jsp" %>
 
-<form:form method="post" modelAttribute="user">
+<form:form method="post" modelAttribute="user" onsubmit="alert('You will need to log in with your new password.');">
+
 <ol class="breadcrumb">
   	<li><a href="login.htm">Login</a></li>
 <%-- 	<c:choose> --%>
@@ -46,6 +47,10 @@
       </c:if>
     </spring:bind>  
   
+<form:hidden path="role.role"/>
+<form:hidden path="country"/>
+<form:hidden path="openIdIdentifier"/>
+<form:hidden path="status"/>
 
     <div id="main" class="container">
         <div class="control-box mailbox_area">
@@ -58,8 +63,9 @@
 
 				<div class="row">
 					<div class="col-xs-6">
-					
-					<h4>User Information</h4>
+					<br>
+					<h4>Registration</h4>
+					<br>
 
 										<fieldset class="form-group">
 											<label for="">*Username</label>
@@ -89,14 +95,17 @@
 											<label for="">Additional Address</label>
 											<form:input path="address2" size="40" maxlength="50" />
 										</fieldset>
-						</div>
-						<div class="col-xs-6">
-
+										
 										<fieldset class="form-group">
 											<label for="">Zip Code</label>
 											<form:input path="zipcode" maxlength="10" onblur="getStateCityScript('zipcode','city','state')"/>
 										</fieldset>
 
+
+						</div>
+						<div class="col-xs-6">
+
+<br><br><br>
 										<fieldset class="form-group">
 											<label for="">City</label>
 											<form:input path="city" maxlength="50" />
@@ -106,16 +115,12 @@
 											<label for="">State</label>
 											<form:select path="state" items="${usStateOptions}" />
 										</fieldset>
-
 										<fieldset class="form-group">
 											<label for="">Phone</label>
 											<form:input path="phone" maxlength="20" />
 										</fieldset>
 
-										<fieldset class="form-group">
-											<label for="">Fax</label>
-											<form:input path="fax" maxlength="20" />
-										</fieldset>
+
 										<%-- COMMENT BY FBOZO (this code broke the page) --%>
 										<c:if test="${userRoleOptions != null}">
 											<fieldset class="form-group">
@@ -125,6 +130,16 @@
 											</fieldset>
 										</c:if>
 										
+										<fieldset class="form-group">
+											<label for="">Enter Password</label>
+											<form:password path="newPassword" size="30"/>
+										</fieldset>
+										
+										<fieldset class="form-group">
+											<label for="">Repeat Password</label>
+											<form:password path="rePassword" size="30"/>
+										</fieldset>
+										
 <!-- 										<fieldset class="form-group"> -->
 <!-- 											<label for="">Status</label> -->
 <!-- 						               <div class="radio-inline-combo"> -->
@@ -132,10 +147,33 @@
 <!-- 											</div> -->
 <!-- 										</fieldset> -->
 							
+							    <br>
+							    <p><strong>We strongly recommend the use of <a href="javascript:alert('A good password should have the following minimum characteristics: At least 8 characters. Contain upper case letters, lower case letters, numeric characters, special characters such as @ and $. Do not contain personal information such as names or birthdays')" id="complexitymsg" title= "Characteristics for Complex Passwords">complex passwords</a></strong></p>
+							    
+								
+								</div>
+								</div>
+								
+<div class="row">
+<div class="col-xs-6">
 
+<div >
+<div style="height: 400px; overflow: scroll; padding-right:20px; border-style:ridge;">
+	<%@ include file="/WEB-INF/jsp/include/ServicesTermsForLandlord.jsp" %>
+</div>
+</div>
 
+<!-- <div class="bottom_blackbar"> -->
+<!-- <input type="submit" value="CANCEL" name="_cancel" class="buttonpart left m_right15" /> -->
+<!-- <input type="submit" value="I Agree" name="_next" class="buttonpart right" /> -->
+<!-- <input type="hidden" value="0" name="_page"> -->
+<!-- <div class="clear"></div> -->
+
+<!-- </div> -->
+
+<br>
 <%-- 								<c:if test="${loginUser.hasRole('save.client.user') || loginUser.hasRole('save.system.user')}"> --%>
-						 				<input type="submit" value="Save User"  name="_btn" class="btn by_cr" onclick="return confirmPassword('password', 'rePassword')"/> 
+						 				<input type="submit" value="I Agree"  name="_btn" class="btn by_cr" onclick="return confirmPassword('password', 'rePassword')"/> 
 <%-- 								</c:if> --%>
 
 									<input type="submit" value="Cancel" name="_cancel" class="btn by_cr"/>
@@ -178,4 +216,4 @@
 	     	}
 </script>
 
-<%@ include file="/WEB-INF/jsp/footernew.jsp"%>
+<%@ include file="/WEB-INF/jsp/footerregistration.jsp"%>

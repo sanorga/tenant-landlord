@@ -21,7 +21,7 @@ import com.tea.landlordapp.service.MessageService;
 import com.tea.landlordapp.service.UserService;
 
 @Controller
-@RequestMapping("/newuserx.htm")
+@RequestMapping("/user.htm")
 public class UserForm extends AbstractDataController{
 
 	   @Autowired
@@ -42,8 +42,7 @@ public class UserForm extends AbstractDataController{
 	            HttpServletRequest request) {
 	      logger.debug("in GET method of user.htm with userId as.." + userId + "... and subscriberID as..." );
 	      
-
-//	      final User loginUser = getAuthenticatedUser();
+	      final User loginUser = getAuthenticatedUser();
 
 	      // check authorization
 //	      if (!hasAnyAuthority(new String[]{"view.system.user","view.client.user"})) {

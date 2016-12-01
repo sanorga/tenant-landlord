@@ -25,7 +25,7 @@
 <!-- 				<a class="mn_bx_btn" href="applications.htm"><img src="img/applications.png" alt="Applications" width="120"></a> -->
 <%--          </tea:ifAuthorized> --%>
 <%--          <tea:ifAuthorized capability="show.mailbox"> --%>
-				<a class="mn_bx_btn" href="example.htm"><img src="img/icon_settings.png" alt="Settings" width="120"></a>
+				<a class="mn_bx_btn" href="user.htm?userId=${user.id}"><img src="img/icon_settings.png" alt="Settings" width="120"></a>
 <!-- 				<a class="mn_bx_btn" href="settings.htm"><img src="img/settings.png" alt="Settings" width="120"></a> -->
 <%--           </tea:ifAuthorized> --%>
         
