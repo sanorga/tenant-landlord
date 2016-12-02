@@ -31,13 +31,15 @@ public class UserValidator implements Validator {
 
       final User user = (User) obj;
 
-      TeaValidationUtils.rejectIfBlank(errors, "username", "required.user.name");
+//      TeaValidationUtils.rejectIfBlank(errors, "username", "required.user.name");
+      TeaValidationUtils.rejectIfNotValidEmail(errors, "username", "invalid.emailId", new Object[]{"User"}, false);      
 //      TeaValidationUtils.rejectIfNotValidEmail(errors, "contactEmail", "invalid.emailId", new Object[]{"User"}, false);
       TeaValidationUtils.rejectIfBlank(errors, "firstName", "required.firstName");
       TeaValidationUtils.rejectIfBlank(errors, "lastName", "required.lastName");
       TeaValidationUtils.rejectIfBlank(errors, "address", "required.address", true);
       TeaValidationUtils.rejectIfBlank(errors, "zipcode", "required.zipcode", new Object[]{"User"}, true);
       TeaValidationUtils.rejectIfBlank(errors, "city", "required.city", true);
+      TeaValidationUtils.rejectIfBlank(errors, "phone", "required.phone", true);
       TeaValidationUtils.rejectIfNotValidPhone(errors, "phone", "invalid.phone", new Object[]{"user"}, true);
       TeaValidationUtils.rejectIfNotValidPhone(errors, "fax", "invalid.fax", new Object[]{"User"}, true);
 

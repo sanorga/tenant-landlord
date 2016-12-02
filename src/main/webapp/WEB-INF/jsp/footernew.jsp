@@ -3,7 +3,7 @@
         <div class="container">
             <a href="home.htm" class="colophon_link back_home pull-left">Go back to home</a>
             <c:choose>
-              	<c:when test="${ !(myPrimaryRole == 'CS')}">
+              	<c:when test="${ !(myPrimaryRole == 'EC')}">
                 	<a href="logout.htm" class="pull-right colophon_link">Log out</a>
          		</c:when>
          		<c:otherwise>

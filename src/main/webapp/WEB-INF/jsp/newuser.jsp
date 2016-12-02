@@ -6,7 +6,7 @@
 
 <%@ include file="/WEB-INF/jsp/headernew.jsp" %>
 
-<form:form method="post" modelAttribute="user" onsubmit="alert('You will need to log in with your new password.');">
+<form:form method="post" modelAttribute="user" >
 
 <ol class="breadcrumb">
   	<li><a href="login.htm">Login</a></li>
@@ -66,9 +66,13 @@
 					<br>
 					<h4>Registration</h4>
 					<br>
-
+					
 										<fieldset class="form-group">
-											<label for="">*Username</label>
+											<label for="">* required field</label>
+										</fieldset>
+										
+										<fieldset class="form-group">
+											<label for="">*Email(UserName)</label>
 											<form:input path="username" size="40" maxlength="50" />
 											<c:if test="${!user.isNew() and (fn:startsWith(user.status,'A') or fn:startsWith(user.status,'X')) }">
 											<br><br><input type="submit" value="Reset Password" name="_resetPassword" class="btn btn-sm by_cr"/>
@@ -87,7 +91,7 @@
 										</fieldset>
 
 										<fieldset class="form-group">
-											<label for="">Address</label>
+											<label for="">*Address</label>
 											<form:input path="address" size="40" maxlength="120" />
 										</fieldset>
 
@@ -97,7 +101,7 @@
 										</fieldset>
 										
 										<fieldset class="form-group">
-											<label for="">Zip Code</label>
+											<label for="">*Zip Code</label>
 											<form:input path="zipcode" maxlength="10" onblur="getStateCityScript('zipcode','city','state')"/>
 										</fieldset>
 
@@ -107,29 +111,28 @@
 
 <br><br><br>
 										<fieldset class="form-group">
-											<label for="">City</label>
+											<label for="">*City</label>
 											<form:input path="city" maxlength="50" />
 										</fieldset>
 
 										<fieldset class="form-group">
-											<label for="">State</label>
+											<label for="">*State</label>
 											<form:select path="state" items="${usStateOptions}" />
 										</fieldset>
 										<fieldset class="form-group">
-											<label for="">Phone</label>
+											<label for="">*Phone</label>
 											<form:input path="phone" maxlength="20" />
 										</fieldset>
 
-
-										<%-- COMMENT BY FBOZO (this code broke the page) --%>
-										<c:if test="${userRoleOptions != null}">
-											<fieldset class="form-group">
-												<label for="">Role: ${user.getRole().getRole()}</label>
+<%-- 										<c:if test="${userRoleOptions != null}"> --%>
+<!-- 											<fieldset class="form-group"> -->
+<%-- 												<label for="">Role: ${user.getRole().getRole()}</label> --%>
 													
-<%-- 												<form:select path="role.role" items="${userRoleOptions}" onchange="setPropertyBlockVisibility(this.selectedIndex, this.options[this.selectedIndex].text)"/> --%>
-											</fieldset>
-										</c:if>
-										
+<%-- <%-- 												<form:select path="role.role" items="${userRoleOptions}" onchange="setPropertyBlockVisibility(this.selectedIndex, this.options[this.selectedIndex].text)"/> --%> 
+<!-- 											</fieldset> -->
+<%-- 										</c:if> --%>
+										<fieldset class="form-group">
+		
 										<fieldset class="form-group">
 											<label for="">Enter Password</label>
 											<form:password path="newPassword" size="30"/>
@@ -155,28 +158,32 @@
 								</div>
 								
 <div class="row">
-<div class="col-xs-6">
+<div class="col-xs-12">
+	
 
-<div >
-<div style="height: 400px; overflow: scroll; padding-right:20px; border-style:ridge;">
-	<%@ include file="/WEB-INF/jsp/include/ServicesTermsForLandlord.jsp" %>
-</div>
-</div>
+<fieldset class="form-group">
+	<label for="">Service Agreement and Terms and Conditions</label>
+	<div style="height: 300px; overflow: scroll; padding-right:20px; border-style:ridge;">
+		<%@ include file="/WEB-INF/jsp/include/ServicesTermsForLandlord.jsp" %>
+	</div>
+</fieldset>
 
-<!-- <div class="bottom_blackbar"> -->
-<!-- <input type="submit" value="CANCEL" name="_cancel" class="buttonpart left m_right15" /> -->
-<!-- <input type="submit" value="I Agree" name="_next" class="buttonpart right" /> -->
-<!-- <input type="hidden" value="0" name="_page"> -->
-<!-- <div class="clear"></div> -->
+		<fieldset class="form-group">
+		<div class="checkboxer">
+			<span>
+ 			<form:checkbox path="acceptSATC" id="Accept" label="*I accept the Service Agreement and Terms and Conditions" onclick="EnableSubmit(this)" /> 
 
-<!-- </div> -->
-
+			</span>
+		</div>
+		</fieldset>
+	
 <br>
+									<input type="submit" value="Cancel" name="_cancel" class="btn by_cr"/>
 <%-- 								<c:if test="${loginUser.hasRole('save.client.user') || loginUser.hasRole('save.system.user')}"> --%>
-						 				<input type="submit" value="I Agree"  name="_btn" class="btn by_cr" onclick="return confirmPassword('password', 'rePassword')"/> 
+						 				<input type="submit" value="Submit"  id="createaccount" name="_btn" class="btn by_cr" disabled="disabled" onclick="alert('Thanks for Registering! You will need to log in with your new password.');return confirmPassword('password', 'rePassword')"/> 
 <%-- 								</c:if> --%>
 
-									<input type="submit" value="Cancel" name="_cancel" class="btn by_cr"/>
+									
 					</div>
 			</div>
 	</div>
@@ -195,13 +202,45 @@
 				 $('#phone').mask("(999) 999-9999");
 				 $('#fax').mask("(999) 999-9999");});
 			 
-		
-			window.onload = function() {            
-			    var y = "${user.role.role}";
-			    if(y != "BD" &&  y !="PM"){
-			      document.getElementById('propertyBlock').style.display = 'none';
-			    }
-		  	}
+// 			$(document).ready(function(){	
+
+				
+// 				jQuery.validator.addMethod("zipcode", function(value, element) {
+// 					  return this.optional(element) || /^\d{5}(?:-\d{4})?$/.test(value);
+// 					}, "Please Enter a valid zipcode.");
+				
+				
+// 				$('form').validate({
+// 					errorPlacement: function(error, element) {  
+// 				         error.insertAfter("#"+element.attr("name")+"_error"); 
+// 				    },
+// 					rules: {
+						
+// 						address: "required",
+// 						zipCode: {
+// 							required:true,
+// 							zipcode:true
+// 						},
+// 						city: "required",
+// 						state: "required",
+						
+// 					},
+// 					messages:{
+						
+// 						address: "Street Address is required",
+// 						zipCode: {
+// 							required:"zipcode is required",
+// 							zipcode:"zipcode not valid"
+// 						},
+// 						city: "City is required",
+// 						state: "State is Required",
+						
+// 					}
+// 				});
+				
+				
+// 			});
+//	  	}
 	
 	     	function setPropertyBlockVisibility(selected_index, selected_option_text) {
 					if(selected_index > -1)	{
@@ -214,6 +253,24 @@
 					}
   		
 	     	}
+	     	
+	     	function EnableSubmit(val)
+	     	{
+	     	    var sbmt = document.getElementById("createaccount");
+
+	     	    if (val.checked == true)
+	     	    {
+	     	        sbmt.disabled = false;
+	     	    }
+	     	    else
+	     	    {
+	     	        sbmt.disabled = true;
+	     	    }
+	     	}
+	     	
+	     	
+	     	
+	     	
 </script>
 
 <%@ include file="/WEB-INF/jsp/footerregistration.jsp"%>

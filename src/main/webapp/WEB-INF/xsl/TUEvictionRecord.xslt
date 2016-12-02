@@ -96,7 +96,9 @@ xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
 				<xsl:value-of select="Subject/Age"/> 
 				</td>
 				</tr>
+			
 				</table>
+				<br></br>
 				<table border="1">
 				<tr>
 					<th>Street Address</th>
@@ -113,9 +115,6 @@ xmlns="http://schemas.turss.com/SmartMove/1.0.0/">
 				</td>
 				<td>
 				<xsl:value-of select="Subject/State"/> 
-				</td>
-				<td>
-				<xsl:value-of select="Subject/Age"/> 
 				</td>
 				<td>
 				<xsl:value-of select="Subject/ZipCode"/> 

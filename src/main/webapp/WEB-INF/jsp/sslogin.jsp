@@ -156,7 +156,7 @@ document.googleForm.submit();
 			<tbody>
 				<tr>
 					<td><h2 class="rtecenter">Landlord and Renter Website</h2>
-					<br>
+									
 					<div id="loginquestion">
 							<table border="0" cellpadding="0" cellspacing="0" style="width:260px">
 								<tbody>

@@ -16,15 +16,14 @@
    <p><strong>Criminal Record </strong></p>
      <fieldset class="form-group">
   <label for="">  </label>
-    <table border="1">
-	<tr>
-		<th>Category</th>
-		<th>State</th>			
-	</tr>
+    <table border="0">
+	
  	<tr>
-	<td> <xsl:value-of select="Category"/> 
+	<td> Category:</td><td>  </td><td><xsl:value-of select="Category"/> 
 	</td>
-	<td> <xsl:value-of select="State"/> 
+	</tr>
+	<tr>
+	<td> State:</td><td>  </td><td><xsl:value-of select="State"/> 
 	</td>
 	</tr>
 	</table>
@@ -68,7 +67,7 @@
 		 			
 	
 	   <xsl:for-each select="crim:Cycle">
-	   <h4> Cycle </h4>
+	   <p><strong> Cycle </strong></p>
 	       <table border="1">
 		   
 	    <xsl:for-each select="crim:CourtAction">

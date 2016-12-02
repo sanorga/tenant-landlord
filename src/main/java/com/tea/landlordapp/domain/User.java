@@ -82,6 +82,9 @@ import com.tea.landlordapp.utility.EncryptionService;
 		// Support for MFA
 		private boolean enableMFA = false;
 
+		// Accepts Service Agreement and Terms and Conditions.
+		private boolean acceptSATC = false;
+				
 		@Column(name = "openid_identifier")
 		public String getOpenIdIdentifier() {
 			return openIdIdentifier;
@@ -536,6 +539,14 @@ import com.tea.landlordapp.utility.EncryptionService;
 			this.enableMFA = enableMFA;
 		}
 
+		@Column(name = "accept_satc")
+		public boolean isAcceptSATC() {
+			return acceptSATC;
+		}
+
+		public void setAcceptSATC(boolean acceptSATC) {
+			this.acceptSATC = acceptSATC;
+		}
 
 		@Column(name = "login_fail_count")
 		public Integer getLoginFailCount() {

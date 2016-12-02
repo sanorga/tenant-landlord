@@ -22,6 +22,7 @@ CREATE TABLE `user` (
   `has_hashed_password` enum('Y','N','I') DEFAULT 'N',
   `require_mfa` bit(1) NOT NULL DEFAULT b'0',
   `enable_mfa` bit(1) NOT NULL DEFAULT b'0',
+  `accepts_satc` bit(1) NOT NULL DEFAULT b'0',
   `password_policy_id` int(10) unsigned DEFAULT NULL,
   `login_fail_count` int(11) NOT NULL DEFAULT '0',
   `lockout_until` datetime DEFAULT NULL,
