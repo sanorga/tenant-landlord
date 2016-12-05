@@ -77,7 +77,7 @@ public class CustomLoginController {
 		
 	      User user;
 	      Map<String,String> roleOptions;
-	      user = userService.setupNewUser();
+	      user = userService.setupUser();
 	      model.addAttribute("user", user);   
 		return "sslogin";
 	}

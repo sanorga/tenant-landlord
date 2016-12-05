@@ -177,7 +177,7 @@ public interface UserService extends Serializable {
 	
 	public Property saveNewProperty(Property property, User loginUser);
 
-	public User setupNewUser();
+	public User setupUser();
 
 	public Property findPropertyByName(String name);
 

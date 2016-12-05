@@ -140,18 +140,6 @@ document.googleForm.submit();
 			    						<div class="field-item even">
 				 
 				 
-	<%-- 	<form:form onsubmit="alert('You will need to log in again with your new password.');"> --%>
-<%-- 	<form:form method="post" modelAttribute="user"> --%>
-<!-- 		 <table align="right" cellpadding="0" cellspacing="0" border="0" style="width:421px"> -->
-<!-- 			    <tbody> -->
-<!-- 					    <tr> -->
-<!-- 							<td><h3>Already have an account?</h3></td> -->
-<!-- 							<td> <input type="button" value="Login"  id ="Login" name="Login" class="button" onClick="this.checked=true; hideAndShow()"/></td> -->
-<!-- 						</tr> -->
-<!-- 				</tbody> -->
-<!-- 		</table> -->
-<%-- 	</form:form>   --%>
-	
 	<table id="primaryLogin" border="0" cellpadding="0" cellspacing="0" style="height:256px; width:520px">
 			<tbody>
 				<tr>

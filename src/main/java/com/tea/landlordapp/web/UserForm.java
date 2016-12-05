@@ -6,19 +6,28 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.util.WebUtils;
 
 import com.tea.landlordapp.constant.Globals;
 import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.repository.SimpleDao;
 import com.tea.landlordapp.service.MessageService;
 import com.tea.landlordapp.service.UserService;
+import com.tea.landlordapp.service.SecurityService;
+import com.tea.landlordapp.validation.PasswordChangeValidator;
+import com.tea.landlordapp.validation.UserValidator;
 
 @Controller
 @RequestMapping("/user.htm")
@@ -27,16 +36,24 @@ public class UserForm extends AbstractDataController{
 	   @Autowired
 	   UserService userService;
 
-//	   @Autowired
-//	   UserValidator userValidator;
-//	   
+	   @Autowired
+	   UserValidator userValidator;
+	   
 	   @Autowired
 	   SimpleDao simpleDao;
 	   
 	   @Autowired
 	   MessageService messageService;
 
+	   @Autowired
+	   SecurityService securityService;
 
+	   @Autowired
+	   com.tea.landlordapp.validation.PasswordChangeValidator passwordChangeValidator;
+	   
+	  @Autowired
+	   StandardPasswordEncoder standardPasswordEncoder;
+	  
 	 @RequestMapping(method = RequestMethod.GET)
 	   public String setupForm(@RequestParam(value = "userId", required = false) Integer userId, Model model,
 	            HttpServletRequest request) {
@@ -80,9 +97,6 @@ public class UserForm extends AbstractDataController{
 //	      user.setAuthorizedProperties(authProperties);
 	      
 	      setValuesInModel(model);
-//	      roleOptions = getRoleOptions(subscriber, loginUser);
-//	      model.addAttribute("userRoleOptions", roleOptions);
-//	      model.addAttribute("propertyList", userService.getPropertyList(subscriber.getId())); 
 	      
 	      // set data in the model
 	      setPreviousActionMessage(request, model);
@@ -92,51 +106,117 @@ public class UserForm extends AbstractDataController{
 	      return "user";
 	   }
 	   
-//	   private Map<String,String> getRoleOptions(Subscriber subscriber, User loginUser){
-//		   Map<String,String> roleOptions = new TreeMap<String,String>();
-//		   final Globals globals = Globals.getInstance();
-//
-//		   char subType = subscriber.getSubscriberType();
-//		      switch (subType){
-//		      case 'C':
-//		    	  roleOptions = globals.getClientUserRoleOptions();
-//		    	  break;
-//		      case 'P':
-//		    	  roleOptions = globals.getSystemUserRoleOptions(UserRole.getEnum(loginUser.getPrimaryRoleCode()));
-//		    	  break;
-//		      }
-//		   
-//		   return roleOptions;
-//	   }
-
-	   private Map<String,String> getRoleOptions(Character type){
-		   Map<String,String> roleOptions = new TreeMap<String,String>();
-		   final Globals globals = Globals.getInstance();
-
-		   
-		      switch (type){
-		      case 'C':
-		    	  roleOptions = globals.getClientUserRoleOptions();
-		    	  break;
-		      case 'P':
-//		    	  roleOptions = globals.getSystemUserRoleOptions(UserRole.getEnum(loginUser.getPrimaryRoleCode()));
-		    	  break;
-		      }
-		   
-		   return roleOptions;
-	   }
 	   
 	   private void setValuesInModel(Model model) {
 		    
 		   Map<String,String> roleOptions;
+		   Map<String,String> statusOptions;
+		   Map<String,String> usStateListOptions;
 //		   final User loginUser = getAuthenticatedUser();
 		   
-		   roleOptions = getRoleOptions('C');
+		   roleOptions = getRoleOptions();
+		   statusOptions = getStatusOptions();
+		   usStateListOptions = getUsStateListOptions();
 		   model.addAttribute("userRoleOptions", roleOptions);
-//		   model.addAttribute("propertyList", userService.getPropertyList(subscriber.getId())); 
-		      
+		   model.addAttribute("userStatusOptions", statusOptions);
+		   model.addAttribute("usStateOptions", usStateListOptions);
+      
 	   }
-	
-	
+	   
+	   private Map<String,String> getStatusOptions(){
+		   Map<String,String> statusOptions = new TreeMap<String,String>();
+		   final Globals globals = Globals.getInstance();
+
+		  
+		    	  statusOptions = globals.getUserStatusOptions();
+		    	 
+		   
+		   return statusOptions;
+	   }	
+	   
+	   private Map<String,String> getUsStateListOptions(){
+			   
+
+			   Map<String,String> usStateListOptions = new TreeMap<String,String>();
+			   final Globals globals = Globals.getInstance();
+
+			   	 
+			   usStateListOptions = globals.getUsStateListOptions();
+		 
+			   return usStateListOptions;
+		}
+		 
+		private Map<String,String> getRoleOptions(){
+			   Map<String,String> roleOptions = new TreeMap<String,String>();
+			   final Globals globals = Globals.getInstance();
+
+			   
+			    	  roleOptions = globals.getClientRoleOptions();
+			    	  
+			   
+			   return roleOptions;
+		}		 
+		 
+	   @RequestMapping(method = RequestMethod.POST)
+	   protected String processSubmit(@ModelAttribute("user") User user, 
+			   BindingResult result, HttpServletRequest request, Model model) {
+	      logger.debug("inside POST method of changepwd.htm...");
+
+	      User usr = getAuthenticatedUser();
+
+	      // onCancel
+	      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_CANCEL)) {
+	         return "redirect:/home.htm";
+ 	      }
+	      
+	      
+	      userValidator.validate(user, result);
+	      if (result.hasErrors()) {
+
+	    	  setValuesInModel(model);
+		      
+		      // set data in the model
+		      setPreviousActionMessage(request, model);
+		      model.addAttribute("user", user);
+	         return "user";
+	      }
+	      
+	      if (!StringUtils.isBlank(user.getNewPassword()) )
+		      if (StringUtils.isBlank(user.getOldPassword()))
+		         result.rejectValue("oldPassword", "error.invalid-oldpassword-blank", "Value required.");
+		      else {
+		         if (!securityService.checkPassword(user, user.getOldPassword())) {
+		            result.rejectValue("password", "error.invalid-old-password", "Value required.");
+		         }
+		         passwordChangeValidator.validate(user, result);
+			      if (result.hasErrors()) {
+			    	  setValuesInModel(model);
+				      
+				      // set data in the model
+				      setPreviousActionMessage(request, model);
+				      model.addAttribute("user", user);
+				      return "user";
+
+				  }
+			      usr.setStatus(Globals.ACTIVE);
+			      if (StringUtils.isNotBlank(user.getNewPassword())) {
+			    	  // persist user
+				      usr.setStatus(Globals.ACTIVE);
+			    	  securityService.updatePassword(user, user.getNewPassword());
+			    	  setActionMessage(request, "confirm.user_save_success");
+			    	  return "redirect:/home.htm";
+			      }
+		      }
+
+//	      if (StringUtils.isBlank(user.getNewPassword()) && StringUtils.isEmpty(user.getNewPassword())) result.rejectValue("newPassword", "error.invalid-newpassword-blank", "Value required.");
+	      // persist user
+
+	      userService.saveUser(user, usr);
+//	      status.setComplete();
+	      setActionMessage(request, "confirm.user_save_success");
+	      // force logout
+	      return "redirect:/home.htm";
+	   }
+	   	
 	
 }

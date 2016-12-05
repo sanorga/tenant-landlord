@@ -9,19 +9,8 @@
 <form:form method="post" modelAttribute="user" onsubmit="alert('You will need to log in with your new password.');">
 
 <ol class="breadcrumb">
-  	<li><a href="login.htm">Login</a></li>
-<%-- 	<c:choose> --%>
-<%-- 			<c:when test="${loginUser.subscriber.id eq user.subscriber.id}"> --%>
-<!-- 				<li><a href="viewusers.htm">Users</a></li> -->
-<%-- 					<li>Add/Edit User Details for ${user.subscriber.name}</li> --%>
-<%-- 			</c:when> --%>
-<%-- 			<c:otherwise> --%>
-<!-- 				<li><a href="viewclients.htm">Clients</a></li> -->
-<%-- 				<li><a href="viewusers.htm?subscriberId=${user.subscriber.id}">Users</a></li> --%>
-<%-- 					<li>Add/Edit User Details for ${user.subscriber.name}</li> --%>
-				
-<%-- 			</c:otherwise> --%>
-<%-- 	</c:choose> --%>
+  	<li><a href="home.htm">Home</a></li>
+
 </ol>
 
 <%-- <div id="subheader"><p>Add/Edit User Details for ${user.subscriber.name}</p></div> --%>
@@ -46,7 +35,7 @@
         </div>
       </c:if>
     </spring:bind>  
-  
+<form:hidden path="id"/>  
 <form:hidden path="role.role"/>
 <form:hidden path="country"/>
 <form:hidden path="openIdIdentifier"/>
@@ -68,10 +57,10 @@
 					<br>
 
 										<fieldset class="form-group">
-											<label for="">*Username</label>
+											<label for="">*Email (Username)</label>
 											<form:input path="username" size="40" maxlength="50" />
 											<c:if test="${!user.isNew() and (fn:startsWith(user.status,'A') or fn:startsWith(user.status,'X')) }">
-											<br><br><input type="submit" value="Reset Password" name="_resetPassword" class="btn btn-sm by_cr"/>
+<!-- 											<br><br><input type="submit" value="Reset Password" name="_resetPassword" class="btn btn-sm by_cr"/> -->
 											</c:if>				
 										</fieldset>
 
@@ -119,15 +108,26 @@
 											<label for="">Phone</label>
 											<form:input path="phone" maxlength="20" />
 										</fieldset>
-
-										<%-- COMMENT BY FBOZO (this code broke the page) --%>
-										<c:if test="${userRoleOptions != null}">
-											<fieldset class="form-group">
-												<label for="">Role: ${user.getRole().getRole()}</label>
+							
+<%-- 										<c:if test="${userRoleOptions != null}"> --%>
+<!-- 											<fieldset class="form-group"> -->
+<%-- 												<label for="">Role: ${user.getRole().getRole()}</label> --%>
 													
-<%-- 												<form:select path="role.role" items="${userRoleOptions}" onchange="setPropertyBlockVisibility(this.selectedIndex, this.options[this.selectedIndex].text)"/> --%>
-											</fieldset>
-										</c:if>
+<%-- <%-- 												<form:select path="role.role" items="${userRoleOptions}" onchange="setPropertyBlockVisibility(this.selectedIndex, this.options[this.selectedIndex].text)"/> --%> 
+<!-- 											</fieldset> -->
+<%-- 										</c:if> --%>
+									
+									<div id="changepasswdiv"  >		
+									<br>
+									    <p><strong> <a class="a" href="javascript:hideAndShow();" id="testdiv" >Change password</a></strong></p>
+<!-- 										<input type="button" value="Change Password"  id ="changepassw" name="changepassw" class="button" onClick="this.checked=true; hideAndShow()"/> -->
+									</div>
+									<br>	
+									<div id="hideandshowdiv" class="hidden" >			
+										<fieldset class="form-group">
+											<label for="">*Current Password</label>
+											<form:password path="oldPassword" size="30"/>
+										</fieldset>
 										
 										<fieldset class="form-group">
 											<label for="">Enter Password</label>
@@ -139,26 +139,10 @@
 											<form:password path="rePassword" size="30"/>
 										</fieldset>
 										
-<!-- 										<fieldset class="form-group"> -->
-<!-- 											<label for="">Status</label> -->
-<!-- 						               <div class="radio-inline-combo"> -->
-<%-- 												<form:radiobuttons path="status" items="${userStatusOptions}" /> --%>
-<!-- 											</div> -->
-<!-- 										</fieldset> -->
-							
-							    <br>
-							    <p><strong>We strongly recommend the use of complex passwords.</strong></p>
-							    <p>A good password should have the following minimum characteristics</p>
-							    <ul>
-							    	<li>At least 8 characters</li>
-							    	<li>Contain upper case letters</li>
-							    	<li>Contain lower case letters</li>
-							    	<li>Contain numeric characters</li>
-							    	<li>Contain special characters such as @ and $</li>
-							    	<li>Do not contain personal information such as names or birthdays</li>
-							    	
-							    	
-							    </ul>
+									    <br>
+									    <p><strong>We strongly recommend the use of <a href="javascript:alert('A good password should have the following minimum characteristics: At least 8 characters. Contain upper case letters, lower case letters, numeric characters, special characters such as @ and $. Do not contain personal information such as names or birthdays')" id="complexitymsg" title= "Characteristics for Complex Passwords">complex passwords</a></strong></p>
+		   
+									</div>
 								<br>
 
 
@@ -181,18 +165,41 @@
 <script src="js/passwordconfirmation.js" type="text/javascript"></script>
 
 <script type="text/javascript">
+
+window.onload=function(){
+ 	 
+//	  $("#hideandshowdiv").hide();
+	 hideAndShow();
+}
+
+function hideAndShow() {		
+
+				if (document.getElementById("testdiv").clicked ) {
+					$("#changepasswdiv").hide()
+					$("#hideandshowdiv").removeClass('hidden');	
+					$("#hideandshowdiv").show();	
+				}
+				 else {
+					 $("#hideandshowdiv").addClass('hidden');	
+					 $("#hideandshowdiv").hide();	
+				 }
+			
+	}
+	
+function hideAndShowTestDiv() {		
+
+		$("#changepasswdiv").hide()
+		$("#hideandshowdiv").removeClass('hidden');	
+		$("#hideandshowdiv").show();	
+	
+
+}
 			jQuery(function($){
 				 $('#phone').mask("(999) 999-9999");
 				 $('#fax').mask("(999) 999-9999");});
 			 
 		
-			window.onload = function() {            
-			    var y = "${user.role.role}";
-			    if(y != "BD" &&  y !="PM"){
-			      document.getElementById('propertyBlock').style.display = 'none';
-			    }
-		  	}
-	
+
 	     	function setPropertyBlockVisibility(selected_index, selected_option_text) {
 					if(selected_index > -1)	{
 						if (selected_option_text == "Board Director" || selected_option_text == "Property Manager"){

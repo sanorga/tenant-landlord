@@ -424,13 +424,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 //	}
 	
 	@Override
-	public User setupNewUser() {
+	public User setupUser() {
 		User user = new User();
 		user.setStatus(Globals.CHANGEPWD);
 
 
 		return user;
 	}
+	
 	@Override
 	public User setupNewUser(String type) {
 		User user = new User();

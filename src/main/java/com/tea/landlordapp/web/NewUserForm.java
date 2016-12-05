@@ -124,6 +124,7 @@ public class NewUserForm {
 	   public String processSubmit(@ModelAttribute User user, BindingResult result, HttpServletRequest request, SessionStatus status, ModelMap model) {
 	      logger.debug("in POST method of user.htm with userId as.." + user.getId());
 
+	      
 	      // onCancel
 	      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_CANCEL)) {
 //	         Integer sId = user.getSubscriber().getId();
