@@ -40,7 +40,5 @@ public class SelectionListItem implements Comparable<SelectionListItem> {
 		return this.label.compareToIgnoreCase(testVal.label);
 	}
 	
-//	public static java.util.List<SelectionListItem> buildSelectionList(java.util.List.Iterator queryResults) {
-//		
-//	}
+
 }

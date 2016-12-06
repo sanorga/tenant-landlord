@@ -57,6 +57,23 @@ public class SecurityServiceImpl implements SecurityService {
 	}
 	
 	@Override
+	public void updateYourPassword(User user, String newPassword, String passwordHash) {
+		String oldHash = passwordHash;
+		PasswordHistory pwh = new PasswordHistory();
+
+		pwh.setUser(user);
+		pwh.setDateChanged(new Date());
+		pwh.setPassword(oldHash);
+
+		simpleDao.persist(pwh);
+
+		user.setPassword(newPassword);
+		user.setStatus('A');
+		user = simpleDao.merge(user);
+
+	}
+	
+	@Override
 	public boolean passwordIsPolicyCompliant(String password, PasswordPolicy policy){
 	       int len = password.length();
 	       int digit = 0;

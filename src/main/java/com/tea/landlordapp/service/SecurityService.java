@@ -27,4 +27,6 @@ public interface SecurityService extends Serializable {
 
 	public void updateCurrentAuthorities(Boolean mfaValid);
 
+	public void updateYourPassword(User user, String newPassword, String passwordHash);
+
 }

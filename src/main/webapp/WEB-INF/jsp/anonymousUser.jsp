@@ -18,7 +18,7 @@
 <script type="text/javascript">
 	window.onload = function() {
 
-		<c:if test = "${empty clients}">document.getElementById("SendEMailBtn").disabled=true;</c:if>
+// 		<c:if test = "${empty clients}">document.getElementById("SendEMailBtn").disabled=true;</c:if>
 		if(document.getElementById("propertyid").value == -1){
 			
 			$("#hideandshowpropertyinfo").hide();
@@ -30,22 +30,7 @@
 			
 				$("#hideandshowpropertyinfo").hide();
 			}
-// 		// auto complete
-// 		    var data = [<c:forEach var="c" items="${clients}">'${c.value}',</c:forEach>''];
-// 		    $("#clientIDS").autocomplete(data).result(function(event, item) {
-// 				item = item +"";
-// 				item = item.replace(/&amp;/g, "&");
 
-// 			});
-			
-// 			$("#clientIDS").unbind("keypress");
-// 			$("#clientIDS").keypress(function(e) {
-// 				if (e.which==13) {
-
-// 					return false;
-// 				}
-// 				return true;
-// 			}); 
 		   
  	 });
 	
@@ -331,16 +316,28 @@
 								</tr>
 								
 								</table>
+								
+								
+								
+									<fieldset class="form-group">
+											<label for="">*Zipcode:</label>
+									
+											<form:input path="property.zipcode" id="propzipcode" size="5" maxlength="5"  onblur="getStateCityScript('propzipcode','propcity','propstate')"/>
+										
+									</fieldset>
+								
+								
+								<table>
+								<tr>
+								<td>&nbsp;</td>
+								<td>
 								<fieldset class="form-group">
 											<label for="">*City:</label>
 									
 											<form:input path="property.city" id="propcity" size="30" maxlength="30"  />
 									
 									</fieldset>
-								
-								<table>
-								<tr>
-								<td>&nbsp;</td>
+								</td>
 								<td>	
 									
 									<fieldset class="form-group">
@@ -350,15 +347,7 @@
 										
 									</fieldset>
 								</td>
-								<td>
 								
-									<fieldset class="form-group">
-											<label for="">*Zipcode:</label>
-									
-											<form:input path="property.zipcode" id="propzipcode" size="5" maxlength="5"  />
-										
-									</fieldset>
-								</td>
 								</tr>
 								</table>
 								</div>
@@ -402,60 +391,7 @@
 		</fieldset>							
 					</div>
             </div>
-<!--              <div class="row"> -->
-<!-- 					<div class="col-xs-12"> -->
-<!-- 									<fieldset class="form-group"> -->
-<!-- 											<label for="">*Enter Application Type:</label> -->
-<!-- 											<div class="radio-inline-combo"> -->
-<%-- 											<form:radiobuttons path="applicationType" items="${globals.applicationTypeOptions}" onclick="showAndHideQuestions()"/> --%>
-<!-- 											</div> -->
-<!-- 									</fieldset> -->
-<!-- 					</div> -->
-<!--             </div>					 -->
-	<!-- contents starts -->
-     
-<!-- 	  <tr> -->
-<!-- 		<td> -->
-<!-- 			<fieldset> -->
-<!--         	<legend><strong>Applicant's Information</strong></legend> -->
-<!-- 			<table> -->
-<!-- 				<tr> -->
-<%-- 				<c:if test="${loginUser.hasRole('PA') || loginUser.hasRole('IN')}"> --%>
-<%--       			    <td>*Client:<br><form:input path="client.name" id="clientIDS"/></td> --%>
-<%-- 				</c:if>   --%>
-<%-- 				<c:if test="${loginUser.hasRole('CA') || loginUser.hasRole('PM')}">   --%>
-<%-- 					<td>*Client:<br><form:select path="client.id" items="${clients}" onchange="getPropertyOptions(document.getElementById('client.id').value, 'id')" /></td> --%>
-<%-- 				</c:if> --%>
-<%-- 				<c:if test="${loginUser.hasRole('PA') || loginUser.hasRole('IN') || loginUser.hasRole('CA') || loginUser.hasRole('PM')}"> --%>
-<%-- 					<td>*Package:<br><form:select path="packge.id" id="package"  /></td> --%>
-<%-- 				</c:if> --%>
-<!-- 				<tr> -->
-<!-- 					<td> -->
-<!-- 						<div id="questionsDiv"> -->
-<!-- 						<table> -->
-<!-- 							<tr> -->
-<%-- 								<td>*Property:<br><form:select path="property.id" id="property" /></td> --%>
-<!-- 							</tr> -->
-<!-- 							<tr> -->
-<%-- 								<td>Does the applicant have a Spouse?<br><form:radiobuttons path="isCoapplicantAvailable" items="${globals.yesNoOptions}"/></td> --%>
-<%-- 							</tr><tr>
-<%-- 								<td>Does the applicant have any other occupants?<br><form:radiobuttons path="isOccupantsAvailable" items="${globals.yesNoOptions}"/></td> --%>
-<%-- 							</tr> --%>
-<%-- 								<td>Does the applicant have any vehicles?<br><form:radiobuttons path="isVehicleAvailable" items="${globals.yesNoOptions}"/></td> --%>
-<!-- 							</tr><tr> -->
-<%-- 								<td>Does the applicant have any pets?<br><form:radiobuttons path="isPetAvailable" items="${globals.yesNoOptions}"/></td> --%>
-<!-- 							</tr> -->
-<!-- 						</table> -->
-<!-- 						</div> -->
-<!-- 					</td> -->
-<!-- 					<td>&nbsp;</td> -->
-<!-- 				</tr>					 -->
-<!-- 			</table> -->
-<!-- 			</fieldset> -->
-<!-- 		</td> -->
-<!-- 		</tr> -->
-	
-    <!-- contents ends -->
+		
 
   <!--  submit starts -->
  <div class="row">
@@ -473,12 +409,6 @@
        <input type="submit" value="Cancel" name="_cancel" class="btn by_cr" onclick="anonymousUserCancelClickEvent()"/>
         </tea:ifAuthorized>
 
-<!--         <div id="anonymousUserCancelDiv" style="visibility: visible;"> -->
-<!--          <input type="submit" value="Cancel" name="_cancel" class="btn by_cr" onclick="anonymousUserCancelClickEvent()"/> -->
-<!--          </div> -->
-<!--          <div id="anonymousUserDisabledDivShow" style="display: none;"> -->
-<!--           <input type="submit" value="Cancel" name="_cancel" class="button" disabled="disabled"/> -->
-<!--          </div> -->
        
 	</div>
             </div>  
@@ -489,7 +419,7 @@
       
      
 
-  <!--  submit starts -->
+
 
 </form:form>
 <%@ include file="/WEB-INF/jsp/includenew/scripts.jsp" %>

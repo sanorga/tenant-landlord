@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.util.WebUtils;
 
+import com.tea.landlordapp.domain.Role;
 import com.tea.landlordapp.constant.Globals;
 import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.repository.SimpleDao;
@@ -55,12 +56,13 @@ public class UserForm extends AbstractDataController{
 	   StandardPasswordEncoder standardPasswordEncoder;
 	  
 	 @RequestMapping(method = RequestMethod.GET)
-	   public String setupForm(@RequestParam(value = "userId", required = false) Integer userId, Model model,
+	   public String setupForm(@RequestParam(value = "userId", required = false) Integer userId, 
+			    Model model,
 	            HttpServletRequest request) {
 	      logger.debug("in GET method of user.htm with userId as.." + userId + "... and subscriberID as..." );
 	      
 	      final User loginUser = getAuthenticatedUser();
-
+ 
 	      // check authorization
 //	      if (!hasAnyAuthority(new String[]{"view.system.user","view.client.user"})) {
 //	          return unAuthorized(request);
@@ -120,7 +122,8 @@ public class UserForm extends AbstractDataController{
 		   model.addAttribute("userRoleOptions", roleOptions);
 		   model.addAttribute("userStatusOptions", statusOptions);
 		   model.addAttribute("usStateOptions", usStateListOptions);
-      
+		   
+		        
 	   }
 	   
 	   private Map<String,String> getStatusOptions(){
@@ -158,11 +161,11 @@ public class UserForm extends AbstractDataController{
 		}		 
 		 
 	   @RequestMapping(method = RequestMethod.POST)
-	   protected String processSubmit(@ModelAttribute("user") User user, 
+	   protected String processSubmit(@ModelAttribute("user") User user,
 			   BindingResult result, HttpServletRequest request, Model model) {
 	      logger.debug("inside POST method of changepwd.htm...");
 
-	      User usr = getAuthenticatedUser();
+	      User loginUser = getAuthenticatedUser();
 
 	      // onCancel
 	      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_CANCEL)) {
@@ -180,43 +183,51 @@ public class UserForm extends AbstractDataController{
 		      model.addAttribute("user", user);
 	         return "user";
 	      }
+
+	      // role
+	       final com.tea.landlordapp.domain.Role role = userService.findRole(user.getRole().getRole());
+
+	      // save user
+	      user.setRole(role);
+	      String roleStr = user.getRole().getRole();
 	      
-	      if (!StringUtils.isBlank(user.getNewPassword()) )
-		      if (StringUtils.isBlank(user.getOldPassword()))
-		         result.rejectValue("oldPassword", "error.invalid-oldpassword-blank", "Value required.");
-		      else {
-		         if (!securityService.checkPassword(user, user.getOldPassword())) {
-		            result.rejectValue("password", "error.invalid-old-password", "Value required.");
-		         }
-		         passwordChangeValidator.validate(user, result);
-			      if (result.hasErrors()) {
-			    	  setValuesInModel(model);
-				      
-				      // set data in the model
-				      setPreviousActionMessage(request, model);
-				      model.addAttribute("user", user);
-				      return "user";
-
+	      if (!StringUtils.isBlank(user.getNewPassword() ) ){
+	    	  		  
+				      if (StringUtils.isBlank(user.getOldPassword()))
+				         result.rejectValue("oldPassword", "error.invalid-oldpassword-blank", "Value required.");
+				      else {
+				         if (!securityService.checkPassword(loginUser, user.getOldPassword())) {
+				            result.rejectValue("password", "error.invalid-old-password", "Value required.");
+				         }
+				         else {
+						         passwordChangeValidator.validate(user, result);
+							      if (result.hasErrors()) {
+							    	  setValuesInModel(model);
+								      
+								      // set data in the model
+								      setPreviousActionMessage(request, model);
+								      model.addAttribute("user", user);
+								      return "user";
+							      }
+				
+							      if (StringUtils.isNotBlank(user.getNewPassword())) {
+							    	  // persist user
+								      securityService.updateYourPassword(user, user.getNewPassword(), loginUser.getPasswordHash());
+							    	  setActionMessage(request, "confirm.user_save_success");
+							    	  return "redirect:/home.htm";
+							      }
+				         }
 				  }
-			      usr.setStatus(Globals.ACTIVE);
-			      if (StringUtils.isNotBlank(user.getNewPassword())) {
-			    	  // persist user
-				      usr.setStatus(Globals.ACTIVE);
-			    	  securityService.updatePassword(user, user.getNewPassword());
-			    	  setActionMessage(request, "confirm.user_save_success");
-			    	  return "redirect:/home.htm";
-			      }
-		      }
-
-//	      if (StringUtils.isBlank(user.getNewPassword()) && StringUtils.isEmpty(user.getNewPassword())) result.rejectValue("newPassword", "error.invalid-newpassword-blank", "Value required.");
-	      // persist user
-
-	      userService.saveUser(user, usr);
+	      }
+	      user.setPassword(loginUser.getPasswordHash());
+	      User userUpd = simpleDao.merge(user);
+//	      userService.saveYourUser(user);
 //	      status.setComplete();
 	      setActionMessage(request, "confirm.user_save_success");
 	      // force logout
 	      return "redirect:/home.htm";
 	   }
 	   	
-	
 }
+
+

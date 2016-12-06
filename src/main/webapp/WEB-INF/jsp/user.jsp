@@ -6,7 +6,7 @@
 
 <%@ include file="/WEB-INF/jsp/headernew.jsp" %>
 
-<form:form method="post" modelAttribute="user" onsubmit="alert('You will need to log in with your new password.');">
+<form:form method="post" modelAttribute="user" >
 
 <ol class="breadcrumb">
   	<li><a href="home.htm">Home</a></li>
@@ -40,6 +40,8 @@
 <form:hidden path="country"/>
 <form:hidden path="openIdIdentifier"/>
 <form:hidden path="status"/>
+<form:hidden path="socialAcctType"/>
+
 
     <div id="main" class="container">
         <div class="control-box mailbox_area">
@@ -87,17 +89,17 @@
 										
 										<fieldset class="form-group">
 											<label for="">Zip Code</label>
-											<form:input path="zipcode" maxlength="10" onblur="getStateCityScript('zipcode','city','state')"/>
+											<form:input path="zipcode" id="zipcode" maxlength="10" onblur="getStateCityScript('zipcode','city','state')"/>
 										</fieldset>
 
 										<fieldset class="form-group">
 											<label for="">City</label>
-											<form:input path="city" maxlength="50" />
+											<form:input path="city" id="city" maxlength="50" />
 										</fieldset>
 
 										<fieldset class="form-group">
 											<label for="">State</label>
-											<form:select path="state" items="${usStateOptions}" />
+											<form:select path="state" id="state" items="${usStateOptions}" />
 										</fieldset>
 						</div>
 						<div class="col-xs-6">
@@ -166,27 +168,13 @@
 
 <script type="text/javascript">
 
-window.onload=function(){
- 	 
-//	  $("#hideandshowdiv").hide();
-	 hideAndShow();
+ window.onload=function(){
+	 
+  			$("#hideandshowdiv").hide();
+	
 }
 
 function hideAndShow() {		
-
-				if (document.getElementById("testdiv").clicked ) {
-					$("#changepasswdiv").hide()
-					$("#hideandshowdiv").removeClass('hidden');	
-					$("#hideandshowdiv").show();	
-				}
-				 else {
-					 $("#hideandshowdiv").addClass('hidden');	
-					 $("#hideandshowdiv").hide();	
-				 }
-			
-	}
-	
-function hideAndShowTestDiv() {		
 
 		$("#changepasswdiv").hide()
 		$("#hideandshowdiv").removeClass('hidden');	

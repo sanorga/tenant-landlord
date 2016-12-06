@@ -19,9 +19,8 @@ public class CsrfRequestMatcher implements RequestMatcher {
 	@Override
 	public boolean matches(HttpServletRequest arg0) {
 		if (getMatcher.matches(arg0)) return false;
-//		if (traceMatcher.matches(arg0)) return false;
+
 		if (headMatcher.matches(arg0)) return false;
-//		if (optionsMatcher.matches(arg0)) return false;
 		
 		if (dsCallbackMatcher.matches(arg0)){
 			return false;
@@ -30,10 +29,6 @@ public class CsrfRequestMatcher implements RequestMatcher {
 		if (apiMatcher.matches(arg0)){
 			return false;
 		}
-		
-//		if (dataMatcher.matches(arg0)){
-//			return false;
-//		}
 		
 		if (duoLoginMatcher.matches(arg0)){
 			return false;

@@ -566,5 +566,6 @@ import com.tea.landlordapp.utility.EncryptionService;
 			this.lockoutUntil = lockoutUntil;
 		}
 
+
 }
 

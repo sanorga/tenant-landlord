@@ -328,6 +328,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		userDao.saveUser(user);
 		return;
 	}
+	
+	@Override
+	public void saveYourUser(User user) {
+
+//		user.setAuditInfo(loginUser);
+		userDao.saveUser(user);
+		return;
+	}
 
 	@Override
 	public User validateUser(String email, String password) {

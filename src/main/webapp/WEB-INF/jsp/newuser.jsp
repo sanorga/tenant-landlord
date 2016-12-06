@@ -10,18 +10,7 @@
 
 <ol class="breadcrumb">
   	<li><a href="login.htm">Login</a></li>
-<%-- 	<c:choose> --%>
-<%-- 			<c:when test="${loginUser.subscriber.id eq user.subscriber.id}"> --%>
-<!-- 				<li><a href="viewusers.htm">Users</a></li> -->
-<%-- 					<li>Add/Edit User Details for ${user.subscriber.name}</li> --%>
-<%-- 			</c:when> --%>
-<%-- 			<c:otherwise> --%>
-<!-- 				<li><a href="viewclients.htm">Clients</a></li> -->
-<%-- 				<li><a href="viewusers.htm?subscriberId=${user.subscriber.id}">Users</a></li> --%>
-<%-- 					<li>Add/Edit User Details for ${user.subscriber.name}</li> --%>
-				
-<%-- 			</c:otherwise> --%>
-<%-- 	</c:choose> --%>
+
 </ol>
 
 <%-- <div id="subheader"><p>Add/Edit User Details for ${user.subscriber.name}</p></div> --%>
@@ -102,7 +91,7 @@
 										
 										<fieldset class="form-group">
 											<label for="">*Zip Code</label>
-											<form:input path="zipcode" maxlength="10" onblur="getStateCityScript('zipcode','city','state')"/>
+											<form:input path="zipcode" maxlength="10" id="zipcode" onblur="getStateCityScript('zipcode','city','state')"/>
 										</fieldset>
 
 
@@ -112,12 +101,12 @@
 <br><br><br>
 										<fieldset class="form-group">
 											<label for="">*City</label>
-											<form:input path="city" maxlength="50" />
+											<form:input path="city" maxlength="50" id="city" />
 										</fieldset>
 
 										<fieldset class="form-group">
 											<label for="">*State</label>
-											<form:select path="state" items="${usStateOptions}" />
+											<form:select path="state" id="state" items="${usStateOptions}" />
 										</fieldset>
 										<fieldset class="form-group">
 											<label for="">*Phone</label>

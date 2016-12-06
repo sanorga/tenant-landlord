@@ -19,12 +19,6 @@
         <security:intercept-url pattern="/accessdenied" access="permitAll" />
         <security:intercept-url pattern="/forgotpwd.htm" access="permitAll" />      
 		<security:intercept-url pattern="/logout.htm" access="permitAll" />
-        <security:intercept-url pattern="/ssnTrack.htm" access="permitAll" />
-        <security:intercept-url pattern="/makepayment.htm" access="permitAll" />
-        <security:intercept-url pattern="/transfirstpayment.htm" access="permitAll" />
-        <security:intercept-url pattern="/revopaypayment.htm" access="permitAll" />
-        <security:intercept-url pattern="/submitApplication.htm" access="permitAll" />
-        <security:intercept-url pattern="/submitApplicationNew.htm" access="permitAll" />
         <security:intercept-url pattern="/hashpasswords.htm" access="permitAll" />
         <security:intercept-url pattern="/getpropertyname.htm" access="permitAll" />
         <security:intercept-url pattern="/pdfapp.pdf" access="permitAll" />
@@ -36,7 +30,6 @@
         <security:intercept-url pattern="/approval.htm" access="permitAll" />
         <security:intercept-url pattern="/api/*" access="permitAll" />
         <security:intercept-url pattern="/mfaIdByEmail.json" access="permitAll" />
-        <security:intercept-url pattern="/clickpayCallback.htm" access="permitAll" />
         <security:intercept-url pattern="/notificationMgmt.htm" access="permitAll" />
 		<security:intercept-url pattern="/changepwd.htm" access="hasRole('USER') or hasRole('must.change.password')"/>
 		<security:intercept-url pattern="/*" access="hasRole('USER')"/>
