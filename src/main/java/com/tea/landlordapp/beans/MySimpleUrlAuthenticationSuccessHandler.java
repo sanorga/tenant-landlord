@@ -74,12 +74,12 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
 //		simpleDao.persist(log);
 
 		
-		// need to uncomment changepwd later on
-//		for (GrantedAuthority authority : authentication.getAuthorities()) {
-//			if (StringUtils.equalsIgnoreCase(authority.getAuthority(), "must.change.password")){
-//				return "/changepwd.htm";
-//			}
-//		}
+//		 need to uncomment changepwd later on
+		for (GrantedAuthority authority : authentication.getAuthorities()) {
+			if (StringUtils.equalsIgnoreCase(authority.getAuthority(), "must.change.password")){
+				return "/changepwd.htm";
+			}
+		}
 		for (GrantedAuthority authority : authentication.getAuthorities()) {
 			if (StringUtils.equalsIgnoreCase(authority.getAuthority(), "dual.authentication.required")){
 				return "/duologin";

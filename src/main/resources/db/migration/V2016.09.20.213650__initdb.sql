@@ -1,3 +1,62 @@
+DROP TABLE IF EXISTS `password_policy`;
+
+CREATE TABLE `password_policy` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `description` varchar(20) NOT NULL,
+  `min_length` tinyint(3) unsigned NOT NULL DEFAULT '8',
+  `max_length` tinyint(3) unsigned NOT NULL DEFAULT '20',
+  `max_age` tinyint(3) unsigned NOT NULL DEFAULT '90',
+  `min_uppercase` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `min_lowercase` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `min_digit` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `min_special_character` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `min_remembered_password` tinyint(3) unsigned NOT NULL DEFAULT '3',
+  `min_matches` tinyint(3) unsigned NOT NULL DEFAULT '3',
+  `require_mfa` bit(1) DEFAULT NULL,
+  `attempts_allowed` int(11) NOT NULL DEFAULT '0',
+  `reset_lockout_minutes` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `password_policy_description_idx` (`description`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+
+SET @s = (SELECT IF(
+	(SELECT COUNT(p.id)
+        FROM password_policy p
+        WHERE description = 'none'
+    ) > 0,
+    "SELECT 1",
+    "INSERT INTO `landlord`.`password_policy` (`description`, `min_length`, `max_length`, `max_age`, `min_uppercase`, `min_lowercase`, `min_digit`, `min_special_character`, `min_remembered_password`, `min_matches`, `require_mfa`, `attempts_allowed`, `reset_lockout_minutes`) VALUES ('none', '1', '0', '0', '0', '0', '0', '0', '0', '0', 0, '0', '0');"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+
+DROP TABLE IF EXISTS `role`;
+
+CREATE TABLE `role` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `role` varchar(2) NOT NULL,
+  `is_available` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `description` varchar(2000) DEFAULT NULL,
+  `created_by` int(10) unsigned NOT NULL,
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_by` int(10) unsigned DEFAULT NULL,
+  `modified_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `password_policy_id`  int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `role` (`role`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+
+
+SET @s = "SELECT @passwpolicy := id from password_policy 
+		  WHERE description = 'none'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+		  
+
+
+
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
@@ -16,6 +75,7 @@ CREATE TABLE `user` (
   `country` char(2) NOT NULL DEFAULT 'US',
   `phone` varchar(20) DEFAULT NULL,
   `fax` varchar(20) DEFAULT NULL,
+  `role_id` int(10) unsigned DEFAULT NULL,
   `account_type` enum('L','F','G','T') NOT NULL DEFAULT 'L',
   `last_login` datetime DEFAULT NULL,
   `status` enum('X','A','I','L') NOT NULL DEFAULT 'X',
@@ -37,10 +97,142 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_id` (`email_id`),
   KEY `created_by` (`created_by`),
-  KEY `modified_by` (`modified_by`),
-  CONSTRAINT `user_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `user` (`id`),
-  CONSTRAINT `user_ibfk_2` FOREIGN KEY (`modified_by`) REFERENCES `user` (`id`)
+  KEY `modified_by` (`modified_by`) 
 ) ENGINE=InnoDB AUTO_INCREMENT=162 DEFAULT CHARSET=latin1;
+
+SET @s = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM user
+        WHERE email_id = 'sa@tenant.com'
+    ) > 0,
+    "SELECT 1",
+    "insert user (openid_identifier, email_id, password, first_name, last_name, address, address2,city, state, zipcode, country, phone, fax, role_id, account_type, last_login, status, has_hashed_password, require_mfa, enable_mfa, accept_satc, password_policy_id, login_fail_count, lockout_until, count, created_by, created_date, modified_by, modified_date ) 
+values ('0','sa@tenant.com','nopassword', 'System', 'Admin', null, null, null,null,null,'US',null,null, 1, 'L', null,'A', 'N', b'0', b'0',b'0', @passwpolicy,0,null,0,1,now(),1,now());"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = "SELECT @sauserid := id from user
+		  WHERE email_id = 'sa@tenant.com'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM role
+        WHERE role = 'SA'
+    ) > 0,
+    "SELECT 1",
+    "insert role (role,is_available,description,created_by, created_date, modified_by, modified_date,password_policy_id) values ('SA','Y','System Administrator',@sauserid,now(),@sauserid, now(), @passwpolicy);"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = "SELECT @sarole := id from role
+		  WHERE description = 'System Administrator'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM role
+        WHERE role = 'XX'
+    ) > 0,
+    "SELECT 1",
+    "insert role (role,is_available,description,created_by, created_date, modified_by, modified_date,password_policy_id) values ('XX','Y','No privileges',@sauserid,now(),@sauserid, now(), @passwpolicy);"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = "SELECT @noprivileges := id from role
+		  WHERE description = 'No privileges'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM role
+        WHERE role = 'CS'
+    ) > 0,
+    "SELECT 1",
+    "insert role (role,is_available,description,created_by, created_date, modified_by, modified_date,password_policy_id) values ('CS','Y','CustomerServiceRep',@sauserid,now(),@sauserid, now(), @passwpolicy);"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = "SELECT @csrole := id from role
+		  WHERE description = 'System Administrator'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM role
+        WHERE role = 'LA'
+    ) > 0,
+    "SELECT 1",
+    "insert role (role,is_available,description,created_by, created_date, modified_by, modified_date,password_policy_id) values ('LA','Y','Landlord',@sauserid,now(),@sauserid, now(), @passwpolicy);"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = "SELECT @larole := id from role
+		  WHERE description = 'System Administrator'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM role
+        WHERE role = 'TE'
+    ) > 0,
+    "SELECT 1",
+    "insert role (role,is_available,description,created_by, created_date, modified_by, modified_date,password_policy_id) values ('TE','Y','Renter',@sauserid,now(),@sauserid, now(), @passwpolicy);"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = "SELECT @terole := id from role
+		  WHERE description = 'System Administrator'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM role
+        WHERE role = 'RE'
+    ) > 0,
+    "SELECT 1",
+    "insert role (role,is_available,description,created_by, created_date, modified_by, modified_date,password_policy_id) values ('RE','Y','Realtor',@sauserid,now(),@sauserid, now(), @passwpolicy);"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = "SELECT @rerole := id from role
+		  WHERE description = 'System Administrator'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+update user set role_id = @sarole, created_by = @sauserid, modified_by = @sauserid, password= PASSWORD('test1') where  id = @sauserid;
+
+
+
+SET @s = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM user
+        WHERE email_id = 'no email'
+    ) > 0,
+    "SELECT 1",
+    "insert user (openid_identifier, email_id, password, first_name, last_name, address, address2,city, state, zipcode, country, phone, fax, role_id, account_type, last_login, status, has_hashed_password, require_mfa, enable_mfa, accept_satc, password_policy_id, login_fail_count, lockout_until, count, created_by, created_date, modified_by, modified_date ) 
+values ('0','no email','nopassword', null, null, null, null, null,null,null,'US',null,null, @noprivileges, 'L', null,'X', 'N', b'0', b'0',b'0', @passwpolicy,0,null,0,@sauserid,now(),@sauserid,now());"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+ ALTER TABLE User ADD CONSTRAINT `user_ibfk_1`   FOREIGN KEY (`role_id`) REFERENCES `role` (`id`),
+ ALTER TABLE User ADD CONSTRAINT `user_ibfk_2`   FOREIGN KEY (`created_by`) REFERENCES `user` (`id`);
+ ALTER TABLE User ADD CONSTRAINT `user_ibfk_3`   FOREIGN KEY (`modified_by`) REFERENCES `user` (`id`);
+ ALTER TABLE User ADD CONSTRAINT `user_ibfk_4`   FOREIGN KEY (`password_policy_id`) REFERENCES `password_policy` (`id`);	  
 
 
 --
@@ -97,27 +289,6 @@ CREATE TABLE `property` (
 
 
 
-
-
-DROP TABLE IF EXISTS `role`;
-
-CREATE TABLE `role` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `role` varchar(2) NOT NULL,
-  `is_available` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `description` varchar(2000) DEFAULT NULL,
-  `created_by` int(10) unsigned NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `modified_by` int(10) unsigned DEFAULT NULL,
-  `modified_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `password_policy_id`  int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `role` (`role`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
-
-
-
-
 DROP TABLE IF EXISTS `capability`;
 
 CREATE TABLE `capability` (
@@ -137,6 +308,69 @@ CREATE TABLE `capability` (
   CONSTRAINT `capability_ibfk_2` FOREIGN KEY (`modified_by`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=latin1;
 
+SET @s = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM capability
+        WHERE request_id = 'USER'
+    ) > 0,
+    "SELECT 1",
+   "insert capability (request_id,name,is_available, created_by, created_date, modified_by, modified_date) values ('USER','USER','Y',@sauserid,now(), @sauserid, now());"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = "SELECT @usercap := id from role
+		  WHERE request_id = 'USER'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM capability
+        WHERE request_id = 'new.anonymous.user'
+    ) > 0,
+    "SELECT 1",
+   "insert capability (request_id,name,is_available, created_by, created_date, modified_by, modified_date) values ('new.anonymous.user','new.anonymous.user','Y',@sauserid,now(), @sauserid, now());"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = "SELECT @anncap := id from role
+		  WHERE request_id = 'new.anonymous.user'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM capability
+        WHERE request_id = 'view.my.applications'
+    ) > 0,
+    "SELECT 1",
+   "insert capability (request_id,name,is_available, created_by, created_date, modified_by, modified_date) values ('view.my.applications','view.my.applications','Y',@sauserid,now(), @sauserid, now());"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = "SELECT @viewappcap := id from role
+		  WHERE request_id = 'view.my.applications'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM capability
+        WHERE request_id = 'SA'
+    ) > 0,
+    "SELECT 1",
+   "insert capability (request_id,name,is_available, created_by, created_date, modified_by, modified_date) values ('SA','System Administrator','Y',@sauserid,now(), @sauserid, now());"
+));
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+
+SET @s = "SELECT @sacap := id from role
+		  WHERE request_id = 'SA'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
 
 DROP TABLE IF EXISTS `role2capability`;
 
@@ -151,26 +385,18 @@ CREATE TABLE `role2capability` (
   CONSTRAINT `role2capability_ibfk_2` FOREIGN KEY (`capability_id`) REFERENCES `capability` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=322 DEFAULT CHARSET=latin1;
 
-DROP TABLE IF EXISTS `password_policy`;
+	  
 
-CREATE TABLE `password_policy` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `description` varchar(20) NOT NULL,
-  `min_length` tinyint(3) unsigned NOT NULL DEFAULT '8',
-  `max_length` tinyint(3) unsigned NOT NULL DEFAULT '20',
-  `max_age` tinyint(3) unsigned NOT NULL DEFAULT '90',
-  `min_uppercase` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `min_lowercase` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `min_digit` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `min_special_character` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `min_remembered_password` tinyint(3) unsigned NOT NULL DEFAULT '3',
-  `min_matches` tinyint(3) unsigned NOT NULL DEFAULT '3',
-  `require_mfa` bit(1) DEFAULT NULL,
-  `attempts_allowed` int(11) NOT NULL DEFAULT '0',
-  `reset_lockout_minutes` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `password_policy_description_idx` (`description`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+insert role2capability (role_id, capability_id) (@sarole, @sacap);
+insert role2capability (role_id, capability_id) (@larole, @usercap);
+insert role2capability (role_id, capability_id) (@larole, @anncap);
+insert role2capability (role_id, capability_id) (@larole, @viewappcap);
+insert role2capability (role_id, capability_id) (@terole, @usercap);
+insert role2capability (role_id, capability_id) (@terole, @anncap);
+insert role2capability (role_id, capability_id) (@rerole, @usercap);
+insert role2capability (role_id, capability_id) (@rerole, @anncap);
+insert role2capability (role_id, capability_id) (@rerole, @viewappcap);
+insert role2capability (role_id, capability_id) (@csrole, @usercap);
 
 DROP TABLE IF EXISTS `password_history`;
 
@@ -237,8 +463,6 @@ CREATE TABLE `system_property` (
   UNIQUE KEY `system_property_unique_name` (`property_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=148 DEFAULT CHARSET=latin1;
 
-INSERT INTO `landlord`.`capability` (`request_id`, `name`, `is_available`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES ('USER', 'USER', 'Y', '162', '2015-03-19 00:00:00', '162', '2015-03-19 00:00:00');
-INSERT INTO `landlord`.`capability` (`request_id`, `name`, `is_available`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES ('new.anonymous_user', 'new.anonymous_user', 'Y', '162', '2015-03-19 00:00:00', '162', '2015-03-19 00:00:00');
 
 INSERT INTO `landlord`.`system_property` (`property_name`, `value`, `property_group`) VALUES ('apiurl', 'https://smlegacygateway-integration.mysmartmove.com/LandlordApi/v1/', 'TransUnion');
 INSERT INTO `landlord`.`system_property` (`property_name`, `value`, `property_group`) VALUES ('partner.id', '126', 'TransUnion');

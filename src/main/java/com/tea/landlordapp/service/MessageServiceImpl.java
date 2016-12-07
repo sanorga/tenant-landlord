@@ -234,4 +234,48 @@ public class MessageServiceImpl implements MessageService {
 		}
 
 	}
+	
+	@Override
+	public boolean sendPasswordResetEmail(String username) throws Exception {
+
+		final User user = userDao.findUserByUsername(username);
+		if (!ObjectUtils.equals(user, null)) {
+			final String newPassword = RandomStringUtils.randomAlphanumeric(8);
+			user.setPassword(newPassword);
+			user.setStatus(Globals.CHANGEPWD);
+			user.setAuditInfo(user);
+			userDao.saveUser(user);
+			final Map<String, Object> map = new HashMap<String, Object>();
+			map.put("USER", user.getFirstName());
+			map.put("PASSWORD", newPassword);
+			map.put("DATE", new Date());
+			map.put("USERNAME", user.getUsername());
+			final String[] toList = new String[] { user.getUsername()};
+
+			return sendMailTemplate(toList, null, "Your Tenant Login Password",
+					"forgot_password.vm", map);
+		}
+		return false;
+	}
+
+	private boolean sendMailTemplate(String[] emailToList,
+			List<String> emailCcList, String subject, String vmFileName,
+			Map<String, Object> map) throws Exception {
+
+		final String messageContent = VelocityEngineUtils
+				.mergeTemplateIntoString(velocityEngine, vmFileName, "UTF-8", map);
+
+		String fromAddress = emailProperties.getProperty("email.from");
+		try {
+			ServiceUtils.sendMimeMessage(emailToList, null, emailCcList,
+					subject, fromAddress, null, null, messageContent,
+					mailSender);
+			logger.debug("Mail sent successfully");
+			return true;
+		} catch (Exception e) {
+			logger.error("Mail sending failed: {}", e.getMessage());
+			return false;
+		}
+	}
+	
 }

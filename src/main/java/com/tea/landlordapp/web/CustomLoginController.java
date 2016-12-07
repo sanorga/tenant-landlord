@@ -132,7 +132,7 @@ public class CustomLoginController {
 		    	 final String newPassword = "unused";
 		    	 user.setPassword(newPassword);
 		    	 user.setFirstName(name);
-		    	 Role initialRole = userService.findRole(UserRole.CustomerServiceRep.getCode());
+		    	 Role initialRole = userService.findRole(UserRole.Landlord.getCode());
 		         user.setRole(initialRole);
 //		         userService.saveUser(user, user);
 //		    	 sendReset = true;

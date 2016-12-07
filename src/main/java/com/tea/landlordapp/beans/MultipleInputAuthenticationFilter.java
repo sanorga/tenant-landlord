@@ -29,7 +29,6 @@ public class MultipleInputAuthenticationFilter extends
 
         String username = obtainUsername(request);
         String password = obtainPassword(request);
-        String acctType = obtainAcctType(request);
        
         	
         if (username == null) {
@@ -47,12 +46,9 @@ public class MultipleInputAuthenticationFilter extends
         // Allow subclasses to set the "details" property
         setDetails(request, authRequest);
 
-        if (StringUtils.equals(acctType,"1"))	{
+
         	return this.getAuthenticationManager().authenticate(authRequest);
-        }
-        else {
-        return this.getAuthenticationManager().authenticate(authRequest);
-        }
+
     }
 
 	protected String obtainAcctType (HttpServletRequest request) {
