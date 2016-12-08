@@ -293,6 +293,7 @@ public class Application extends AuditableEntity  {
 		case '1':
 			return "PackageCore";
 		case '2':
+			return "PackageCorePlusEviction";
 		default:
 			return "";
 		}

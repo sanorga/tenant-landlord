@@ -279,7 +279,7 @@
 									<fieldset class="form-group">
 											<label for="">*Select Existing Property or Enter New Property Details:</label>
 											<br>
-											<form:select path="property.id" id="propertyid" items="${clients}"  onchange="getPropInfo()" />
+											<form:select path="property.id" id="propertyid" items="${properties}"  onchange="getPropInfo()" />
 											<input type="button"  name="enterNewProperty" id="enterNewProperty" value="New Property" class="button"
 										    onclick="enterNewPropertyFields()"/>
 										    

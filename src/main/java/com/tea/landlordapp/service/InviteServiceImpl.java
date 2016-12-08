@@ -219,11 +219,6 @@ public class InviteServiceImpl implements InviteService{
 			
 		Map<String, String> applicationInfo = inviteHelper.buildApplicationInfoMap(au, propertyIdStr);
 		
-//		if (Double.valueOf(applicationInfo.get("RentalAmount")) <= 0) {
-//			return "Error:ZeroRentalAmount";
-//		}
-		
-//		String xmlString = getXmlString(propertyInfo,"ADDPROPERTY");
 		String jsonString = getJSONString(applicationInfo,"ADDAPPLICATION");
 //		String sanitizedXml = sanitizeMessageForLogging(jsonString);
 		
@@ -235,7 +230,7 @@ public class InviteServiceImpl implements InviteService{
 		}
 		
 		// post property
-//		response=postRequest(apiCall, xmlString, credentials);
+
 		responseMap=postJSONMessageGetJSON(apiCall, jsonString, credentials);
 		
 		responseCodeStr = responseMap.get("responseCode");
@@ -1280,34 +1275,7 @@ public class InviteServiceImpl implements InviteService{
 		return response;
 	
 		
-//		conn.sendOutput(message);
-//		final byte[] outputBytes = message.getBytes();
-//		final OutputStream dos = conn.getOutputStream();
-//		dos.write(outputBytes);
-//		dos.flush();
-//		dos.close();
 
-//		final int status = conn.getResponseCode(); // triggers the request
-//		final String msg = conn.getResponseMessage();
-//		String body = conn.getBody();
-//		InputStream in = conn.getInputStream();
-//		String encoding = conn.getContentEncoding();
-//		encoding = encoding == null ? "UTF-8" : encoding;
-//		String body = IOUtils.toString(in, encoding);
-//		if (status != 200) {
-//			logger.error(String.format(
-//					"Invalid response retrieving document list: %d", status));
-//			throw new DocusignMessageException(String.format(
-//					"Invalid response retrieving document list: %d", status),
-//					status, msg);
-//		}
-
-//		return body;
-		// } catch (IOException e) {
-		// logger.error(
-		// "Unable to delete envelope {}.  Error: {}",
-		// envelopeId, e.getMessage());
-		// }
 	}
 	
 	@Override

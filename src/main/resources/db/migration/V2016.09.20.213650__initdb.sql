@@ -31,6 +31,11 @@ SET @s = (SELECT IF(
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 
+SET @s = "SELECT @passwpolicy := id from password_policy 
+		  WHERE description = 'none'";
+PREPARE stmt FROM @s;
+EXECUTE stmt;
+		  
 
 DROP TABLE IF EXISTS `role`;
 
@@ -47,14 +52,6 @@ CREATE TABLE `role` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `role` (`role`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
-
-
-SET @s = "SELECT @passwpolicy := id from password_policy 
-		  WHERE description = 'none'";
-PREPARE stmt FROM @s;
-EXECUTE stmt;
-		  
-
 
 
 DROP TABLE IF EXISTS `user`;
@@ -133,6 +130,8 @@ SET @s = "SELECT @sarole := id from role
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 
+update user set role_id = @sarole, created_by = @sauserid, modified_by = @sauserid, password= PASSWORD('test1') where  id = @sauserid;
+
 SET @s = (SELECT IF(
     (SELECT COUNT(*)
         FROM role
@@ -161,7 +160,7 @@ PREPARE stmt FROM @s;
 EXECUTE stmt;
 
 SET @s = "SELECT @csrole := id from role
-		  WHERE description = 'System Administrator'";
+		  WHERE description = 'Customer Service'";
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 
@@ -177,7 +176,7 @@ PREPARE stmt FROM @s;
 EXECUTE stmt;
 
 SET @s = "SELECT @larole := id from role
-		  WHERE description = 'System Administrator'";
+		  WHERE description = 'Landlord'";
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 
@@ -193,7 +192,7 @@ PREPARE stmt FROM @s;
 EXECUTE stmt;
 
 SET @s = "SELECT @terole := id from role
-		  WHERE description = 'System Administrator'";
+		  WHERE description = 'Renter'";
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 
@@ -209,11 +208,10 @@ PREPARE stmt FROM @s;
 EXECUTE stmt;
 
 SET @s = "SELECT @rerole := id from role
-		  WHERE description = 'System Administrator'";
+		  WHERE description = 'Realtor'";
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 
-update user set role_id = @sarole, created_by = @sauserid, modified_by = @sauserid, password= PASSWORD('test1') where  id = @sauserid;
 
 
 
@@ -319,7 +317,7 @@ SET @s = (SELECT IF(
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 
-SET @s = "SELECT @usercap := id from role
+SET @s = "SELECT @usercap := id from capability
 		  WHERE request_id = 'USER'";
 PREPARE stmt FROM @s;
 EXECUTE stmt;
@@ -327,16 +325,16 @@ EXECUTE stmt;
 SET @s = (SELECT IF(
     (SELECT COUNT(*)
         FROM capability
-        WHERE request_id = 'new.anonymous.user'
+        WHERE request_id = 'new.anonymous_user'
     ) > 0,
     "SELECT 1",
-   "insert capability (request_id,name,is_available, created_by, created_date, modified_by, modified_date) values ('new.anonymous.user','new.anonymous.user','Y',@sauserid,now(), @sauserid, now());"
+   "insert capability (request_id,name,is_available, created_by, created_date, modified_by, modified_date) values ('new.anonymous_user','new.anonymous_user','Y',@sauserid,now(), @sauserid, now());"
 ));
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 
-SET @s = "SELECT @anncap := id from role
-		  WHERE request_id = 'new.anonymous.user'";
+SET @s = "SELECT @anncap := id from capability
+		  WHERE request_id = 'new.anonymous_user'";
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 
@@ -351,7 +349,7 @@ SET @s = (SELECT IF(
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 
-SET @s = "SELECT @viewappcap := id from role
+SET @s = "SELECT @viewappcap := id from capability
 		  WHERE request_id = 'view.my.applications'";
 PREPARE stmt FROM @s;
 EXECUTE stmt;
@@ -367,7 +365,7 @@ SET @s = (SELECT IF(
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 
-SET @s = "SELECT @sacap := id from role
+SET @s = "SELECT @sacap := id from capability
 		  WHERE request_id = 'SA'";
 PREPARE stmt FROM @s;
 EXECUTE stmt;
@@ -387,16 +385,16 @@ CREATE TABLE `role2capability` (
 
 	  
 
-insert role2capability (role_id, capability_id) (@sarole, @sacap);
-insert role2capability (role_id, capability_id) (@larole, @usercap);
-insert role2capability (role_id, capability_id) (@larole, @anncap);
-insert role2capability (role_id, capability_id) (@larole, @viewappcap);
-insert role2capability (role_id, capability_id) (@terole, @usercap);
-insert role2capability (role_id, capability_id) (@terole, @anncap);
-insert role2capability (role_id, capability_id) (@rerole, @usercap);
-insert role2capability (role_id, capability_id) (@rerole, @anncap);
-insert role2capability (role_id, capability_id) (@rerole, @viewappcap);
-insert role2capability (role_id, capability_id) (@csrole, @usercap);
+insert role2capability (role_id, capability_id) values (@sarole, @sacap);
+insert role2capability (role_id, capability_id) values (@larole, @usercap);
+insert role2capability (role_id, capability_id) values (@larole, @anncap);
+insert role2capability (role_id, capability_id) values (@larole, @viewappcap);
+insert role2capability (role_id, capability_id) values (@terole, @usercap);
+insert role2capability (role_id, capability_id) values (@terole, @anncap);
+insert role2capability (role_id, capability_id) values (@rerole, @usercap);
+insert role2capability (role_id, capability_id) values (@rerole, @anncap);
+insert role2capability (role_id, capability_id) values (@rerole, @viewappcap);
+insert role2capability (role_id, capability_id) values (@csrole, @usercap);
 
 DROP TABLE IF EXISTS `password_history`;
 

@@ -128,30 +128,34 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public boolean sendAnonymousUserMail(AnonymousUser anonymousUser,
+	public boolean sendAnonymousUserMails(AnonymousUser anonymousUser,
 			HttpServletRequest request) throws Exception {
+		boolean result = false;
+		result = sendAnonymousUserMail(anonymousUser, request, anonymousUser.getEmailId()); 
+		if (result){	
+			if (anonymousUser.getIsCoapplicantAvailable() == Globals.YES  && 
+				StringUtils.isNotBlank(anonymousUser.getCoappEmailId()) ) 	{
+				result = sendAnonymousUserMail(anonymousUser, request, anonymousUser.getCoappEmailId());
+			}
+		}
+		return result;
+	}
+	
+	@Override
+	public boolean sendAnonymousUserMail(AnonymousUser anonymousUser,
+			HttpServletRequest request, String destEmail) throws Exception {
 
 		final HashMap<String, Object> map = new HashMap<String, Object>();
 
 		Map<String, String> inlineResources;
 		map.put("DATE", new Date());
-		map.put("USER", anonymousUser.getEmailId());
+		map.put("USER", destEmail);
 
-//		if (anonymousUser.getClient().getPayPerApplication() == 'Y') {
-//			// Getting Client's default External price
-//			final Double appPrice = anonymousUser.getClient()
-//					.getApplicationPrice();
-//
-//			final NumberFormat df = new DecimalFormat("#0.00");
-//			map.put("Price", df.format(appPrice));
-//		}
+
 		String address = anonymousUser.getProperty().getAddressLine();
 		final String realPath = request.getSession().getServletContext()
 				.getRealPath("/");
-//
-//		map.put("LINK", emailProperties.getProperty(Globals.TEA_LANDLORDAPP_URL)
-//				+ "/submitApplication.htm?" + Globals.ANONYMOUS_USER_URL_ID
-//				+ "=" + anonymousUser.getId());
+
 		map.put("LINK", emailProperties.getProperty(Globals.SMARTMOVE_NEW_ACCT_URL));
 //				+ "/Create-Account.page?SubDomainId=1&UserType=1&Email=" + anonymousUser.getEmailId());
 
@@ -164,18 +168,6 @@ public class MessageServiceImpl implements MessageService {
 				"images/anonymousmail/images/template11_08.jpg"));
 		inlineResources.put("template11_09", StringHelper.concatWithSingleSlash(realPath,
 				"images/anonymousmail/images/template11_09.jpg"));
-//		inlineResources.put("template11_11", StringHelper.concatWithSingleSlash(realPath,
-//				"images/anonymousmail/images/template11_11.png"));
-//		inlineResources.put("template11_13", StringHelper.concatWithSingleSlash(realPath,
-//				"images/anonymousmail/images/template11_13.jpg"));
-//		inlineResources.put("template11_15", StringHelper.concatWithSingleSlash(realPath,
-//				"images/anonymousmail/images/template11_15.jpg"));
-//		inlineResources.put("template11_16", StringHelper.concatWithSingleSlash(realPath,
-//				"images/anonymousmail/images/template11_16.jpg"));
-//		inlineResources.put("template11_18", StringHelper.concatWithSingleSlash(realPath,
-//				"images/anonymousmail/images/template11_18.jpg"));
-//		inlineResources.put("template11_19", StringHelper.concatWithSingleSlash(realPath,
-//				"images/anonymousmail/images/template11_19.jpg"));
 		inlineResources.put("testing_01", StringHelper.concatWithSingleSlash(realPath,
 				"images/anonymousmail/images/testing_01.jpg"));
 		inlineResources.put("testing_02", StringHelper.concatWithSingleSlash(realPath,
@@ -186,9 +178,9 @@ public class MessageServiceImpl implements MessageService {
 				"images/anonymousmail/images/spacer.gif"));
 
 		final List<String> toList = new ArrayList<String>();
-		toList.add(anonymousUser.getEmailId());
+		toList.add(destEmail);
 		toList.add(anonymousUser.getCreatedBy().getUsername());
-
+		
 		String[] destinations = UtilityMethods.list2StringArray(toList);
 
 		String velocityName = "anonymous_user.vm";
@@ -197,12 +189,7 @@ public class MessageServiceImpl implements MessageService {
 //		}
 
 		BinaryFile bf = null;
-//		Property prop = anonymousUser.getProperty();
-//		if (prop != null && fileStorageService.isPropertyTermsDocExists(prop.getId())) {
-//			bf = new BinaryFile("doc.pdf",
-//					fileStorageService.getPropertyTermsContent(anonymousUser
-//							.getProperty().getId()));
-//		}
+
 		return sendTemplateMail(destinations, map,
 				"Invitation to Apply", velocityName,
 				inlineResources, bf);
@@ -234,6 +221,7 @@ public class MessageServiceImpl implements MessageService {
 		}
 
 	}
+
 	
 	@Override
 	public boolean sendPasswordResetEmail(String username) throws Exception {

@@ -41,7 +41,7 @@
 	<p>If you do not know your username, contact customer service at 305-692-7900 ext 1.</p>
 	
 	<fieldset class="form-group">
-		<label for="">*Username:</label>
+		<label for="">*Username(Email you registered):</label>
 <%-- 		<form:password path="oldPassword" size="30"/> --%>
 		<input name="username" type="text" value="" size="25" maxlength="128"  alt="E-Mail"/>
 	</fieldset>
