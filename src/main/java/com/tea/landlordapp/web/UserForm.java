@@ -88,16 +88,9 @@ public class UserForm extends AbstractDataController{
 //	         user.setRole(initialRole);
 	      } else {
 	         user = simpleDao.find(User.class, userId);
-//	         subscriber = user.getSubscriber();
-//
-//	         if (!checkSubscriberAccess(user.getSubscriber(), loginUser)) {
-//	            return unAuthorized(request);
-//	         }
-	      }
 
-//	      Set<Property> authProperties = user.getAuthorizedProperties();
-//	      user.setAuthorizedProperties(authProperties);
-	      
+	      }
+  
 	      setValuesInModel(model);
 	      
 	      // set data in the model
