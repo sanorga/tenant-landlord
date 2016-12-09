@@ -441,7 +441,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 	
 	@Override
-	public User setupNewUser(String type) {
+	public User setupNewUser() {
 		User user = new User();
 //		user.setSubscriber(parent);
 		user.setState("FL");

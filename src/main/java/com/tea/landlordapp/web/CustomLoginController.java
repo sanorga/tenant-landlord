@@ -82,6 +82,41 @@ public class CustomLoginController {
 		return "sslogin";
 	}
 
+	@RequestMapping(value = "/index", method = RequestMethod.GET)
+	private String showIndex(@RequestParam(value="message", required=false) String message,
+			@RequestParam(value="email", required=false) String email,
+			@RequestParam(value="reset", required=false) Boolean reset,
+			Model model, HttpServletRequest request){
+		if (StringUtils.isNotBlank(message)) {
+			if (StringUtils.equalsIgnoreCase("confirm.mail_send_success", message))
+				model.addAttribute("message", "Password reset mail sent successfully");
+			else if (StringUtils.equalsIgnoreCase(message, "IC"))
+				model.addAttribute("message", "Invalid username or password");
+			else if (StringUtils.equalsIgnoreCase(message, "PC"))
+				model.addAttribute("message", "Password change was successful");
+			else if (StringUtils.equalsIgnoreCase(message, "confirm.mail_send_fail"))
+				model.addAttribute("message", "Unable to send reset email. Contact Customer Service");
+			else if (StringUtils.equalsIgnoreCase(message, "LO"))
+				model.addAttribute("message", "Logout was successful");
+		}
+
+		
+		if (reset != null){
+			model.addAttribute("reset", reset);
+		}
+		
+		if (email != null){
+			model.addAttribute("reset", reset);
+		}
+		
+	      User user;
+	      Map<String,String> roleOptions;
+	      user = userService.setupUser();
+	      model.addAttribute("user", user);   
+		return "index";
+	}
+
+	
 	@RequestMapping(value = "/googlelogin.htm", method = RequestMethod.GET)
 	private String showGoogleLogin(@RequestParam(value="message", required=false) String message,
 			@RequestParam(value="reset", required=false) Boolean reset,

@@ -14,6 +14,7 @@
 		<security:intercept-url pattern="/styles/**" access="permitAll" />           
 		<security:intercept-url pattern="/lib/**" access="permitAll" />       
 		<security:intercept-url pattern="/login" access="permitAll" />
+		<security:intercept-url pattern="/index" access="permitAll" />
 		<security:intercept-url pattern="/newuser.htm" access="permitAll" />
 		<security:intercept-url pattern="/googlelogin.htm" access="permitAll" />
         <security:intercept-url pattern="/accessdenied" access="permitAll" />

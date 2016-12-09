@@ -59,7 +59,7 @@ public class NewUserForm {
 	      User user;
 	      Map<String,String> roleOptions;
 	      if (ObjectUtils.equals(userId, null)) 
-	         user = userService.setupNewUser("USER");
+	         user = userService.setupNewUser();
 	       else 
 	         user = simpleDao.find(User.class, userId);
 	      

@@ -163,7 +163,7 @@ public interface UserService extends Serializable {
 	public List<Property> findAuthorizedProperties(User user);
 
 //	public User setupNewUser(Subscriber parent);
-	public User setupNewUser(String type);
+	public User setupNewUser();
 
 	public HashMap<Integer, String> getApplicationApprovalUserList(Integer subscriberId, java.util.List<Integer> authorizedManagerIds);
 
