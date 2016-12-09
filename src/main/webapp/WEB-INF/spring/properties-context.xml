@@ -16,8 +16,8 @@
 	<bean id="emailProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 		<property name="properties">
 			<props>
-				<prop key="tea.url">${TEA_ADMIN_URL}</prop>
-				<prop key="tea-tenant.url">${TEA_TENANT_URL}</prop>
+<!-- 				<prop key="tea.url">${TEA_ADMIN_URL}</prop> -->
+<!-- 				<prop key="tea-tenant.url">${TEA_TENANT_URL}</prop> -->
 				<prop key="tea-landlordapp.url">${TEA_LANDLORDAPP_URL}</prop>
 				<prop key="smartmove_newacct.url">${SMARTMOVE_NEW_ACCT_URL}</prop>
 				<prop key="email.from">no-reply@tenantevaluation.com</prop>
@@ -39,17 +39,7 @@
 			</props>
 		</property>
 	</bean>
-	<!-- url of our application send with mail ends here -->
 
-<!-- 	<bean id="asynProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean"> -->
-<!-- 		<property name="properties"> -->
-<!-- 			<props> -->
-<!-- 				<prop key="workqueue.refresh_time">30</prop> -->
-<!-- 				<prop key="asyn.retun.url">${TEA_ADMIN_URL}/viewapplications.htm</prop> -->
-<!-- 			</props> -->
-<!-- 		</property> -->
-<!-- 	</bean> -->
-	<!-- Property configuration end here -->
 
 
 </beans>

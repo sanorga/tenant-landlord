@@ -1545,8 +1545,8 @@ public class Globals {
 	public final static String XSL_PATH = "WEB-INF/xsl";
 
 	// Our Application URL
-	public final static String TEA_ADMIN_URL = "tea.url";
-	public final static String TEA_TENANT_URL = "tea-tenant.url";
+//	public final static String TEA_ADMIN_URL = "tea.url";
+//	public final static String TEA_TENANT_URL = "tea-tenant.url";
 	public final static String TEA_GUEST_URL = "tea-guest.url";
 	public final static String SMARTMOVE_NEW_ACCT_URL = "smartmove_newacct.url";
 	

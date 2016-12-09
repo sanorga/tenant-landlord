@@ -219,7 +219,7 @@ public class UserForm extends AbstractDataController{
 				         }
 				  }
 	      }
-	      user.setPassword(loginUser.getPasswordHash());
+	      user.setPasswordHash(loginUser.getPasswordHash());
 	      User userUpd = simpleDao.merge(user);
 //	      userService.saveYourUser(user);
 //	      status.setComplete();
