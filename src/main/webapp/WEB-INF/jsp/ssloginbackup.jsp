@@ -145,9 +145,21 @@ document.googleForm.submit();
 				<tr>
 					<td><h2 class="rtecenter">Login</h2>
 									
-					
+					<div id="loginquestion">
+							<table border="0" cellpadding="0" cellspacing="0" style="width:260px">
+								<tbody>
+									<tr>
+										<td><p>Already have an account?</td>
+										<td style="text-align:right">
+						<!-- 				<input type="submit" class="submit-button" name="submit-button" value="Login" onclick="hideAndShowSpouse()"></td> -->
+										    <input type="button" value="Login"  id ="Login" name="Login" class="button" onClick="this.checked=true; hideAndShow()"/>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 										
-						<div id="hideandshowdiv"  >					
+						<div id="hideandshowdiv" class="hidden" >					
 							<form:form id="usernameForm" action="j_spring_security_check" method="post">
 							
 							<c:if test="${! empty message}">
@@ -220,20 +232,20 @@ document.googleForm.submit();
 						<br>
 					
 				
-<!-- 						<table border="0" cellpadding="0" cellspacing="0" style="width:260px"> -->
-<!-- 								<tbody> -->
+						<table border="0" cellpadding="0" cellspacing="0" style="width:260px">
+								<tbody>
 									
-<!-- 			     	     			<tr>	 -->
-<!-- 								    	<td> -->
-<%-- 						             	<c:if test="${loginUser.hasRole('USER')}"> --%>
-<!-- <!-- 						             		<input type="submit" value="START A FREE REGISTRATION" name="_new" class="button"/> --> 
-<!-- 							              	<a href="newuser.htm"><img src="images/login/startregistration.png" alt="New User"></a> -->
-<%-- 												</c:if> --%>
-<!-- 					          			</td> -->
-<!-- 									</tr> -->
+			     	     			<tr>	
+								    	<td>
+						<%--              	<c:if test="${loginUser.hasRole('USER')}"> --%>
+<!-- 						             		<input type="submit" value="START A FREE REGISTRATION" name="_new" class="button"/> -->
+							              	<a href="newuser.htm"><img src="images/login/startregistration.png" alt="New User"></a>
+								<%-- 				</c:if> --%>
+					          			</td>
+									</tr>
 									
-<!-- 								</tbody> -->
-<!-- 						</table> -->
+								</tbody>
+						</table>
 								
 						
 	

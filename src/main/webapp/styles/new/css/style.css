@@ -1,6 +1,6 @@
 @charset "utf-8";
 body {
-background-image:url(../images/body_bg1.jpg);
+/* background-image:url(../images/body_bg.jpg); */
 background-repeat:no-repeat;
 		background-position:top center;
 		background-attachment:fixed;
@@ -24,6 +24,13 @@ body {
    padding:0;
    height:100%;
 }
+
+.cityln{
+   min-height:100%;
+   position:relative;
+   background:url(../images/main.jpg) no-repeat 0 0;
+}
+
 
 .main_container {
    min-height:100%;
@@ -355,6 +362,20 @@ display:block;
 border:none;
 }
 
+.button_id{
+position: absolute;
+right: 5px; 
+top: 5px;
+}
+
+.image1 {
+  position: absolute;
+ 
+}
+.image2 {
+  position: absolute;
+  
+}
 
 
 

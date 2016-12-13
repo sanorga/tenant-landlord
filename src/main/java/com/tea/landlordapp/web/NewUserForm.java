@@ -54,12 +54,15 @@ public class NewUserForm {
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	@RequestMapping(method = RequestMethod.GET)
-	   public String setupForm(@RequestParam(value = "userId", required = false) Integer userId, ModelMap model) {
+	   public String setupForm(@RequestParam(value = "userId", required = false) Integer userId,
+			   					@RequestParam(value = "type", required = false) String type,ModelMap model) {
 	      logger.debug("inside GET method of newuser.htm...");
 	      User user;
 	      Map<String,String> roleOptions;
 	      if (ObjectUtils.equals(userId, null)) 
-	         user = userService.setupNewUser();
+	         if (StringUtils.isBlank(type))
+	        	 user = userService.setupNewUser();
+	         else user = userService.setupNewUser(type);
 	       else 
 	         user = simpleDao.find(User.class, userId);
 	      

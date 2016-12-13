@@ -449,7 +449,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		user.setStatus(Globals.ACTIVE);
 		user.setOpenIdIdentifier("0");
 		Role initialRole = new Role();
-		initialRole = findRole(UserRole.Landlord.getCode());
+		initialRole = findRole(UserRole.CustomerServiceRep.getCode());
+//		if (parent.isPartner()){
+//			initialRole = findRole(UserRole.CustomerServiceRep.getCode());
+//		} else {
+//			initialRole = findRole(UserRole.ClientUser.getCode());
+//		}
+        user.setRole(initialRole);
+		return user;
+	}
+	
+	@Override
+	public User setupNewUser(String type) {
+		User user = new User();
+//		user.setSubscriber(parent);
+		user.setState("FL");
+		user.setCountry("US");
+		user.setStatus(Globals.ACTIVE);
+		user.setOpenIdIdentifier("0");
+		Role initialRole = new Role();
+		initialRole = findRole(type);
 //		if (parent.isPartner()){
 //			initialRole = findRole(UserRole.CustomerServiceRep.getCode());
 //		} else {

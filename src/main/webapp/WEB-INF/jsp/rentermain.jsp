@@ -9,25 +9,10 @@
 
 <script>
 
-  window.onload=function(){
-  	 
-// 	  $("#hideandshowdiv").hide();
-	 hideAndShow();
-  }
-  
-  function hideAndShow() {		
+function newDoc() {
+	window.location.assign("login.htm")
+}
 
-				if (document.getElementById("Login").checked ) {
-					$("#loginquestion").hide()
-					$("#hideandshowdiv").removeClass('hidden');	
-					$("#hideandshowdiv").show();	
-  				}
-				 else {
-					 $("#hideandshowdiv").addClass('hidden');	
-					 $("#hideandshowdiv").hide();	
-				 }
-			
-	}
   
   function onSignIn(googleUser) {
 	  
@@ -87,7 +72,7 @@ document.googleForm.submit();
 	<meta name="google-signin-client_id" content="223689506587-urt3a489epu7308tv9ooiomgu0uijil1.apps.googleusercontent.com">
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	<title>Login</title>
+	<title>Landlords</title>
     <style type="text/css" media="all">
       @import url("styles/login/style.css");
       @import url("styles/login/jquery.jscrollpane.css");
@@ -143,97 +128,39 @@ document.googleForm.submit();
 	<table id="primaryLogin" border="0" cellpadding="0" cellspacing="0" style="height:256px; width:520px">
 			<tbody>
 				<tr>
-					<td><h2 class="rtecenter">Login</h2>
+					<td><h2 class="rtecenter">Renters</h2>
 									
-					
-										
-						<div id="hideandshowdiv"  >					
-							<form:form id="usernameForm" action="j_spring_security_check" method="post">
-							
-							<c:if test="${! empty message}">
-								<div style="color: red;" >
-									<input type="hidden" name="message" id="message" />
-									"${message}"
-								</div>
-							</c:if>
-							<c:if test="${! empty reset}">
-								<c:if test="${reset == true}">
-								<div style="color: red;" >
-									<input type="hidden" name="reset" id="reset" />
-									Your password has been reset and we have sent you a new temporary password.<br>
-									Please check your email.
-								</div>
-								</c:if>
-							</c:if>
-				  			
-							<c:if test="${param.error != null }">
-								<div class="alert alert-error">
-									Problem logging in.
-									<c:if test="${SPRING_SECURITY_LAST_EXCEPTION != null }">
-										<br>Reason: <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
-									</c:if>
-								</div>
-							</c:if>
-				  			
-							<c:if test="${param.e405 != null }">
-								<div class="alert alert-error">
-									Unable to login. You must have cookies enabled to use this application.
-									<c:if test="${SPRING_SECURITY_LAST_EXCEPTION != null }">
-										<br>Reason: <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
-									</c:if>
-								</div>
-							</c:if>
-				  			
-							<c:if test="${param.denied != null }">
-								<div class="alert alert-error">
-									Access Denied. Perhaps your session timed out.
-									<c:if test="${SPRING_SECURITY_LAST_EXCEPTION != null }">
-										<br>Reason: <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
-									</c:if>
-								</div>
-							</c:if>
-				  			
-							<c:if test="${param.expired != null }">
-								<div class="alert alert-success">
-									Failed to login.
-									<c:if test="${SPRING_SECURITY_LAST_EXCEPTION != null }">
-										<br>Reason: <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
-									</c:if>
-								</div>
-							</c:if>
-							
-							<p>ENTER YOUR USERNAME<br><input name="j_username" id="j_username" size="70" type="text"></p>
-				
-							<p>PASSWORD<br><input name="j_password" size="70" type="password" id="j_password" autocomplete="off"></p>
-				
-							<table border="0" cellpadding="0" cellspacing="0" style="width:520px">
+					<div id="loginquestion">
+							<table border="0" cellpadding="0" cellspacing="0" style="width:260px">
 								<tbody>
 									<tr>
-										<td><a href="forgotpwd.htm" style="line-height: 1.6em;">FORGOT YOUR PASSWORD</a></td>
-										<td style="text-align:right"><input type="submit" class="submit-button" name="submit-button" value="Submit"></td>
+										<td><p>Already have an account?</td>
+										<td style="text-align:right">
+											<input type="button" value="Login"  id ="_login" name="_login" class="button" onclick="newDoc()" />
+										</td>
 									</tr>
 								</tbody>
 							</table>
-				</form:form><br>
-				</div>					
-						
+						</div>
+										
+			
 						<br>
 					
 				
-<!-- 						<table border="0" cellpadding="0" cellspacing="0" style="width:260px"> -->
-<!-- 								<tbody> -->
+						<table border="0" cellpadding="0" cellspacing="0" style="width:260px">
+								<tbody>
 									
-<!-- 			     	     			<tr>	 -->
-<!-- 								    	<td> -->
-<%-- 						             	<c:if test="${loginUser.hasRole('USER')}"> --%>
-<!-- <!-- 						             		<input type="submit" value="START A FREE REGISTRATION" name="_new" class="button"/> --> 
-<!-- 							              	<a href="newuser.htm"><img src="images/login/startregistration.png" alt="New User"></a> -->
-<%-- 												</c:if> --%>
-<!-- 					          			</td> -->
-<!-- 									</tr> -->
+			     	     			<tr>	
+								    	<td>
+						<%--              	<c:if test="${loginUser.hasRole('USER')}"> --%>
+<!-- 						             		<input type="submit" value="START A FREE REGISTRATION" name="_new" class="button"/> -->
+							              	<a href="newuser.htm?type=TE"><img src="images/login/startregistration.png" alt="New User"></a>
+								<%-- 				</c:if> --%>
+					          			</td>
+									</tr>
 									
-<!-- 								</tbody> -->
-<!-- 						</table> -->
+								</tbody>
+						</table>
 								
 						
 	

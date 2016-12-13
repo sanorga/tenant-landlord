@@ -189,6 +189,8 @@ public interface UserService extends Serializable {
 
 	public void saveYourUser(User user);
 
+	public User setupNewUser(String type);
+
 //	public Subscriber saveNewSubscriber(Subscriber subscriber, User loginUser);
 	
 	
