@@ -235,7 +235,7 @@ public class AnonymousUserForm extends AbstractDataController {
 		      application.setRentalAmount(anonymousUser.getRentalAmount());
 		      application.setRentalDeposit(anonymousUser.getRentalDeposit());
 		      application.setLeaseTermMonths(12);    
-		      application.setLandlordPays(true);    
+		      application.setLandlordPays(false);    
 		      application.setProperty(property);
 		      application.setApartmentNo(property.getApartmentNo());
 		      application.setCreditRecommendation('6'); 
