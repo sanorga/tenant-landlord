@@ -1435,7 +1435,7 @@ public class InviteServiceImpl implements InviteService{
 		        	   if (creditReportXML != null)
 		        			mapResponse.put("creditReport2",creditReportXML);
 		        		
-		        		Document docTest = eCreditReport.getOwnerDocument();
+		        		
 		        	   	
 		        		if (criminalRecordsXML != null)
 		        			mapResponse.put("criminalRecord2",criminalRecordsXML);
@@ -1526,7 +1526,7 @@ public class InviteServiceImpl implements InviteService{
 		report = sb.toString();
 	}	
 	
-	
+	logger.debug(report);	
 	return report;
 	
 	}

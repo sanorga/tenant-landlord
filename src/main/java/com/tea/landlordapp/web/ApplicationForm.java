@@ -375,6 +375,8 @@ public class ApplicationForm extends AbstractDataController {
 		             }
 		  	}
 		  	// check this
+			logger.debug("html: " + transReport);
 		  	return transReport;
+		  	
 	   }
 }
