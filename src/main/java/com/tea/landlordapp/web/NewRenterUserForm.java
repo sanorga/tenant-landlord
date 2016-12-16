@@ -31,16 +31,17 @@ import com.tea.landlordapp.service.UserService;
 import com.tea.landlordapp.validation.UserValidator;
 
 import com.tea.landlordapp.validation.PasswordChangeValidator;
+import com.tea.landlordapp.validation.RenterEmailValidator;
 
 @Controller
-@RequestMapping("/newuser.htm")
-public class NewUserForm {
+@RequestMapping("/newrenteruser.htm")
+public class NewRenterUserForm {
 
 	   @Autowired
 	   UserService userService;
 	   
 	   @Autowired
-	   UserValidator userValidator;
+	   RenterEmailValidator renterEmailValidator;
 	   
 	   @Autowired
 	   SimpleDao simpleDao;
@@ -55,24 +56,20 @@ public class NewUserForm {
 
 	@RequestMapping(method = RequestMethod.GET)
 	   public String setupForm(@RequestParam(value = "userId", required = false) Integer userId,
-				@RequestParam(value = "type", required = false) String type,
 			   					ModelMap model) {
 	      logger.debug("inside GET method of newuser.htm...");
 	      User user;
 	      Map<String,String> roleOptions;
 	      if (ObjectUtils.equals(userId, null)) 
-	         if (StringUtils.isBlank(type))
-	        	 user = userService.setupNewUser();
-	         else user = userService.setupNewUser(type);
+	         
+	        user = userService.setupNewUser("TE");
 	       else 
 	         user = simpleDao.find(User.class, userId);
 	      
 	      setValuesInModel(model);
     	  model.addAttribute("user", user);
 	      
-    	  
-    	  return "newuser";
-    	
+    	  return "newrenteruser";
 	   }
 	
 	 private Map<String,String> getRoleOptions(){
@@ -111,14 +108,17 @@ public class NewUserForm {
 		   model.addAttribute("userRoleOptions", roleOptions);
 		   model.addAttribute("userStatusOptions", statusOptions);
 		   model.addAttribute("usStateOptions", usStateListOptions);
+		 
 		      
 	   }
 	   
 	   private Map<String,String> getStatusOptions(){
 		   Map<String,String> statusOptions = new TreeMap<String,String>();
 		   final Globals globals = Globals.getInstance();
+
 		  
 		    	  statusOptions = globals.getUserStatusOptions();
+		    	 
 		   
 		   return statusOptions;
 	   }
@@ -172,16 +172,16 @@ public class NewUserForm {
 	    	  setValuesInModel(model); 
 //	         model.addAttribute("userRoleOptions", getRoleOptions(user.getSubscriber(), loginUser));
 	         model.addAttribute("user", user);
-	         return "newuser";
+	         return "newrenteruser";
 	      }
 	      user.setPassword(user.getNewPassword());
 	      
-	      userValidator.validate(user, result);
+	      renterEmailValidator.validate(user, result);
 	      if (result.hasErrors()) {
 	    	  setValuesInModel(model); 
 //	         model.addAttribute("userRoleOptions", getRoleOptions(user.getSubscriber(), loginUser));
 	         model.addAttribute("user", user);
-	         return "newuser";
+	         return "newrenteruser";
 	      }
 
 	      // persist user
