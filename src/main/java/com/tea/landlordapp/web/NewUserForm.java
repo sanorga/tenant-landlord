@@ -62,7 +62,7 @@ public class NewUserForm {
 	      Map<String,String> roleOptions;
 	      if (ObjectUtils.equals(userId, null)) 
 	         if (StringUtils.isBlank(type))
-	        	 user = userService.setupNewUser();
+	        	 user = userService.setupNewUser(null);
 	         else user = userService.setupNewUser(type);
 	       else 
 	         user = simpleDao.find(User.class, userId);
@@ -75,16 +75,16 @@ public class NewUserForm {
     	
 	   }
 	
-	 private Map<String,String> getRoleOptions(){
-		   Map<String,String> roleOptions = new TreeMap<String,String>();
-		   final Globals globals = Globals.getInstance();
-
-		   
-		    	  roleOptions = globals.getClientRoleOptions();
-		    	  
-		   
-		   return roleOptions;
-	   }
+//	 private Map<String,String> getRoleOptions(){
+//		   Map<String,String> roleOptions = new TreeMap<String,String>();
+//		   final Globals globals = Globals.getInstance();
+//
+//		   
+//		    	  roleOptions = globals.getClientRoleOptions();
+//		    	  
+//		   
+//		   return roleOptions;
+//	   }
 	  
 	 private Map<String,String> getUsStateListOptions(){
 		   
@@ -100,15 +100,15 @@ public class NewUserForm {
 	 
 	private void setValuesInModel(ModelMap model) {
 		    
-		   Map<String,String> roleOptions;
+//		   Map<String,String> roleOptions;
 		   Map<String,String> statusOptions;
 		   Map<String,String> usStateListOptions;
 //		   final User loginUser = getAuthenticatedUser();
 		   
-		   roleOptions = getRoleOptions();
+//		   roleOptions = getRoleOptions();
 		   statusOptions = getStatusOptions();
 		   usStateListOptions = getUsStateListOptions();
-		   model.addAttribute("userRoleOptions", roleOptions);
+//		   model.addAttribute("userRoleOptions", roleOptions);
 		   model.addAttribute("userStatusOptions", statusOptions);
 		   model.addAttribute("usStateOptions", usStateListOptions);
 		      
@@ -134,26 +134,6 @@ public class NewUserForm {
 	    	  status.setComplete();
 	         return String.format("redirect:login.htm?");
 	      }
-
-	      // onResetPassword
-//	      if (WebUtils.hasSubmitParameter(request, "_resetPassword")) {
-//	    	  if (user.isNew()){
-//	    		  setActionMessage(request,"confirm.save_user_before_reset");
-//	    		  return "user";
-//	    	  }
-//	    	  try {
-//				if (messageService.sendPasswordResetEmail(user.getUsername())){
-//					  setActionMessage(request, "confirm.user_passw_reset_email_sent");
-//				  } else {
-//					  setActionMessage(request, "confirm.failed_email");
-//				  }
-//			} catch (Exception e) {
-//				  setActionMessage(request, "confirm.failed_email");
-//			}
-//	    	  setValuesInModel(model, user.getSubscriber());
-//	    	  model.addAttribute("user", user);
-//	         return "user";
-//	      }
 
 //	     final User loginUser = getAuthenticatedUser();
 	      final User loginUser = userService.findNullUser();
@@ -198,17 +178,7 @@ public class NewUserForm {
 	    	   
 	      userService.saveUser(user, loginUser);
 	      status.setComplete();
-//	      if (sendReset){
-//	    	  try {
-//				messageService.sendPasswordResetEmail(user.getUsername());
-//				WebUtils.setSessionAttribute(request, "message", "confirm.user_save_passw_reset_email_sent");
-//			} catch (Exception e) {
-//				// do nothing
-//			}
-//	      } else {
-//	    	  // set confirmation message
-//	    	  setActionMessage(request, "confirm.user_save_success");
-//	      }
+
 	      
 
 	      // force logout

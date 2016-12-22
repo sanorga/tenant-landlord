@@ -1,5 +1,6 @@
 package com.tea.landlordapp.web;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -25,23 +26,28 @@ import org.springframework.web.util.WebUtils;
 import com.tea.landlordapp.constant.Globals;
 import com.tea.landlordapp.domain.Role;
 import com.tea.landlordapp.domain.User;
+import com.tea.landlordapp.dto.RenterDto;
 import com.tea.landlordapp.repository.SimpleDao;
 import com.tea.landlordapp.service.SecurityService;
 import com.tea.landlordapp.service.UserService;
 import com.tea.landlordapp.validation.UserValidator;
 
 import com.tea.landlordapp.validation.PasswordChangeValidator;
+import com.tea.landlordapp.validation.RenterDtoValidator;
 import com.tea.landlordapp.validation.RenterEmailValidator;
 
 @Controller
-@RequestMapping("/newrenteruser.htm")
-public class NewRenterUserForm {
+// @RequestMapping("/newrenteruser.htm")
+public class NewRenterUserForm extends AbstractDataController{
 
 	   @Autowired
 	   UserService userService;
 	   
 	   @Autowired
 	   RenterEmailValidator renterEmailValidator;
+	   
+	   @Autowired
+	   RenterDtoValidator renterDtoValidator;
 	   
 	   @Autowired
 	   SimpleDao simpleDao;
@@ -54,7 +60,7 @@ public class NewRenterUserForm {
 	   
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value = "/newrenteruser.htm", method = RequestMethod.GET)
 	   public String setupForm(@RequestParam(value = "userId", required = false) Integer userId,
 			   					ModelMap model) {
 	      logger.debug("inside GET method of newuser.htm...");
@@ -72,16 +78,16 @@ public class NewRenterUserForm {
     	  return "newrenteruser";
 	   }
 	
-	 private Map<String,String> getRoleOptions(){
-		   Map<String,String> roleOptions = new TreeMap<String,String>();
-		   final Globals globals = Globals.getInstance();
-
-		   
-		    	  roleOptions = globals.getClientRoleOptions();
-		    	  
-		   
-		   return roleOptions;
-	   }
+//	 private Map<String,String> getRoleOptions(){
+//		   Map<String,String> roleOptions = new TreeMap<String,String>();
+//		   final Globals globals = Globals.getInstance();
+//
+//		   
+//		    	  roleOptions = globals.getClientRoleOptions();
+//		    	  
+//		   
+//		   return roleOptions;
+//	   }
 	  
 	 private Map<String,String> getUsStateListOptions(){
 		   
@@ -97,15 +103,15 @@ public class NewRenterUserForm {
 	 
 	private void setValuesInModel(ModelMap model) {
 		    
-		   Map<String,String> roleOptions;
+//		   Map<String,String> roleOptions;
 		   Map<String,String> statusOptions;
 		   Map<String,String> usStateListOptions;
 //		   final User loginUser = getAuthenticatedUser();
 		   
-		   roleOptions = getRoleOptions();
+//		   roleOptions = getRoleOptions();
 		   statusOptions = getStatusOptions();
 		   usStateListOptions = getUsStateListOptions();
-		   model.addAttribute("userRoleOptions", roleOptions);
+//		   model.addAttribute("userRoleOptions", roleOptions);
 		   model.addAttribute("userStatusOptions", statusOptions);
 		   model.addAttribute("usStateOptions", usStateListOptions);
 		 
@@ -122,8 +128,8 @@ public class NewRenterUserForm {
 		   
 		   return statusOptions;
 	   }
-	   
-	   @RequestMapping(method = RequestMethod.POST)
+
+	   @RequestMapping(value = "/newrenteruser.htm", method = RequestMethod.POST)
 	   public String processSubmit(@ModelAttribute User user, BindingResult result, HttpServletRequest request, SessionStatus status, ModelMap model) {
 	      logger.debug("in POST method of user.htm with userId as.." + user.getId());
 
@@ -135,25 +141,6 @@ public class NewRenterUserForm {
 	         return String.format("redirect:login.htm?");
 	      }
 
-	      // onResetPassword
-//	      if (WebUtils.hasSubmitParameter(request, "_resetPassword")) {
-//	    	  if (user.isNew()){
-//	    		  setActionMessage(request,"confirm.save_user_before_reset");
-//	    		  return "user";
-//	    	  }
-//	    	  try {
-//				if (messageService.sendPasswordResetEmail(user.getUsername())){
-//					  setActionMessage(request, "confirm.user_passw_reset_email_sent");
-//				  } else {
-//					  setActionMessage(request, "confirm.failed_email");
-//				  }
-//			} catch (Exception e) {
-//				  setActionMessage(request, "confirm.failed_email");
-//			}
-//	    	  setValuesInModel(model, user.getSubscriber());
-//	    	  model.addAttribute("user", user);
-//	         return "user";
-//	      }
 
 //	     final User loginUser = getAuthenticatedUser();
 	      final User loginUser = userService.findNullUser();
@@ -196,23 +183,112 @@ public class NewRenterUserForm {
 	      user.setRole(role);
 	      String roleStr = user.getRole().getRole();
 	    	   
-	      userService.saveUser(user, loginUser);
+	      User newUser = userService.saveAndReturnUser(user, loginUser);
 	      status.setComplete();
-//	      if (sendReset){
-//	    	  try {
-//				messageService.sendPasswordResetEmail(user.getUsername());
-//				WebUtils.setSessionAttribute(request, "message", "confirm.user_save_passw_reset_email_sent");
-//			} catch (Exception e) {
-//				// do nothing
-//			}
-//	      } else {
-//	    	  // set confirmation message
-//	    	  setActionMessage(request, "confirm.user_save_success");
-//	      }
-	      
-
+	      Integer userId = newUser.getId();
+    	  	  
+	      if (userId == null){
+	      	status.setComplete();
+	        return String.format("redirect:login.htm?");
+	      }
 	      // force logout
 //	      return "redirect:/logout.htm?message=PC";
-	      return "redirect:login";
+	      return "redirect:newrenterinfo.htm?userId=" + userId;
 	   }
+
+		@RequestMapping(value = "/newrenterinfo.htm", method = RequestMethod.GET)
+		   public String setupNewRenterInfoForm(@RequestParam(value = "userId", required = false) Integer userId,
+				   					ModelMap model) {
+			  
+			  
+		      logger.debug("inside GET method of newrenterinfo.htm...");
+		      User user;
+		      Map<String,String> roleOptions;
+		      if (ObjectUtils.equals(userId, null)) 
+		         
+		        user = userService.setupNewUser("TE");
+		       else 
+		         user = simpleDao.find(User.class, userId);
+		      
+		      RenterDto renterDto = new RenterDto(user);
+		      setValuesInModel(model);
+	    	  model.addAttribute("renterDto", renterDto);
+		      
+	    	  return "newrenterinfo";
+		   }
+		
+		@RequestMapping(value = "/newrenterinfo.htm", method = RequestMethod.POST)
+		   public String processNewRenterInfoForm (@ModelAttribute RenterDto renterDto, BindingResult result, HttpServletRequest request, SessionStatus status, ModelMap model) {
+			  
+		      logger.debug("inside POST method of newrenterinfo.htm...");
+		      
+		      //
+		      
+		      // onCancel
+		      if (WebUtils.hasSubmitParameter(request, Globals.PARAM_CANCEL)) {
+//		         Integer sId = user.getSubscriber().getId();
+		    	  status.setComplete();
+		         return String.format("redirect:login.htm?");
+		      }
+
+//		     final User loginUser = getAuthenticatedUser();
+		     final User loginUser = userService.findNullUser();
+		     
+
+		      renterDtoValidator.validate(renterDto, result);
+		      if (result.hasErrors()) {
+		    	  setValuesInModel(model); 
+
+		         return "newrenterinfo";
+		      }
+		       
+		      User user;
+			  int userId = renterDto.getUserId();
+			  if (ObjectUtils.equals(userId, null)) 
+			    	 return String.format("redirect:login.htm?");
+			  else 
+			         user = simpleDao.find(User.class, userId);
+			  
+			  if (user == null) {
+				  return String.format("redirect:login.htm?");
+			  }
+			  
+			  user.setHasPersonalInfo(true);
+			  user.setHasPaymentInfo(true);
+			  
+			  //create renter user in Smartmove database
+			  
+			  //-------------------------------------------
+		      // Submit Renter to Report Vendor if Needed
+		      //-------------------------------------------
+			  Map<String, String> renterResultMap = new HashMap<String,String>();
+			  
+				      try {
+						renterResultMap = inviteService.submitRenter(user);
+						
+				      } catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+				      }
+				  
+				      
+				      if (renterResultMap == null) {
+							logger.debug("process error");
+						    setActionMessage(request, "confirm.unsuccessful_renter_creation");
+						    return "redirect:home.htm";
+						}
+				      
+//				      propertyExtIdStr = propertyResultMap.get("propertyExtIdStr");
+				     
+				    
+			  
+			  
+			  
+			  //create user in Tenant database
+		      userService.updateUser(user, renterDto, loginUser);
+   		     
+		      status.setComplete();
+
+		      return String.format("redirect:login.htm?");
+		}
 }

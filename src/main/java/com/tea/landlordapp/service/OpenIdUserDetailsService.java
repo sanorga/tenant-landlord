@@ -57,8 +57,6 @@ public class OpenIdUserDetailsService implements UserDetailsService, Authenticat
 							(StringUtils.equals(detail.status, "A") || StringUtils.equals(detail.status, "X")) && StringUtils.equals(detail.subscriberStatus, "A"),
 							detail.userId, detail.mfaDesired, detail.mfaRequired, 
 							detail.secondFactorValid, detail.role,
-							StringUtils.equalsIgnoreCase(detail.subscriberType, "P"),
-							StringUtils.equalsIgnoreCase(detail.subscriberType, "C"),
 							StringUtils.equalsIgnoreCase(detail.subscriberType, "S"),
 							detail.questions == 3);
 		
@@ -183,8 +181,6 @@ public class OpenIdUserDetailsService implements UserDetailsService, Authenticat
 				userDetails.getUserId(), userDetails.isMfaDesired(), userDetails.isMfaRequired(), 
 				sfv, 
 				userDetails.getPrimaryRole(),
-				userDetails.isPartnerUser(),
-				userDetails.isClientUser(),
 				userDetails.isSystemAdminUser(),
 				userDetails.isQuestions());
 

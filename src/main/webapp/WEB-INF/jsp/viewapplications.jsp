@@ -113,12 +113,14 @@
 							<td>${app.addressLine1}</td>
 <%-- 							<td>${app.city}</td> --%>
 <%-- 							<td>${app.creditRecommendationLabel}</td> --%>
-							<c:if test="${app.canRequestReport}"> 
+							
+							<c:if test="${loginUser.hasRole('LA') && app.canRequestReport}">
 								<td><a href="application.htm?applicationId=${app.id}"><img src="images/docs.jpg" alt="Check Report"></a></td>
 							</c:if>
-							<c:if test="${!app.canRequestReport}"> 
+							<c:if test="${!loginUser.hasRole('LA') || !app.canRequestReport}"> 
 								<td>&nbsp;</td>
 							</c:if>
+                            
                             <td>${app.stateLabel}</td>
                         </tr>
                     </c:forEach>

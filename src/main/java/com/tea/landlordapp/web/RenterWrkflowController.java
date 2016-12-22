@@ -49,25 +49,33 @@ public class RenterWrkflowController extends AbstractDataController{
 		User loginUser = getAuthenticatedUser();
 		
 	      // check authorization
-	      if (!hasAnyAuthority(new String[]{"view.my.applications"})) {
-	          return unAuthorized(request);
-	       }
+//	      if (!hasAnyAuthority(new String[]{"view.my.applications"})) {
+//	          
+//	          setActionMessage(request, "confirm.unauthorized_access");
+//	  		  return "login";
+//	       }
 	     
 	    User user = null;
-	    if (ObjectUtils.equals(userId, null)) {
+	    if (!ObjectUtils.equals(userId, null)) {
 	    	user = simpleDao.find(User.class, userId);
 	    }
 	    else return "login";
 	    
-		model.addAttribute("user", user);
+		
 
 		if (!StringUtils.equals(user.getRole().getRole() , UserRole.Renter.getCode())){
 			return "login";
 		}
+		
+		model.addAttribute("user", user);
+		
+		if (!user.isHasPersonalInfo()) 
 		// To add logic if personal information was confirmed
 		// If there is an application then request IDMA?
-		
-		return "newrenterpersonalinfo";
+			return "newrenterpersonalinfo";
+		else if (!user.isHasPaymentInfo())
+			return "newrenterpayment";
+		else return "home";
 	}
 	
 }

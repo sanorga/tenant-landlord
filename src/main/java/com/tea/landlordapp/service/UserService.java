@@ -22,6 +22,7 @@ import com.tea.landlordapp.domain.Role;
 //import com.tea.landlordapp.domain.SearchTerm;
 import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.dto.LookupListItem;
+import com.tea.landlordapp.dto.RenterDto;
 import com.tea.landlordapp.dto.SelectionListItem;
 //import com.tea.landlordapp.dto.UserGridItem;
 
@@ -163,7 +164,7 @@ public interface UserService extends Serializable {
 	public List<Property> findAuthorizedProperties(User user);
 
 //	public User setupNewUser(Subscriber parent);
-	public User setupNewUser();
+//	public User setupNewUser();
 
 	public HashMap<Integer, String> getApplicationApprovalUserList(Integer subscriberId, java.util.List<Integer> authorizedManagerIds);
 
@@ -190,6 +191,10 @@ public interface UserService extends Serializable {
 	public void saveYourUser(User user);
 
 	public User setupNewUser(String type);
+
+	public User saveAndReturnUser(User user, User loginUser);
+
+	public void updateUser(User user, RenterDto renterDto, User loginUser);
 
 //	public Subscriber saveNewSubscriber(Subscriber subscriber, User loginUser);
 	

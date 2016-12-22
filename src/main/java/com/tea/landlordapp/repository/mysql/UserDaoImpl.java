@@ -318,6 +318,12 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional(readOnly = false)
+	public User saveAndReturnUser(User user) {
+		return em.merge(user);
+	}
+	
+	@Override
+	@Transactional(readOnly = false)
 	public AnonymousUser saveAnonymousUser(AnonymousUser anonymousUser) {
 		return em.merge(anonymousUser);
 	}

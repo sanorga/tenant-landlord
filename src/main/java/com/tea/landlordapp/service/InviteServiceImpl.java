@@ -63,6 +63,7 @@ import com.google.gson.JsonParser;
 import com.tea.landlordapp.domain.AnonymousUser;
 import com.tea.landlordapp.domain.Application;
 import com.tea.landlordapp.domain.Property;
+import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.enums.TransUnionApiParameter;
 import com.tea.landlordapp.repository.ApplicationDao;
 import com.tea.landlordapp.repository.SystemPropertyDao;
@@ -1529,6 +1530,53 @@ public class InviteServiceImpl implements InviteService{
 	logger.debug(report);	
 	return report;
 	
+	}
+	
+	@Override
+	public Map<String, String> submitRenter (User user) throws Exception {
+			
+			Map<String, String> result = new HashMap<String,String>();
+			
+			String apiUrl = systemPropertyDao.getPropertyValue(TransUnionApiParameter.URL);
+			String partnerId = systemPropertyDao.getPropertyValue(TransUnionApiParameter.PARTNER_ID);
+			String key = systemPropertyDao.getPropertyValue(TransUnionApiParameter.KEY);
+			String live = systemPropertyDao.getPropertyValue(TransUnionApiParameter.IS_LIVE);
+	
+			if (user == null) {
+				return null;
+			}
+		
+			
+//			Integer propertyExtId = p.getPropertyExtId();
+			
+			
+
+				//-----------------------------------------------------------------
+				//No renter in SmartMove - Create renter in SmartMove - (POST)/RenterApi/V1/Renter
+				//-----------------------------------------------------------------
+				Map<String, String> renterResultMap = addRenter(apiUrl, partnerId, key, user);
+				if (renterResultMap == null) {
+					logger.debug("no renter obtained");
+					return null;
+				}
+				
+//				propertyExtIdStr = propertyResultMap.get("propertyExtIdStr");
+//				if (propertyExtIdStr == "0" || propertyExtIdStr == null){
+//					logger.debug("no property id obtained");
+//					return null;
+//				}
+//				propertyIdentifier = propertyResultMap.get("propertyIdentifier");
+//				organizationIdStr = propertyResultMap.get("organizationIdStr");
+//				organizationName = propertyResultMap.get("organizationName");
+//	//			propertyIdStr = "41704";
+//
+//			
+//			result.put("propertyExtIdStr", propertyExtIdStr);
+//			result.put("propertyIdentifier", propertyIdentifier);
+//			result.put("organizationIdStr", organizationIdStr);
+//			result.put("organizationName", organizationName);
+
+			return result;
 	}
 	
 }

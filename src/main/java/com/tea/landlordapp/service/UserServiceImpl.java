@@ -34,6 +34,7 @@ import com.tea.landlordapp.domain.Role;
 //import com.tea.landlordapp.domain.SearchTerm;
 import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.dto.LookupListItem;
+import com.tea.landlordapp.dto.RenterDto;
 import com.tea.landlordapp.dto.SelectionListItem;
 //import com.tea.landlordapp.dto.UserGridItem;
 //import com.tea.landlordapp.enums.CustomerStatus;
@@ -328,6 +329,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		userDao.saveUser(user);
 		return;
 	}
+
+	@Override
+	public User saveAndReturnUser(User user, User loginUser) {
+
+		user.setAuditInfo(loginUser);
+		return userDao.saveAndReturnUser(user);
+		
+	}
 	
 	@Override
 	public void saveYourUser(User user) {
@@ -440,24 +449,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return user;
 	}
 	
-	@Override
-	public User setupNewUser() {
-		User user = new User();
-//		user.setSubscriber(parent);
-		user.setState("FL");
-		user.setCountry("US");
-		user.setStatus(Globals.ACTIVE);
-		user.setOpenIdIdentifier("0");
-		Role initialRole = new Role();
-		initialRole = findRole(UserRole.CustomerServiceRep.getCode());
-//		if (parent.isPartner()){
-//			initialRole = findRole(UserRole.CustomerServiceRep.getCode());
-//		} else {
-//			initialRole = findRole(UserRole.ClientUser.getCode());
-//		}
-        user.setRole(initialRole);
-		return user;
-	}
 	
 	@Override
 	public User setupNewUser(String type) {
@@ -468,13 +459,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		user.setStatus(Globals.ACTIVE);
 		user.setOpenIdIdentifier("0");
 		Role initialRole = new Role();
-		initialRole = findRole(type);
-//		if (parent.isPartner()){
-//			initialRole = findRole(UserRole.CustomerServiceRep.getCode());
-//		} else {
-//			initialRole = findRole(UserRole.ClientUser.getCode());
-//		}
+		if (StringUtils.isNotBlank(type))
+			initialRole = findRole(type);
+		else initialRole = findRole(UserRole.CustomerServiceRep.getCode());
+
         user.setRole(initialRole);
 		return user;
+	}
+	
+	@Override
+	public void updateUser(User user, RenterDto renterDto,  User loginUser) {
+		
+			user.setAddress(renterDto.getAddress());
+			user.setCity(renterDto.getCity());
+			user.setFirstName(renterDto.getFirstName());
+			user.setLastName(renterDto.getLastName());
+	//		user.setCountry(renterDto.getCountry());
+			user.setPhone(renterDto.getPhone());
+			user.setState(renterDto.getState());
+			user.setZipcode(renterDto.getZipcode());
+			
+			user.setAuditInfo(loginUser);
+			userDao.saveUser(user);
+
 	}
 }

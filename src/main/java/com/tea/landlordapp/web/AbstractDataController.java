@@ -217,16 +217,6 @@ public class AbstractDataController {
 		   return user.getRole().getRole();
 	   }
 	   
-	   @ModelAttribute("isPartnerUser")
-	   public boolean isPartnerUser(Authentication authentication){
-		   return (authentication != null) && ((TeaUserDetails)authentication.getPrincipal()).isPartnerUser();
-	   }
-	   
-	   @ModelAttribute("isClientUser")
-	   public boolean isClientUser(){
-		   Authentication authentication = getAuthentication();
-		   return (authentication != null) && ((TeaUserDetails)authentication.getPrincipal()).isClientUser();
-	   }
 	   
 //	   @ModelAttribute("isClientUser")
 //	   public boolean isClientUser(Authentication authentication){

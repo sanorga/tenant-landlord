@@ -5,7 +5,7 @@
 
 	 	<bean id="userValidator" class="com.tea.landlordapp.validation.UserValidator" /> 
 	 	<bean id="renterEmailValidator" class="com.tea.landlordapp.validation.RenterEmailValidator" /> 
-
+		<bean id="renterDtoValidator" class="com.tea.landlordapp.validation.RenterDtoValidator" /> 
 		<bean id="anonymousUserValidator" class="com.tea.landlordapp.validation.AnonymousUserValidator" />
 		<bean id="passwordChangeValidator" class="com.tea.landlordapp.validation.PasswordChangeValidator" /> 
 

@@ -53,7 +53,7 @@
 				<div class="row">
 					<div class="col-xs-6">
 					<br>
-					<h4>Renter Registration</h4>
+					<h4>Renter Registration - STEP 1 OF 3</h4>
 					<br>
 					
 										<fieldset class="form-group">

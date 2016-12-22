@@ -154,7 +154,7 @@ document.googleForm.submit();
 								    	<td>
 						<%--              	<c:if test="${loginUser.hasRole('USER')}"> --%>
 <!-- 						             		<input type="submit" value="START A FREE REGISTRATION" name="_new" class="button"/> -->
-							              	<a href="newrenteruser.htm?"><img src="images/login/startregistration.png" alt="New User"></a>
+							              	<a href="newrenteruser.htm"><img src="images/login/startregistration.png" alt="New User"></a>
 								<%-- 				</c:if> --%>
 					          			</td>
 									</tr>

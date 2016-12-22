@@ -19,6 +19,7 @@
 		<security:intercept-url pattern="/index" access="permitAll" />
 		<security:intercept-url pattern="/newuser.htm" access="permitAll" />
 		<security:intercept-url pattern="/newrenteruser.htm" access="permitAll" />
+		<security:intercept-url pattern="/newrenterinfo.htm" access="permitAll" />
 		<security:intercept-url pattern="/googlelogin.htm" access="permitAll" />
         <security:intercept-url pattern="/accessdenied" access="permitAll" />
         <security:intercept-url pattern="/forgotpwd.htm" access="permitAll" />      

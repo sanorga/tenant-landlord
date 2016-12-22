@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ import com.tea.landlordapp.constant.Globals;
 import com.tea.landlordapp.domain.User;
 import com.tea.landlordapp.dto.ApplicationGridItem;
 import com.tea.landlordapp.enums.ApplicationState;
+import com.tea.landlordapp.enums.UserRole;
 import com.tea.landlordapp.dto.ApplicationGridItem;
 import com.tea.landlordapp.service.UserService;
 import com.tea.landlordapp.service.ApplicationService;
@@ -101,7 +103,7 @@ public class ViewApplicationsForm extends AbstractDataController{
 //	      if (!checkSubscriberAccess(subscriber, user)) {
 //	         subscriber = user.getSubscriber();
 //	      }
-	     
+	      
 	      final List<ApplicationGridItem> userApplications = applicationService.findApplicationGridList(user, state);
 	     
 	      // set the user in the model

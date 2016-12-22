@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.xml.xpath.XPathExpressionException;
 
 import com.tea.landlordapp.domain.AnonymousUser;
+import com.tea.landlordapp.domain.User;
 
 public interface InviteService {
 
@@ -18,5 +19,7 @@ public interface InviteService {
 	public Map<String, String> submitProperty(AnonymousUser au) throws Exception;
 
 	public Map<String, String> getReports(Integer applicationExtId) throws Exception;
+
+	public Map<String, String> submitRenter(User user) throws Exception;
 
 }

@@ -3,10 +3,12 @@
 <c:set var="theBodyID" value="admin" />
 <c:set var="zipChecker" value="true" />
 <c:set var="numerFormat" value="true" />
+<c:set var="datepicker" value="true" />
+<c:set var="maskedinput" value="true" />
 
 <%@ include file="/WEB-INF/jsp/headernew.jsp" %>
 
-<form:form method="post" modelAttribute="user" >
+<form:form method="post" modelAttribute="renterDto" >
 
 <ol class="breadcrumb">
   	<li><a href="login.htm">Login</a></li>
@@ -36,11 +38,11 @@
       </c:if>
     </spring:bind>  
 
-<form:hidden path="username"/> 
-<form:hidden path="role.role"/>
-<form:hidden path="country"/>
-<form:hidden path="openIdIdentifier"/>
-<form:hidden path="status"/>
+<%-- <form:hidden path="username"/>  --%>
+<%-- <form:hidden path="role.role"/> --%>
+<%-- <form:hidden path="country"/> --%>
+<%-- <form:hidden path="openIdIdentifier"/> --%>
+<%-- <form:hidden path="status"/> --%>
 
     <div id="main" class="container">
         <div class="control-box mailbox_area">
@@ -54,7 +56,8 @@
 				<div class="row">
 					<div class="col-xs-6">
 					<br>
-					<h4>Renter Personal Information</h4>
+					<h4>Renter Registration - STEP 2 OF 3 </h4>
+					<h5>Personal Information</h5>
 					<br>
 					
 										<fieldset class="form-group">
@@ -64,6 +67,8 @@
 																				
 										<fieldset class="form-group">
 											<label for="">*First Name</label>
+											<form:errors path="firstName" cssClass="error" />
+											<span id="firstName_error" />
 											<form:input path="firstName" size="40" maxlength="50" />
 										</fieldset>
 
@@ -71,6 +76,36 @@
 											<label for="">*Last Name</label>
 											<form:input path="lastName" size="40" maxlength="50" />
 										</fieldset>
+
+										<fieldset class="form-group">
+											<label for="">*Social Security Number (SSN )</label>
+											<form:input  path="socialId" size="9"  maxlength="12"/>
+										</fieldset>
+										
+<!-- 										<fieldset class="form-group"> -->
+<!-- 											<label for="">*Date of Birth ( MM/DD/YYYY )</label> -->
+<%-- <%-- 											<form:input class="form-control form-control-sm date_input" path="oldClearDOB" size="12" cssClass="toolTipTitle" title="You must be at least 18 years old." /> --%> 
+<!-- 											<img src="img/icon_calendar.png" alt="">  -->
+<%-- 										<form:errors path="oldClearDOB cssClass="error" /> --%>
+<!-- 											<span id="oldClearDBO_error"/> -->
+<!-- 											</p> -->
+<%-- 											<form:input path="oldClearDOB" cssClass="textfield_part2 m_left15 left" cssStyle="width:340px;"  /> --%>
+<!-- 											<div class="clear"></div> -->
+<!-- 										</fieldset> -->
+										
+										<fieldset class="form-group datebox">
+                    						<label for="">*Date of Birth ( MM/DD/YYYY )</label>
+                    						<form:input  path="oldClearDOB" id="oldClearDOB" />
+                    						<img src="img/icon_calendar.png" alt=""> 
+               							 </fieldset>
+                
+<!-- 										 <fieldset class="form-group datebox"> -->
+<!-- 			                                <label for="">Transaction date</label> -->
+<%-- 			                                <form:input class="form-control form-control-sm date_input" path="oldClearDOB" id="rptDate"/> --%>
+<!-- 			                                <img src="img/icon_calendar.png" alt=""> -->
+<!--                             			</fieldset> -->
+                            
+										
 
 										<fieldset class="form-group">
 											<label for="">*Address</label>
@@ -145,57 +180,74 @@
 
 
 <%@ include file="/WEB-INF/jsp/includenew/scripts.jsp" %>
+<script src="jsnew/jquery.formatDateTime.js" type="text/javascript"></script>
+
 
 <!--  Custom JavaScript Functions for Password Confirmation -->
 <script src="js/passwordconfirmation.js" type="text/javascript"></script>
+
+<!-- <style type="text/css">  -->
+/* .ui-datepicker { */
+/*    	background: #215;  */
+/*     border: 1px solid #333; */
+/*     color: #CCC;  */
+/* 	}  */
+<!-- </style>  -->
 
 <script type="text/javascript">
 			jQuery(function($){
 				 $('#phone').mask("(999) 999-9999");
 				 $('#fax').mask("(999) 999-9999");});
 			 
-// 			$(document).ready(function(){	
+ 			$(document).ready(function(){	
 
-				
-// 				jQuery.validator.addMethod("zipcode", function(value, element) {
-// 					  return this.optional(element) || /^\d{5}(?:-\d{4})?$/.test(value);
-// 					}, "Please Enter a valid zipcode.");
-				
-				
-// 				$('form').validate({
-// 					errorPlacement: function(error, element) {  
-// 				         error.insertAfter("#"+element.attr("name")+"_error"); 
-// 				    },
-// 					rules: {
-						
-// 						address: "required",
-// 						zipCode: {
-// 							required:true,
-// 							zipcode:true
-// 						},
-// 						city: "required",
-// 						state: "required",
-						
-// 					},
-// 					messages:{
-						
-// 						address: "Street Address is required",
-// 						zipCode: {
-// 							required:"zipcode is required",
-// 							zipcode:"zipcode not valid"
-// 						},
-// 						city: "City is required",
-// 						state: "State is Required",
-						
-// 					}
-// 				});
-				
-				
-// 			});
-//	  	}
+ 				$('form').validate({
+ 					
+ 					errorPlacement: function(error, element) {
+ 								
+ 				         error.insertAfter("#"+element.attr("name")+"_error");
+ 				    },
+ 					
+ 					rules: {
+ 						firstName: "required",
+ 						lastName: "required",
+ 						oldClearDOB: {required: true},
+ 						phone: {required: true,
+ 							          minlength: 5,
+ 							          maxlength: 30}
+ 						
 	
+ 					}
+ 				
+ 				});
 
-	     	
+				$(".socialId").mask("999-99-9999");
+				
+				$('#oldClearDOB').datepicker({
+					showOn: 'button',
+					changeYear: true,
+ 					changeMonth: true,
+					maxDate: "-18y",
+					minDate: "-130y",
+					yearRange: "-80:-17"});
+				$("#oldClearDOB.datepicker").mask("mm/dd/yyyy");
+
+				
+// 				$('#oldClearDOB').datepicker({
+// 					showOn: 'button', 
+// 					buttonImage: 'images/icons_calendar.gif', 
+// 					buttonImageOnly: true,
+// 					changeYear: true,
+// 					changeMonth: true,
+// 					dateFormat: 'mm/dd/yyyy',
+// 					maxDate: "-18y",
+// 					minDate: "-130y",
+// 					yearRange: "-80:-17"
+// 				}).inputmask('mm/dd/yyyy');
+		
+ 			});
+				
+		     	
 	     	function EnableSubmit(val)
 	     	{
 	     	    var sbmt = document.getElementById("createaccount");
@@ -210,8 +262,35 @@
 	     	    }
 	     	}
 	     	
-	     	
-	     	
+		     	
+// 	    	function ssnValidation(){
+// 	    		var ssnVal = $('#applicants_ssn0').val();
+// 	    		if(ssnVal.length >= 11) {
+// 	    		$.ajax({
+// 	                type: "GET",
+// 	                url: "ssnTrack.htm?ssnValue="+ssnVal,
+// 	                cache: false,
+// 	                success: function(ajaxResultHtml){
+// 	                	$('#ssnTrackingDivAU').html(ajaxResultHtml);
+// 	                	if(ajaxResultHtml.length > 0) {
+// 	                	$.blockUI({ message: $('#dialogSSNDivAU'), 
+// 	    			            css: { 
+// 	    			            	width: 500,
+// 	    			            	left: ($(window).width() - 500) /2 + 'px', 
+// 	    			            	top: '200px',
+// 	    			         	cursor: 'default'
+// 	    			 			}
+// 	    				});
+// 	                }
+// 	                },
+// 	                error: function(){
+// 	                	alert("Communication Error.");
+// 	                }
+// 	            });
+	    		
+// 	    		}
+// 	    		return true;
+// 	    	}
 	     	
 </script>
 

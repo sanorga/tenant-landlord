@@ -2,6 +2,7 @@ package com.tea.landlordapp.domain;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -11,19 +12,17 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang.ObjectUtils;
+
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.tea.landlordapp.enums.SocialAcctService;
@@ -84,7 +83,13 @@ import com.tea.landlordapp.utility.EncryptionService;
 
 		// Accepts Service Agreement and Terms and Conditions.
 		private boolean acceptSATC = false;
-				
+		
+		// Renter fields.
+		private boolean hasPersonalInfo = false;
+		private boolean hasPaymentInfo = false;
+		private boolean hasIDMAVerified = false;
+		private Date idmaExpiration;
+		
 		@Column(name = "openid_identifier")
 		public String getOpenIdIdentifier() {
 			return openIdIdentifier;
@@ -308,7 +313,7 @@ import com.tea.landlordapp.utility.EncryptionService;
 		}
 
 		@Transient
-		public boolean isLandlordAccount() {
+		public boolean isLocalAccount() {
 			return ('L' == getAccountType());
 		}
 
@@ -566,6 +571,41 @@ import com.tea.landlordapp.utility.EncryptionService;
 			this.lockoutUntil = lockoutUntil;
 		}
 
+		@Column(name = "has_personal_info")
+		public boolean isHasPersonalInfo() {
+			return hasPersonalInfo;
+		}
+
+		public void setHasPersonalInfo(boolean hasPersonalInfo) {
+			this.hasPersonalInfo = hasPersonalInfo;
+		}
+		
+		@Column(name = "has_payment_info")
+		public boolean isHasPaymentInfo() {
+			return hasPaymentInfo;
+		}
+
+		public void setHasPaymentInfo(boolean hasPaymentInfo) {
+			this.hasPaymentInfo = hasPaymentInfo;
+		}
+		
+		@Column(name = "has_idma_verified")
+		public boolean isHasIDMAVerified() {
+			return hasIDMAVerified;
+		}
+
+		public void setHasIDMAVerified(boolean hasIDMAVerified) {
+			this.hasIDMAVerified = hasIDMAVerified;
+		}
+		
+		@Column(name = "idma_expiration_date")
+		public Date getIdmaExpiration() {
+			return idmaExpiration;
+		}
+
+		public void setIdmaExpiration(Date idmaExpiration) {
+				this.idmaExpiration = idmaExpiration;
+		}
 
 }
 

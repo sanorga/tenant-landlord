@@ -2,8 +2,7 @@
 
       <h1>Welcome ${loginUser.firstName} ${loginUser.lastName}</h1>
       <h3>
-         <c:if test="${isPartnerUser}">Partner:</c:if>
-         <c:if test="${isClientUser}">Client:</c:if>
+ 
          <c:if test="${isSystemAdminUser}">System Admin: </c:if>
          ${loginUser.subscriber.name}
       </h3>
@@ -24,13 +23,7 @@
             </c:if>
    
             <c:choose>
-            <c:when test="${isClientUser}">
-               <sec:authorize access="hasRole('new.application')">
-                  <sec:authorize access="hasRole('new.tenant.application')"><a href="applicationwizard.htm?appType=T">Tenant Application</a>   |</sec:authorize>
-                  <sec:authorize access="hasRole('new.employment.application')"><a href="applicationwizard.htm?appType=E">Employment Application</a>   |</sec:authorize>
-                  <a href="otherapplication.htm">Other Services</a>   |   
-               </sec:authorize>
-            </c:when>
+            
             <c:when test="${ (myPrimaryRole == 'BD')}">
             <tea:ifAuthorized capability="show.mailbox"><a href="viewapplications.htm">Application List</a>   |   </tea:ifAuthorized>
             </c:when>

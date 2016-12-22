@@ -32,8 +32,6 @@ public class TeaUserDetails implements UserDetails {
 	private boolean secondFactorValid = false;
 //	private int daysToExpiration;
 	private String primaryRole;
-	private boolean partnerUser;
-	private boolean clientUser;
 	private boolean systemAdminUser;
 	private boolean questions;
 
@@ -43,8 +41,7 @@ public class TeaUserDetails implements UserDetails {
 			boolean accountNonLocked, boolean credentialsNonExpired,
 			boolean enabled, Integer userId, boolean mfaDesired,
 			boolean mfaRequired, boolean secondFactorValid,
-			String primaryRole, boolean partnerUser,
-			boolean clientUser, boolean systemAdminUser, boolean questions) {
+			String primaryRole, boolean systemAdminUser, boolean questions) {
 		super();
 		this.authorities = authorities;
 		this.openIdIdentifier = openIdIdentifier;
@@ -60,8 +57,6 @@ public class TeaUserDetails implements UserDetails {
 		this.secondFactorValid = secondFactorValid;
 //		this.daysToExpiration = daysToExpiration;
 		this.primaryRole = primaryRole;
-		this.partnerUser = partnerUser;
-		this.clientUser = clientUser;
 		this.systemAdminUser = systemAdminUser;
 		this.questions = questions;
 	}
@@ -157,19 +152,17 @@ public class TeaUserDetails implements UserDetails {
 		return primaryRole;
 	}
 
-	public boolean isPartnerUser() {
-		return partnerUser;
-	}
-
-	public boolean isClientUser() {
-		return clientUser;
-	}
-
 	public boolean isSystemAdminUser() {
 		return systemAdminUser;
 	}
 
 
+
+
+
+	public boolean isQuestions() {
+		return questions;
+	}
 
 	@Override
 	public int hashCode() {
@@ -178,13 +171,11 @@ public class TeaUserDetails implements UserDetails {
 		result = prime * result + (accountNonExpired ? 1231 : 1237);
 		result = prime * result + (accountNonLocked ? 1231 : 1237);
 		result = prime * result + ((authorities == null) ? 0 : authorities.hashCode());
-		result = prime * result + (clientUser ? 1231 : 1237);
 		result = prime * result + (credentialsNonExpired ? 1231 : 1237);
 		result = prime * result + (enabled ? 1231 : 1237);
 		result = prime * result + (mfaDesired ? 1231 : 1237);
 		result = prime * result + (mfaRequired ? 1231 : 1237);
 		result = prime * result + ((openIdIdentifier == null) ? 0 : openIdIdentifier.hashCode());
-		result = prime * result + (partnerUser ? 1231 : 1237);
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((primaryRole == null) ? 0 : primaryRole.hashCode());
 		result = prime * result + (questions ? 1231 : 1237);
@@ -213,8 +204,6 @@ public class TeaUserDetails implements UserDetails {
 				return false;
 		} else if (!authorities.equals(other.authorities))
 			return false;
-		if (clientUser != other.clientUser)
-			return false;
 		if (credentialsNonExpired != other.credentialsNonExpired)
 			return false;
 		if (enabled != other.enabled)
@@ -227,8 +216,6 @@ public class TeaUserDetails implements UserDetails {
 			if (other.openIdIdentifier != null)
 				return false;
 		} else if (!openIdIdentifier.equals(other.openIdIdentifier))
-			return false;
-		if (partnerUser != other.partnerUser)
 			return false;
 		if (password == null) {
 			if (other.password != null)
@@ -257,10 +244,6 @@ public class TeaUserDetails implements UserDetails {
 		} else if (!username.equals(other.username))
 			return false;
 		return true;
-	}
-
-	public boolean isQuestions() {
-		return questions;
 	}
 
 

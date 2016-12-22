@@ -82,7 +82,7 @@ public class UserForm extends AbstractDataController{
 //	         if (!checkSubscriberAccess(subscriber, loginUser)) {
 //	            subscriber = loginUser.getSubscriber();
 //	         }
-	         user = userService.setupNewUser();
+	         user = userService.setupNewUser(null);
 //	         user = userService.getNewUser(subscriber);
 //	         Role initialRole = userService.findRole(UserRole.ClientUser.getValue());
 //	         user.setRole(initialRole);
