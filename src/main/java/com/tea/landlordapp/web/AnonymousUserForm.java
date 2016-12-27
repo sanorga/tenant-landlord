@@ -89,6 +89,10 @@ public class AnonymousUserForm extends AbstractDataController {
       // login User
       final User user = getAuthenticatedUser();
       
+      // check authorization
+      if (!hasAnyAuthority(new String[]{"invite.applicant"})) {
+          return unAuthorized(request);
+       }
       if (WebUtils.hasSubmitParameter(request, Globals.PARAM_CANCEL)) {
           status.setComplete();
           return onCancel1(user);
@@ -316,6 +320,12 @@ public class AnonymousUserForm extends AbstractDataController {
       logger.debug("in GET method of anonymoususer.htm with a propertyID as..." + propertyId);
  
       final User user = getAuthenticatedUser();
+      
+      
+      // check authorization
+      if (!hasAnyAuthority(new String[]{"invite.applicant"})) {
+          return unAuthorized(request);
+       }
       int userId = user.getId();
 
       // set model data
