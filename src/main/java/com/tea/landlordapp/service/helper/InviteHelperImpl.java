@@ -110,4 +110,58 @@ public class InviteHelperImpl implements InviteHelper {
 		
 		return applicationInfo;
 	}
+	
+	@Override
+	public Map<String, String> buildRenterInfoMap(User user) {
+		Map<String, String> renterInfo = new HashMap<String,String>();
+		
+		Property p = au.getProperty();
+		if (p== null) {
+			return null;
+		}
+		
+		User user = userDao.findUser(p.getUserId());
+		final NumberFormat df = new DecimalFormat("#0.00");
+		final Double rentalAmount = au.getRentalAmount();
+		final Double rentalDeposit = au.getRentalDeposit();
+		
+		propertyInfo.put("RentalAmount", df.format(rentalAmount));
+		propertyInfo.put("RentalDeposit", df.format(rentalDeposit));
+		propertyInfo.put("PropertyId", "");
+		propertyInfo.put("PropertyIdentifier", p.getName());
+		propertyInfo.put("Active", "true");
+		propertyInfo.put("Zip", p.getZipcode());
+		if (p.getPhone() != null) {
+			propertyInfo.put("Phone", p.getPhone());
+		} 
+		else propertyInfo.put("Phone", "3056784433");
+		if (p.getExtension() != null) {
+			propertyInfo.put("PhoneExtension",p.getExtension());
+		}
+		else propertyInfo.put("PhoneExtension","111");
+		propertyInfo.put("UnitNumber", p.getApartmentNo());
+		propertyInfo.put("City", p.getCity());
+		propertyInfo.put("Street", p.getStreet());
+		propertyInfo.put("State", p.getState());
+		propertyInfo.put("Name", p.getName());
+		propertyInfo.put("FirstName",user.getFirstName());
+		propertyInfo.put("LastName",user.getLastName());
+		
+		propertyInfo.put("Classification","Conventional");
+		propertyInfo.put("IR","2");
+		propertyInfo.put("IncludeMedicalCollections","false");
+		propertyInfo.put("IncludeForeclosures","false");
+		propertyInfo.put("DeclineForOpenBankruptcies","false");
+		propertyInfo.put("OpenBankruptcyWindow","0");
+		propertyInfo.put("IsFcraAgreeentAccepted","true");
+		
+		String partnerId = systemPropertyDao
+				.getPropertyValue(TransUnionApiParameter.PARTNER_ID);
+		String key = systemPropertyDao
+				.getPropertyValue(TransUnionApiParameter.KEY);
+		propertyInfo.put("partnerId", partnerId);
+		propertyInfo.put("key", key);
+
+		return propertyInfo;
+	}
 }

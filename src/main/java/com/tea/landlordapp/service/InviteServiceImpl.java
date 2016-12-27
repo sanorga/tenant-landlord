@@ -89,8 +89,7 @@ public class InviteServiceImpl implements InviteService{
 	
 	private ApplicationDao applicationDao;
 
-
-		
+	
 	@Autowired
 	public InviteServiceImpl(InviteHelper inviteHelper, SystemPropertyDao systemPropertyDao, ApplicationDao applicationDao) {
 		
@@ -1577,6 +1576,70 @@ public class InviteServiceImpl implements InviteService{
 //			result.put("organizationName", organizationName);
 
 			return result;
+	}
+	
+	private Map<String, String> addRenter(String apiUrl, String partnerId, String key, User au) throws XPathExpressionException, IOException, ParserConfigurationException, SAXException {
+		
+		Map<String, String> responseMap;
+		String responseCodeStr = null, responseMessage = null;
+		Integer responseCode = 0;
+		String apiCall = null, response=null;
+		StringBuilder aurl = null;
+		
+		//call
+		aurl = new StringBuilder();
+		aurl.append(apiUrl);
+		aurl.append("Renter");
+		apiCall = aurl.toString();
+			
+		Map<String, String> renterInfo = inviteHelper.buildPropertyInfoMap(au);
+		
+//		if (Double.valueOf(propertyInfo.get("RentalAmount")) <= 0) {
+//			return "Error:ZeroRentalAmount";
+//		}
+		
+//		String xmlString = getXmlString(propertyInfo,"ADDPROPERTY");
+		String jsonString = getJSONString(propertyInfo,"ADDPROPERTY");
+//		String sanitizedXml = sanitizeMessageForLogging(jsonString);
+		
+		// get credentials
+		String credentials = getCredentials(apiUrl, partnerId, key);
+		if (credentials == null){
+			logger.debug("no credentials obtained");
+			return null;
+		}
+		
+		// post property
+//		response=postRequest(apiCall, xmlString, credentials);
+		responseMap=postJSONMessageGetJSON(apiCall, jsonString, credentials);
+
+		responseCodeStr = responseMap.get("responseCode");
+		responseCode = Integer.valueOf(responseCodeStr);
+		if (responseCode != 201) {
+			logger.debug("no property request obtained");
+			return null;
+		}
+		
+		response = responseMap.get("response");
+		JsonObject propertyResponseJson = getAuthorizeResponseJson(response);
+		String propertyExtIdStr = propertyResponseJson.get("PropertyId").getAsString();
+		String organizationIdStr = propertyResponseJson.get("OrganizationId").getAsString();
+		String organizationName = propertyResponseJson.get("OrganizationName").getAsString();
+		String propertyIdentifier = propertyResponseJson.get("PropertyIdentifier").getAsString();
+		Integer propertyExtId;
+		try {
+			propertyExtId = Integer.valueOf(propertyExtIdStr);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		responseMap.put("propertyExtIdStr",propertyExtIdStr);	
+		responseMap.put("organizationIdStr",organizationIdStr);
+		responseMap.put("propertyIdentifier",propertyIdentifier);
+		responseMap.put("organizationName",organizationName);
+		return responseMap;
+				
 	}
 	
 }
